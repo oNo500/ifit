@@ -8,7 +8,7 @@ importers:
 
   .: {}
 
-  tools/iuse:
+  tools/ifit:
     dependencies:
       '@inkjs/ui':
         specifier: ^2.0.0
