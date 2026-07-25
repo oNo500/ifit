@@ -3,7 +3,7 @@
 ## Project Structure
 
 ```
-infra-ai/
+ifit/
 ├── .claude/
 │   ├── CLAUDE.md              # project entry point
 │   ├── settings.json          # permissions + env (project-scoped)

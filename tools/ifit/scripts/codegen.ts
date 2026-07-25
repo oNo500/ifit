@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import { compileFromFile } from 'json-schema-to-typescript'
 import { writeFileAtomic } from '../src/core/io'
 
-// tools/iuse/scripts -> infra-ai repo root; the schemas published there are
+// tools/ifit/scripts -> ifit repo root; the schemas published there are
 // the same files this checkout validates sources against (lockstep by repo).
 export const SCHEMA_DIR = join(import.meta.dir, '../../../schema')
 export const GEN_DIR = join(import.meta.dir, '../src/core/contract-gen')

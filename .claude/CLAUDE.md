@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-**infra-ai** — 个人 Claude Code 基础设施的发布面：skill、rule、模板的
+**ifit** — 个人 Claude Code 基础设施的发布面：skill、rule、模板的
 产物与账由开发仓（`~/code/infra-agent/iforge`）经 `iforge publish` 落位，
 本仓人审 diff 后提交。下游项目和设备从这里安装。
 
