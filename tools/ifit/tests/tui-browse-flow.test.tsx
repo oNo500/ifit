@@ -7,7 +7,7 @@ import type { Catalog } from '../src/core/contract'
 import { App } from '../src/tui/app'
 import type { TuiDeps } from '../src/tui/app'
 import { runInit } from '../src/core/init'
-import type { IuseContext } from '../src/core/init'
+import type { IfitContext } from '../src/core/init'
 
 function fixtureSource(): string {
   const dir = mkdtempSync(join(tmpdir(), 'iuse-tui-browse-src-'))
@@ -101,7 +101,7 @@ function fixtureSourceWithManyRules(count: number): string {
   return dir
 }
 
-function fakeClaudeInstant(): IuseContext['claude'] {
+function fakeClaudeInstant(): IfitContext['claude'] {
   return async (opts) => {
     const match = /(?:Write|Edit)\((.+)\)/u.exec(opts.allowedTools)
     const rel = match?.[1]
@@ -112,7 +112,7 @@ function fakeClaudeInstant(): IuseContext['claude'] {
   }
 }
 
-function fakeCtx(overrides: Partial<IuseContext> = {}): IuseContext {
+function fakeCtx(overrides: Partial<IfitContext> = {}): IfitContext {
   return {
     download: async () => ({}),
     run: async () => ({ code: 0, stdout: 'head1\n', stderr: '' }),

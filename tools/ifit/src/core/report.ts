@@ -2,7 +2,7 @@ import { join } from 'node:path'
 import { loadProfiles } from './contract'
 import { readTextIfExists } from './io'
 import { assembleRules } from './assemble'
-import type { IuseContext } from './init'
+import type { IfitContext } from './init'
 import { computeDrift, loadDownstreamLock, localHashFor, ruleTargetRelPath } from './manifest'
 import type { DriftState } from './manifest'
 import { resolveSource } from './source'
@@ -21,7 +21,7 @@ export interface StatusResult {
 }
 
 export async function statusReport(
-  ctx: IuseContext,
+  ctx: IfitContext,
   opts: { source?: string; target: string },
 ): Promise<StatusResult> {
   const lock = loadDownstreamLock(opts.target)

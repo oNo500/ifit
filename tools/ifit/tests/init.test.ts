@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { Catalog } from '../src/core/contract'
 import { runInit } from '../src/core/init'
-import type { IuseContext } from '../src/core/init'
+import type { IfitContext } from '../src/core/init'
 import { loadDownstreamLock } from '../src/core/manifest'
 
 function fixtureSource(): string {
@@ -30,7 +30,7 @@ function fixtureSource(): string {
   return dir
 }
 
-function fakeClaudeWriting(fileContent: (targetFile: string) => string): IuseContext['claude'] {
+function fakeClaudeWriting(fileContent: (targetFile: string) => string): IfitContext['claude'] {
   return async (opts) => {
     const match = /(?:Write|Edit)\((.+)\)/u.exec(opts.allowedTools)
     const rel = match?.[1]
@@ -43,11 +43,11 @@ function fakeClaudeWriting(fileContent: (targetFile: string) => string): IuseCon
 }
 
 function countingFakeClaudeWriting(fileContent: (targetFile: string) => string): {
-  claude: IuseContext['claude']
+  claude: IfitContext['claude']
   calls: () => number
 } {
   let calls = 0
-  const claude: IuseContext['claude'] = async (opts) => {
+  const claude: IfitContext['claude'] = async (opts) => {
     calls += 1
     const match = /(?:Write|Edit)\((.+)\)/u.exec(opts.allowedTools)
     const rel = match?.[1]
@@ -59,7 +59,7 @@ function countingFakeClaudeWriting(fileContent: (targetFile: string) => string):
   return { claude, calls: () => calls }
 }
 
-function ctxWith(claude: IuseContext['claude'], now: () => string = () => '2026-07-17T00:00:00Z'): IuseContext {
+function ctxWith(claude: IfitContext['claude'], now: () => string = () => '2026-07-17T00:00:00Z'): IfitContext {
   return {
     download: async () => ({}),
     run: async () => ({ code: 0, stdout: 'head1\n', stderr: '' }),
@@ -295,7 +295,7 @@ describe('runInit failure paths return ok:false instead of throwing', () => {
     expect(badSourceResult.message).toContain('profiles.json not found')
 
     const ghTarget = mkdtempSync(join(tmpdir(), 'iuse-init-tgt-'))
-    const ghCtx: IuseContext = { ...ctxWith(fakeClaudeWriting(() => '# demo\n')), download: async () => { throw new Error('network unreachable') } }
+    const ghCtx: IfitContext = { ...ctxWith(fakeClaudeWriting(() => '# demo\n')), download: async () => { throw new Error('network unreachable') } }
     const ghResult = await runInit(ghCtx, { source: 'gh:someorg/somerepo', profile: 'demo', target: ghTarget, force: false })
     expect(ghResult.ok).toBe(false)
     expect(ghResult.message).toContain('network unreachable')
@@ -320,7 +320,7 @@ describe('runInit failure paths return ok:false instead of throwing', () => {
     const target = mkdtempSync(join(tmpdir(), 'iuse-init-tgt-'))
     // claude exits 0 success but writes nothing, emitting a result event whose
     // text is its refusal reason -- the exact shape of the empty-project case.
-    const claude: IuseContext['claude'] = async (opts) => {
+    const claude: IfitContext['claude'] = async (opts) => {
       opts.onEvent?.({ type: 'result', subtype: 'success', result: 'no project facts to fill the tech-stack placeholders' })
       return { code: 0, timedOut: false, stderr: '' }
     }
@@ -343,13 +343,88 @@ describe('runInit failure paths return ok:false instead of throwing', () => {
     const source = fixtureSource()
     const target = mkdtempSync(join(tmpdir(), 'iuse-init-tgt-'))
     // exits 0 but emits no result event and writes nothing -- a genuine dud run.
-    const claude: IuseContext['claude'] = async () => ({ code: 0, timedOut: false, stderr: '' })
+    const claude: IfitContext['claude'] = async () => ({ code: 0, timedOut: false, stderr: '' })
 
     const result = await runInit(ctxWith(claude), { source, profile: 'demo', target, force: false })
 
     expect(result.ok).toBe(false)
     expect(result.message).toContain('no file and gave no reason')
     expect(result.message).toContain('--force')
+  })
+
+  test('a 49-line CLAUDE.md ending in a trailing newline passes the under-50 gate (off-by-one fix)', async () => {
+    const source = fixtureSource()
+    const target = mkdtempSync(join(tmpdir(), 'iuse-init-tgt-'))
+    // 49 content lines + trailing newline. split('\n').length would be 50 (empty tail);
+    // the gate must count 49 and let it through.
+    const body49 = Array.from({ length: 49 }, (_, i) => `line ${i + 1}`).join('\n') + '\n'
+    const ctx = ctxWith(fakeClaudeWriting((t) => (t.endsWith('claude-md.md') ? body49 : '# demo - Architecture\n\nbody\n')))
+
+    const result = await runInit(ctx, { source, profile: 'demo', target, force: false })
+
+    expect(result.ok).toBe(true)
+    expect(readFileSync(join(target, '.claude/CLAUDE.md'), 'utf8')).toBe(body49)
+  })
+
+  test('legit [ALL_CAPS] token that is not a template placeholder does not trip the leftover check', async () => {
+    const source = fixtureSource()
+    const target = mkdtempSync(join(tmpdir(), 'iuse-init-tgt-'))
+    // fixture templates only declare [PROJECT_NAME]. Content with [API]/[WIP] is legit user
+    // content, not an unreplaced placeholder -- must not fail.
+    const ctx = ctxWith(fakeClaudeWriting((t) => (t.endsWith('claude-md.md') ? '# demo\n\nNEVER commit [API] keys; status [WIP]\n' : '# demo - Architecture\n\nbody\n')))
+
+    const result = await runInit(ctx, { source, profile: 'demo', target, force: false })
+
+    expect(result.ok).toBe(true)
+    expect(readFileSync(join(target, '.claude/CLAUDE.md'), 'utf8')).toContain('[API]')
+  })
+
+  test('partial success rolls back the first landed template so a re-run is not silently skipped', async () => {
+    const source = fixtureSource()
+    const target = mkdtempSync(join(tmpdir(), 'iuse-init-tgt-'))
+    // architecture instantiates fine; claude-md leaves the template's [PROJECT_NAME] placeholder -> fails.
+    const ctx = ctxWith(fakeClaudeWriting((t) => (t.endsWith('claude-md.md') ? '# [PROJECT_NAME]\n\nbody\n' : '# demo - Architecture\n\nbody\n')))
+
+    const result = await runInit(ctx, { source, profile: 'demo', target, force: false })
+
+    expect(result.ok).toBe(false)
+    // the already-landed architecture.md must be rolled back, not left half-done
+    expect(existsSync(join(target, '.claude/rules/architecture.md'))).toBe(false)
+    expect(loadDownstreamLock(target)).toBeNull()
+  })
+
+  test('an equivalent existing .ifit-staging ignore entry is not duplicated on failure', async () => {
+    const source = fixtureSource()
+    const target = mkdtempSync(join(tmpdir(), 'iuse-init-tgt-'))
+    // pre-existing entry without trailing slash -- equivalent, must be recognized
+    writeFileSync(join(target, '.gitignore'), 'node_modules/\n.ifit-staging\n')
+    // fail instantiation so ensureStagingIgnored runs
+    const ctx = ctxWith(fakeClaudeWriting((t) => (t.endsWith('claude-md.md') ? '# [PROJECT_NAME]\n\nbody\n' : '# demo - Architecture\n\nbody\n')))
+
+    const result = await runInit(ctx, { source, profile: 'demo', target, force: false })
+
+    expect(result.ok).toBe(false)
+    const gitignore = readFileSync(join(target, '.gitignore'), 'utf8')
+    // no second '.ifit-staging' line appended
+    expect(gitignore.split('\n').filter((l) => l.trim().replace(/^\//u, '').replace(/\/$/u, '') === '.ifit-staging')).toHaveLength(1)
+  })
+
+  test('a refusal delivered as assistant text (empty result summary) is still classified as declined', async () => {
+    const source = fixtureSource()
+    const target = mkdtempSync(join(tmpdir(), 'iuse-init-tgt-'))
+    // claude writes nothing, empty result summary, but explains itself in assistant text
+    const claude: IfitContext['claude'] = async (opts) => {
+      opts.onEvent?.({ type: 'assistant', message: { content: [{ type: 'text', text: 'empty project, nothing to instantiate' }] } })
+      opts.onEvent?.({ type: 'result', subtype: 'success', result: '' })
+      return { code: 0, timedOut: false, stderr: '' }
+    }
+
+    const result = await runInit(ctxWith(claude), { source, profile: 'demo', target, force: false })
+
+    expect(result.ok).toBe(false)
+    expect(result.message).toContain('declined to instantiate')
+    expect(result.message).toContain('empty project')
+    expect(result.message).not.toContain('--force')
   })
 
   test('source missing the relocated template contract fails without invoking claude at all', async () => {

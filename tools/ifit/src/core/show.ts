@@ -2,7 +2,7 @@ import { join } from 'node:path'
 import { loadCatalog, loadProfiles } from './contract'
 import type { CatalogRule } from './contract'
 import { readTextIfExists } from './io'
-import type { IuseContext } from './init'
+import type { IfitContext } from './init'
 import { installStateFor } from './list'
 import type { InstallState } from './list'
 import { loadDownstreamLock } from './manifest'
@@ -18,7 +18,7 @@ export interface ShowResult {
 }
 
 export async function showReport(
-  ctx: IuseContext,
+  ctx: IfitContext,
   opts: { source?: string; target: string; name: string },
 ): Promise<ShowResult> {
   let source: Awaited<ReturnType<typeof resolveSource>>
@@ -72,7 +72,7 @@ export async function showReport(
  * cat 是 show 的管道原语形态：只返回产物原文（即安装形态），供重定向落盘。
  */
 export async function catReport(
-  ctx: IuseContext,
+  ctx: IfitContext,
   opts: { source?: string; name: string },
 ): Promise<{ ok: boolean; message?: string; content?: string; exitCode: number }> {
   const result = await showReport(ctx, { source: opts.source, target: process.cwd(), name: opts.name })

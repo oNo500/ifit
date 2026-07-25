@@ -2,7 +2,7 @@ import { rmSync } from 'node:fs'
 import { join } from 'node:path'
 import { writeFileAtomic } from './io'
 import { assembleRules } from './assemble'
-import type { ActionStep, IuseContext } from './init'
+import type { ActionStep, IfitContext } from './init'
 import { formatSteps } from './init'
 import { computeDrift, loadDownstreamLock, localHashFor, ruleTargetRelPath, saveDownstreamLock } from './manifest'
 import type { DownstreamLock } from './manifest'
@@ -22,7 +22,7 @@ interface UpdatePlan {
 }
 
 async function planUpdate(
-  ctx: IuseContext,
+  ctx: IfitContext,
   opts: { source?: string; target: string; force: boolean; add?: string[]; remove?: string[]; overwrite?: string[] },
 ): Promise<{ ok: true; plan: UpdatePlan } | { ok: false; message: string }> {
   const lock = loadDownstreamLock(opts.target)
@@ -182,7 +182,7 @@ async function planUpdate(
 }
 
 export async function runUpdate(
-  ctx: IuseContext,
+  ctx: IfitContext,
   opts: {
     source?: string
     target: string

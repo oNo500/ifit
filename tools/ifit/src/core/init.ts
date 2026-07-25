@@ -6,11 +6,10 @@ import type { CommandRunner } from './io'
 import { assembleRules, planAssembly } from './assemble'
 import { LOCK_PATH, loadDownstreamLock, saveDownstreamLock } from './manifest'
 import { resolveSource } from './source'
+import type { DownloadFn } from './source'
 import { detectSourceRoot } from './source-root'
 
-type DownloadFn = (input: string, opts: { dir: string; forceClean?: boolean }) => Promise<unknown>
-
-export interface IuseContext {
+export interface IfitContext {
   download: DownloadFn
   run: CommandRunner
   claude: typeof runClaude
@@ -31,7 +30,17 @@ const TEMPLATE_SPECS: TemplateSpec[] = [
   { name: 'claude-md', sourceRelPath: 'templates/claude-md.md', targetRelPath: '.claude/CLAUDE.md' },
 ]
 
-const PLACEHOLDER_PATTERN = /\[[A-Z][A-Z0-9_]*\]/u
+const PLACEHOLDER_PATTERN = /\[[A-Z][A-Z0-9_]*\]/gu
+
+// 模板源里出现的 [ALL_CAPS] 占位符集合。实例化后只有残留这些「模板本来就有的」
+// token 才算未替换——用户内容里合法的 [API]/[WIP] 等不在集合内，不会误伤。
+function templatePlaceholders(templateContent: string): Set<string> {
+  return new Set(templateContent.match(PLACEHOLDER_PATTERN) ?? [])
+}
+
+function leftoverPlaceholders(content: string, fromTemplate: Set<string>): string[] {
+  return [...new Set(content.match(PLACEHOLDER_PATTERN) ?? [])].filter((token) => fromTemplate.has(token))
+}
 
 export interface ActionStep {
   op: string
@@ -54,18 +63,24 @@ function ensureStagingIgnored(target: string): void {
   if (!existsSync(join(target, '.ifit-staging'))) return
   const gitignorePath = join(target, '.gitignore')
   const existing = readTextIfExists(gitignorePath) ?? ''
-  if (existing.split('\n').some((line) => line.trim() === '.ifit-staging/')) return
+  // 等价忽略项判定：去掉前导/尾随斜杠后比对 base，'.ifit-staging'、'/.ifit-staging/'
+  // 等都算已忽略，避免重复追加。
+  const alreadyIgnored = existing.split('\n').some((line) => {
+    const t = line.trim().replace(/^\//u, '').replace(/\/$/u, '')
+    return t === '.ifit-staging'
+  })
+  if (alreadyIgnored) return
   const prefix = existing === '' || existing.endsWith('\n') ? existing : `${existing}\n`
   writeFileAtomic(gitignorePath, `${prefix}.ifit-staging/\n`)
 }
 
 async function instantiateTemplate(
-  ctx: IuseContext,
+  ctx: IfitContext,
   artifactBase: string,
   target: string,
   spec: TemplateSpec,
   force: boolean,
-): Promise<{ ok: boolean; message: string; skipped: boolean }> {
+): Promise<{ ok: boolean; message: string; skipped: boolean; landed?: string }> {
   const targetFile = join(target, spec.targetRelPath)
   // 校验是写入时门禁，不是常驻不变量——跳过的既有产物不重新校验（--force 重建才再次过校验）。
   if (existsSync(targetFile) && !force) {
@@ -96,12 +111,25 @@ async function instantiateTemplate(
   // 通常是它「无法实例化」的理由（如目标项目无事实可填），据此区分「明确拒绝」
   // 与「真失败」——前者重试无用，不该建议 --force。
   // 对象持有而非裸 let：闭包内赋值不被 TS control-flow 窄化误判为 never。
-  const captured: { resultText: string | null } = { resultText: null }
+  // resultText 优先取最终 result 事件；lastAssistantText 兜底——有时拒绝理由只
+  // 在 assistant 文本里、result 摘要为空，那样也要能作为「明确拒绝」的理由呈现。
+  const captured: { resultText: string | null; lastAssistantText: string | null } = {
+    resultText: null,
+    lastAssistantText: null,
+  }
   const onEvent = (raw: unknown): void => {
     appendFileSync(logPath, `${JSON.stringify(raw)}\n`)
     if (typeof raw === 'object' && raw !== null) {
-      const ev = raw as { type?: unknown; result?: unknown }
+      const ev = raw as { type?: unknown; result?: unknown; message?: { content?: unknown } }
       if (ev.type === 'result' && typeof ev.result === 'string') captured.resultText = ev.result.trim()
+      if (ev.type === 'assistant' && Array.isArray(ev.message?.content)) {
+        const text = ev.message.content
+          .filter((b): b is { type: string; text: string } => typeof b === 'object' && b !== null && (b as { type?: unknown }).type === 'text')
+          .map((b) => b.text)
+          .join('')
+          .trim()
+        if (text !== '') captured.lastAssistantText = text
+      }
     }
   }
 
@@ -137,18 +165,23 @@ async function instantiateTemplate(
   if (content === null) {
     // claude 跑完却没产文件：若它给了结论文本，是明确拒绝（重试无用），带理由呈现；
     // 否则是真的没干活（崩溃/空跑），保留 --force 提示。
-    const resultText = captured.resultText
+    // 优先 result 摘要；为空（含空串）才退到 assistant 文本——?? 不对空串 fallback，故显式判。
+    const resultText =
+      captured.resultText !== null && captured.resultText !== '' ? captured.resultText : captured.lastAssistantText
     if (resultText !== null && resultText !== '') {
       const reason = resultText.length > 500 ? `${resultText.slice(0, 500)}…` : resultText
       return { ok: false, skipped: false, message: `${spec.targetRelPath}: claude declined to instantiate — ${reason}${logHint}` }
     }
     return { ok: false, skipped: false, message: `${spec.targetRelPath}: claude produced no file and gave no reason (rerun with --force to retry)${logHint}` }
   }
-  if (PLACEHOLDER_PATTERN.test(content)) {
-    return { ok: false, skipped: false, message: `${spec.targetRelPath}: leftover [ALL_CAPS] placeholder after instantiation (rerun with --force to complete instantiation)${logHint}` }
+  const templateContent = readTextIfExists(templatePath) ?? ''
+  const leftover = leftoverPlaceholders(content, templatePlaceholders(templateContent))
+  if (leftover.length > 0) {
+    return { ok: false, skipped: false, message: `${spec.targetRelPath}: leftover template placeholder ${leftover.join(', ')} after instantiation (rerun with --force to complete instantiation)${logHint}` }
   }
   if (spec.name === 'claude-md') {
-    const lineCount = content.split('\n').length
+    // 去掉结尾换行再数，否则 markdown 惯例的尾换行会让 49 行文件被算成 50 行。
+    const lineCount = content.replace(/\n+$/u, '').split('\n').length
     if (lineCount >= 50) {
       return { ok: false, skipped: false, message: `${spec.targetRelPath}: ${lineCount} lines, must stay under 50 (rerun with --force to complete instantiation)${logHint}` }
     }
@@ -156,7 +189,7 @@ async function instantiateTemplate(
 
   writeFileAtomic(targetFile, content)
   rmSync(stagingFile, { force: true })
-  return { ok: true, skipped: false, message: `${spec.targetRelPath}: instantiated` }
+  return { ok: true, skipped: false, message: `${spec.targetRelPath}: instantiated`, landed: targetFile }
 }
 
 interface InitPlan {
@@ -167,7 +200,7 @@ interface InitPlan {
 }
 
 async function planInit(
-  ctx: IuseContext,
+  ctx: IfitContext,
   opts: { source?: string; profile: string; target: string; force: boolean; exclude?: string[]; rules?: string[] },
 ): Promise<{ ok: true; plan: InitPlan } | { ok: false; message: string }> {
   const existingLock = loadDownstreamLock(opts.target)
@@ -272,7 +305,7 @@ async function planInit(
 }
 
 export async function runInit(
-  ctx: IuseContext,
+  ctx: IfitContext,
   opts: {
     source?: string
     profile: string
@@ -324,21 +357,45 @@ export async function runInit(
     }
   }
 
-  // 失败时保留 .ifit-staging（含 claude 事件日志）供排错——message 里的 log:
-  // 路径才有效；只在全部实例化成功后清理，避免留暂存垃圾。
-  for (const spec of TEMPLATE_SPECS) {
-    const instantiateStep = steps.find((s) => s.op === 'instantiate' && s.target === spec.targetRelPath)
-    if (instantiateStep !== undefined) {
-      opts.onProgress?.(instantiateStep)
+  // 落位从根 CLAUDE.md 迁到 .claude/CLAUDE.md 后，旧版本装下的根文件仍会被
+  // Claude Code 加载（官方支持二者并存，内容叠加）。不代删（可能是用户手写），
+  // 只提示，避免两份 CLAUDE.md 内容重复而无察觉。成功/失败两条路径都要提示。
+  const legacyRootClaudeMd = join(opts.target, 'CLAUDE.md')
+  const legacyNote =
+    existsSync(legacyRootClaudeMd)
+      ? ['注意：项目根仍有 CLAUDE.md；本次已落位到 .claude/CLAUDE.md，两者会同时加载，确认后可删除根文件']
+      : []
+
+  // 实例化循环的清理是不变量：无论成功、失败(!ok)、还是抛异常，都必须收敛
+  // .ifit-staging——成功清掉全部暂存；失败/异常保留暂存（含 claude 事件日志）供
+  // 排错，并确保它进 .gitignore 不被误提交。故用 try/finally，异常路径也走清理。
+  // 部分成功要回滚：本轮已落位的模板文件在后续模板失败时删掉，让「失败=未初始化」
+  // 语义成立（否则重跑撞 already-present 被静默跳过，留下半初始化项目）。
+  const landed: string[] = []
+  let instantiateOk = true
+  try {
+    for (const spec of TEMPLATE_SPECS) {
+      const instantiateStep = steps.find((s) => s.op === 'instantiate' && s.target === spec.targetRelPath)
+      if (instantiateStep !== undefined) {
+        opts.onProgress?.(instantiateStep)
+      }
+      const result = await instantiateTemplate(ctx, artifactBase, opts.target, spec, opts.force)
+      if (!result.ok) {
+        instantiateOk = false
+        return fail([result.message, ...legacyNote].join('\n'))
+      }
+      if (result.landed !== undefined) landed.push(result.landed)
+      notes.push(result.message)
     }
-    const result = await instantiateTemplate(ctx, artifactBase, opts.target, spec, opts.force)
-    if (!result.ok) {
+  } finally {
+    if (instantiateOk) {
+      rmSync(join(opts.target, '.ifit-staging'), { recursive: true, force: true })
+    } else {
+      // 回滚本轮已落位的模板，再保留暂存并屏蔽它
+      for (const file of landed) rmSync(file, { force: true })
       ensureStagingIgnored(opts.target)
-      return fail(result.message)
     }
-    notes.push(result.message)
   }
-  rmSync(join(opts.target, '.ifit-staging'), { recursive: true, force: true })
 
   const writeLockStep = steps.find((s) => s.op === 'write-lock')
   if (writeLockStep !== undefined) {
@@ -360,15 +417,6 @@ export async function runInit(
     const note = notes.find((n) => n.startsWith(`${s.target}:`))
     return note === undefined ? s : { ...s, note: note.slice(s.target.length + 2) }
   })
-
-  // 落位从根 CLAUDE.md 迁到 .claude/CLAUDE.md 后，旧版本装下的根文件仍会被
-  // Claude Code 加载（官方支持二者并存，内容叠加）。不代删（可能是用户手写），
-  // 只提示，避免两份 CLAUDE.md 内容重复而无察觉。
-  const legacyRootClaudeMd = join(opts.target, 'CLAUDE.md')
-  const legacyNote =
-    existsSync(legacyRootClaudeMd)
-      ? ['注意：项目根仍有 CLAUDE.md；本次已落位到 .claude/CLAUDE.md，两者会同时加载，确认后可删除根文件']
-      : []
 
   return {
     ok: true,

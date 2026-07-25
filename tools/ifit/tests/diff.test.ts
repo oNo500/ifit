@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import type { Catalog } from '../src/core/contract'
 import { diffReport } from '../src/core/diff'
 import { runInit } from '../src/core/init'
-import type { IuseContext } from '../src/core/init'
+import type { IfitContext } from '../src/core/init'
 import { loadDownstreamLock, saveDownstreamLock } from '../src/core/manifest'
 
 function fixtureSource(): string {
@@ -40,7 +40,7 @@ function setProfileRules(source: string, rules: string[]): void {
   writeFileSync(join(source, 'profiles.json'), JSON.stringify({ demo: { rules } }))
 }
 
-function fakeClaudeWriting(): IuseContext['claude'] {
+function fakeClaudeWriting(): IfitContext['claude'] {
   return async (opts) => {
     const match = /(?:Write|Edit)\((.+)\)/u.exec(opts.allowedTools)
     const rel = match?.[1]
@@ -51,7 +51,7 @@ function fakeClaudeWriting(): IuseContext['claude'] {
   }
 }
 
-function ctxWith(now: () => string = () => '2026-07-18T00:00:00Z'): IuseContext {
+function ctxWith(now: () => string = () => '2026-07-18T00:00:00Z'): IfitContext {
   return {
     download: async () => ({}),
     run: async () => ({ code: 0, stdout: 'head1\n', stderr: '' }),

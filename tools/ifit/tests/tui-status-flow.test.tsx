@@ -7,7 +7,7 @@ import type { Catalog } from '../src/core/contract'
 import { App } from '../src/tui/app'
 import type { TuiDeps } from '../src/tui/app'
 import { runInit } from '../src/core/init'
-import type { IuseContext } from '../src/core/init'
+import type { IfitContext } from '../src/core/init'
 import { loadDownstreamLock } from '../src/core/manifest'
 
 function fixtureSource(): string {
@@ -42,7 +42,7 @@ function fixtureSource(): string {
   return dir
 }
 
-function fakeClaudeInstant(): IuseContext['claude'] {
+function fakeClaudeInstant(): IfitContext['claude'] {
   return async (opts) => {
     const match = /(?:Write|Edit)\((.+)\)/u.exec(opts.allowedTools)
     const rel = match?.[1]
@@ -53,7 +53,7 @@ function fakeClaudeInstant(): IuseContext['claude'] {
   }
 }
 
-function fakeCtx(overrides: Partial<IuseContext> = {}): IuseContext {
+function fakeCtx(overrides: Partial<IfitContext> = {}): IfitContext {
   return {
     download: async () => ({}),
     run: async () => ({ code: 0, stdout: 'head1\n', stderr: '' }),
@@ -77,13 +77,13 @@ function fakeCtx(overrides: Partial<IuseContext> = {}): IuseContext {
  * 'e' to execute, freezing the 'running' state open long enough to press a
  * key mid-execution.
  */
-function fakeRunGatedFromCall(gateFromCall: number): { run: IuseContext['run']; release: () => void } {
+function fakeRunGatedFromCall(gateFromCall: number): { run: IfitContext['run']; release: () => void } {
   let releaseGate: (() => void) | undefined
   const gate = new Promise<void>((resolve) => {
     releaseGate = resolve
   })
   let calls = 0
-  const run: IuseContext['run'] = async () => {
+  const run: IfitContext['run'] = async () => {
     calls += 1
     if (calls >= gateFromCall) await gate
     return { code: 0, stdout: 'head1\n', stderr: '' }

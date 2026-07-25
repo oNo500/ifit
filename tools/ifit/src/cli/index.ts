@@ -5,7 +5,7 @@ import { downloadTemplate } from 'giget'
 import { runClaude } from '../core/claude'
 import { runCommand } from '../core/io'
 import { diffReport } from '../core/diff'
-import type { IuseContext } from '../core/init'
+import type { IfitContext } from '../core/init'
 import { runInit } from '../core/init'
 import { listReport } from '../core/list'
 import { profilesReport } from '../core/profiles-report'
@@ -24,7 +24,7 @@ export function splitNames(value: string | string[] | undefined): string[] | und
   return raw.split(',').map((s) => s.trim()).filter((s) => s.length > 0)
 }
 
-export function defaultContext(): IuseContext {
+export function defaultContext(): IfitContext {
   return {
     download: downloadTemplate,
     run: runCommand,

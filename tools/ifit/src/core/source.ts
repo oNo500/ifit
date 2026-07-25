@@ -8,7 +8,7 @@ export interface SourceRef {
   locator: string
 }
 
-type DownloadFn = (input: string, opts: { dir: string; forceClean?: boolean }) => Promise<unknown>
+export type DownloadFn = (input: string, opts: { dir: string; forceClean?: boolean }) => Promise<unknown>
 
 function assertSourceRoot(root: string, locator: string): void {
   if (!existsSync(join(root, 'profiles.json'))) {

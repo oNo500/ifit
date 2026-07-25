@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { Catalog } from '../src/core/contract'
 import { runInit } from '../src/core/init'
-import type { IuseContext } from '../src/core/init'
+import type { IfitContext } from '../src/core/init'
 import { loadDownstreamLock, saveDownstreamLock } from '../src/core/manifest'
 import { statusReport } from '../src/core/report'
 import { runUpdate } from '../src/core/update'
@@ -41,7 +41,7 @@ function setProfileRules(source: string, rules: string[]): void {
   writeFileSync(join(source, 'profiles.json'), JSON.stringify({ demo: { rules } }))
 }
 
-function fakeClaudeWriting(): IuseContext['claude'] {
+function fakeClaudeWriting(): IfitContext['claude'] {
   return async (opts) => {
     const match = /(?:Write|Edit)\((.+)\)/u.exec(opts.allowedTools)
     const rel = match?.[1]
@@ -53,7 +53,7 @@ function fakeClaudeWriting(): IuseContext['claude'] {
   }
 }
 
-function ctxWith(now: () => string = () => '2026-07-17T00:00:00Z'): IuseContext {
+function ctxWith(now: () => string = () => '2026-07-17T00:00:00Z'): IfitContext {
   return {
     download: async () => ({}),
     run: async () => ({ code: 0, stdout: 'head1\n', stderr: '' }),
@@ -94,7 +94,7 @@ describe('runUpdate error paths', () => {
     expect(missingCatalogResult.ok).toBe(false)
     expect(missingCatalogResult.message).toContain('iforge catalog')
 
-    const rejectingCtx: IuseContext = { ...ctxWith(), download: async () => { throw new Error('network unreachable') } }
+    const rejectingCtx: IfitContext = { ...ctxWith(), download: async () => { throw new Error('network unreachable') } }
     const ghResult = await runUpdate(rejectingCtx, { source: 'gh:someorg/somerepo', target, force: false })
     expect(ghResult.ok).toBe(false)
     expect(ghResult.message).toContain('network unreachable')

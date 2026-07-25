@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Text, useInput } from 'ink'
-import type { ActionStep, IuseContext } from '../core/init'
+import type { ActionStep, IfitContext } from '../core/init'
 import { loadDownstreamLock } from '../core/manifest'
 import { runUpdate } from '../core/update'
 import { DiffView } from './diff-view'
@@ -78,7 +78,7 @@ export function UpdatePlanView({
   onBack,
   onQuit,
 }: {
-  ctx: IuseContext
+  ctx: IfitContext
   target: string
   source: string | undefined
   /** Browse's `a` action seeds a single rule here -- an explicit add, distinct

@@ -6,7 +6,7 @@ import { render } from 'ink-testing-library'
 import type { Catalog } from '../src/core/contract'
 import { App } from '../src/tui/app'
 import type { TuiDeps } from '../src/tui/app'
-import type { IuseContext } from '../src/core/init'
+import type { IfitContext } from '../src/core/init'
 import { loadDownstreamLock } from '../src/core/manifest'
 
 function fixtureSource(): string {
@@ -54,7 +54,7 @@ function fixtureSource(): string {
   return dir
 }
 
-function fakeClaudeInstant(): IuseContext['claude'] {
+function fakeClaudeInstant(): IfitContext['claude'] {
   return async (opts) => {
     const match = /(?:Write|Edit)\((.+)\)/u.exec(opts.allowedTools)
     const rel = match?.[1]
@@ -72,13 +72,13 @@ function fakeClaudeInstant(): IuseContext['claude'] {
  * immediately (the second template shouldn't also block, or the test would
  * need to release twice for no reason).
  */
-function fakeClaudeGatedOnce(): { claude: IuseContext['claude']; release: () => void } {
+function fakeClaudeGatedOnce(): { claude: IfitContext['claude']; release: () => void } {
   let releaseGate: (() => void) | undefined
   const gate = new Promise<void>((resolve) => {
     releaseGate = resolve
   })
   let firstCall = true
-  const claude: IuseContext['claude'] = async (opts) => {
+  const claude: IfitContext['claude'] = async (opts) => {
     if (firstCall) {
       firstCall = false
       await gate
@@ -94,7 +94,7 @@ function fakeClaudeGatedOnce(): { claude: IuseContext['claude']; release: () => 
   return { claude, release: releaseGate }
 }
 
-function fakeCtx(overrides: Partial<IuseContext> = {}): IuseContext {
+function fakeCtx(overrides: Partial<IfitContext> = {}): IfitContext {
   return {
     download: async () => ({}),
     run: async () => ({ code: 0, stdout: 'head1\n', stderr: '' }),

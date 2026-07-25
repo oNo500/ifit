@@ -2,7 +2,7 @@ import { join } from 'node:path'
 import { readTextIfExists } from './io'
 import { createTwoFilesPatch, structuredPatch } from 'diff'
 import { assembleRules } from './assemble'
-import type { IuseContext } from './init'
+import type { IfitContext } from './init'
 import { loadDownstreamLock, ruleTargetRelPath } from './manifest'
 import type { DriftState } from './manifest'
 import { resolveSource } from './source'
@@ -50,7 +50,7 @@ function driftStateFor(localText: string | null, sourceText: string): DriftState
 }
 
 export async function diffReport(
-  ctx: IuseContext,
+  ctx: IfitContext,
   opts: { source?: string; target: string; rule?: string },
 ): Promise<DiffResult> {
   const lock = loadDownstreamLock(opts.target)

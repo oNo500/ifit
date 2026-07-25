@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { loadCatalog } from '../core/contract'
 import type { TagVocabulary } from '../core/contract'
 import { readTextIfExists } from '../core/io'
-import type { ActionStep, IuseContext } from '../core/init'
+import type { ActionStep, IfitContext } from '../core/init'
 import { runInit } from '../core/init'
 import type { ListRow } from '../core/list'
 import { listReport } from '../core/list'
@@ -25,7 +25,7 @@ import { StatusView } from './status-view'
 import { UpdatePlanView } from './update-plan-view'
 
 export interface TuiDeps {
-  ctx: IuseContext
+  ctx: IfitContext
   target: string
   source?: string
 }
@@ -60,7 +60,7 @@ type View =
  * keystroke, so the whole content set is read up front at bootstrap.
  */
 async function loadBrowseData(
-  ctx: IuseContext,
+  ctx: IfitContext,
   opts: { source?: string; target: string },
 ): Promise<{ ok: true; data: BrowseData } | { ok: false; message: string }> {
   const listed = await listReport(ctx, { source: opts.source, target: opts.target })

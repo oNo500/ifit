@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Box, Text, useInput } from 'ink'
-import type { IuseContext } from '../core/init'
+import type { IfitContext } from '../core/init'
 import type { StatusRow } from '../core/report'
 import { statusReport } from '../core/report'
 import { MessageBlock } from './message-block'
@@ -27,7 +27,7 @@ export function StatusView({
   onHome,
   onQuit,
 }: {
-  ctx: IuseContext
+  ctx: IfitContext
   target: string
   source: string | undefined
   onUpdate: () => void

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Box, Text, useInput } from 'ink'
-import type { IuseContext } from '../core/init'
+import type { IfitContext } from '../core/init'
 import { diffReport } from '../core/diff'
 
 const MAX_LINES = 200
@@ -25,7 +25,7 @@ export function DiffView({
   onAdjudicate,
   onBack,
 }: {
-  ctx: IuseContext
+  ctx: IfitContext
   target: string
   source: string | undefined
   rule: string

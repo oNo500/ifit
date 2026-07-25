@@ -49,7 +49,7 @@ function bareSourceFixture(): string {
   return dir
 }
 
-function fakeCtx(): import('../src/core/init').IuseContext {
+function fakeCtx(): import('../src/core/init').IfitContext {
   return {
     download: async () => ({}),
     run: async () => ({ code: 0, stdout: 'head1\n', stderr: '' }),
@@ -63,7 +63,7 @@ function fakeCtx(): import('../src/core/init').IuseContext {
 
 // runInit 需要 claude 真的落位 staging 文件（instantiateTemplate 校验产物存在），
 // 与 tests/list.test.ts 的 fakeClaudeWriting 同一惯用法
-function fakeCtxWithInit(): import('../src/core/init').IuseContext {
+function fakeCtxWithInit(): import('../src/core/init').IfitContext {
   return {
     ...fakeCtx(),
     claude: async (opts) => {

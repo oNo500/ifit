@@ -1,5 +1,5 @@
 import { join } from 'node:path'
-import type { IuseContext } from './init'
+import type { IfitContext } from './init'
 import { listProfiles } from './profiles'
 import type { ProfileInfo } from './profiles'
 import { resolveSource } from './source'
@@ -13,7 +13,7 @@ export interface ProfilesResult {
 }
 
 export async function profilesReport(
-  ctx: IuseContext,
+  ctx: IfitContext,
   opts: { source?: string },
 ): Promise<ProfilesResult> {
   let source: Awaited<ReturnType<typeof resolveSource>>

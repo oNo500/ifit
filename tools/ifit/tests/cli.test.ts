@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { Catalog } from '../src/core/contract'
 import { renderJson, splitNames } from '../src/cli/index'
-import type { ActionStep, IuseContext } from '../src/core/init'
+import type { ActionStep, IfitContext } from '../src/core/init'
 import { runInit } from '../src/core/init'
 import { loadDownstreamLock } from '../src/core/manifest'
 import { profilesReport } from '../src/core/profiles-report'
@@ -101,7 +101,7 @@ function fixtureSource(): string {
   return dir
 }
 
-function fakeClaudeWriting(): IuseContext['claude'] {
+function fakeClaudeWriting(): IfitContext['claude'] {
   return async (opts) => {
     const match = /(?:Write|Edit)\((.+)\)/u.exec(opts.allowedTools)
     const rel = match?.[1]
@@ -112,7 +112,7 @@ function fakeClaudeWriting(): IuseContext['claude'] {
   }
 }
 
-function ctxWith(): IuseContext {
+function ctxWith(): IfitContext {
   return {
     download: async () => ({}),
     run: async () => ({ code: 0, stdout: 'head1\n', stderr: '' }),

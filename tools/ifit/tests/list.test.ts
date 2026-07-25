@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import type { Catalog } from '../src/core/contract'
 import { listReport } from '../src/core/list'
 import { runInit } from '../src/core/init'
-import type { IuseContext } from '../src/core/init'
+import type { IfitContext } from '../src/core/init'
 import { loadDownstreamLock, saveDownstreamLock } from '../src/core/manifest'
 
 /**
@@ -87,7 +87,7 @@ function bareSourceFixture(): string {
   return dir
 }
 
-function fakeClaudeWriting(): IuseContext['claude'] {
+function fakeClaudeWriting(): IfitContext['claude'] {
   return async (opts) => {
     const match = /(?:Write|Edit)\((.+)\)/u.exec(opts.allowedTools)
     const rel = match?.[1]
@@ -98,7 +98,7 @@ function fakeClaudeWriting(): IuseContext['claude'] {
   }
 }
 
-function fakeCtx(overrides: Partial<IuseContext> = {}): IuseContext {
+function fakeCtx(overrides: Partial<IfitContext> = {}): IfitContext {
   return {
     download: async () => ({}),
     run: async () => ({ code: 0, stdout: 'head1\n', stderr: '' }),

@@ -2,7 +2,7 @@ import { join } from 'node:path'
 import { loadCatalog, loadProfiles } from './contract'
 import type { Catalog, CatalogRule, Profiles } from './contract'
 import { readTextIfExists, sha256 } from './io'
-import type { IuseContext } from './init'
+import type { IfitContext } from './init'
 import { computeDrift, loadDownstreamLock, localHashFor } from './manifest'
 import type { DownstreamLock, DriftState } from './manifest'
 import { resolveSource } from './source'
@@ -86,7 +86,7 @@ function buildFilteredRows(opts: {
 }
 
 export async function listReport(
-  ctx: IuseContext,
+  ctx: IfitContext,
   opts: { source?: string; target: string; tags?: string[]; grep?: string },
 ): Promise<ListResult> {
   let source: Awaited<ReturnType<typeof resolveSource>>
