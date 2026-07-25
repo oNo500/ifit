@@ -1,4 +1,4 @@
-# infra-ai
+# ifit
 
 个人 Claude Code 基础设施的**发布面**：其他项目和设备从这里安装 skill、
 rule、模板。资产内容由开发仓（`~/code/infra-agent/iforge`）构建验证后经

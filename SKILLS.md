@@ -10,9 +10,9 @@
 
 溯源分两层：实际来源回答「装的是什么」——mirror 是 `repo`/`path`/`commit`，
 实际来源为命令或目录时用 `install` 记录（仅记录不执行）；`refUrl` 回答「参考来源在哪」——
-官方权威指导页，任何条目均可带，`imeta links` 检查其健康。
+官方权威指导页，任何条目均可带，`iforge links` 检查其健康。
 
-清单记目标态，允许比实装超前：`custom` 条目可以先于产物存在。`imeta` 的 `s` 视图查全量（ledger、mirror、已安装、推荐）。
+清单记目标态，允许比实装超前：`custom` 条目可以先于产物存在。`iforge` 的 `s` 视图查全量（ledger、mirror、已安装、推荐）。
 
 publish 时 `meta/assets.json` 的 skill 账落位为发布仓根 `skills.json`
 （生成，非原样复制）：下游 `pnpx skills add` 读这份生成结果，本仓不再持有
@@ -24,15 +24,15 @@ publish 时 `meta/assets.json` 的 skill 账落位为发布仓根 `skills.json`
   的 `skills` 分组加一条 `{ "source": "custom", "status": "stub" }`，让
   Claude 构建。元指令格式见开发仓 `meta/README.md`，AI 构建契约见
   开发仓 `meta/prompts/skill-build.md`
-- `mirror`：往 `meta/assets.json` 加条目（`source`/`repo`/`path`），在 `imeta`
-  的 `s` 视图按 `u` 拉取，或 `imeta sync --pull`
+- `mirror`：往 `meta/assets.json` 加条目（`source`/`repo`/`path`），在 `iforge`
+  的 `s` 视图按 `u` 拉取，或 `iforge sync --pull`
 - `official`：往 `meta/assets.json` 加条目（`source`/`repo`），无实体
 
 ## 维护
 
-`imeta` 打开 TUI，`s` 进 skills 视图：进入即核对 ledger 与 mirror 上游差异，`f` 补账 unledgered，`u` 更新过期 mirror；`c`（assets 视图，`imeta sync`）也能批量 `--pull` mirror。
+`iforge` 打开 TUI，`s` 进 skills 视图：进入即核对 ledger 与 mirror 上游差异，`f` 补账 unledgered，`u` 更新过期 mirror；`c`（assets 视图，`iforge sync`）也能批量 `--pull` mirror。
 
-- 改 `custom`：意图变更先改元指令再重建；直接改了产物就回写元指令（`skills:fix`/`imeta sync --create` 写入的是 `meta/assets.json`，不是产物）
+- 改 `custom`：意图变更先改元指令再重建；直接改了产物就回写元指令（`skills:fix`/`iforge sync --create` 写入的是 `meta/assets.json`，不是产物）
 - mirror 更新后 `artifacts/skills/<name>/` 为空：上游目录挪了，用 `gh` 查 SKILL.md 新位置，更新 `path` 重拉
 - mirror 被 skills.sh 收录：条目改 `official`，删 `artifacts/skills/<name>/`
 - 退役：删产物目录，并手动删清单条目（对账只增不删）
@@ -42,8 +42,8 @@ mirror 更新后自行 review 再提交：开发仓内 `git diff artifacts/skill
 ## 使用
 
 ```bash
-pnpx skills add oNo500/infra-ai -s <name>   # custom/mirror 装单个
-pnpx skills add oNo500/infra-ai --all       # 仓内持有的全装
+pnpx skills add oNo500/ifit -s <name>   # custom/mirror 装单个
+pnpx skills add oNo500/ifit --all       # 仓内持有的全装
 pnpx skills add <owner>/<repo> -s <name>    # official 直装上游
 pnpx skills update                          # 全部更新
 ```
