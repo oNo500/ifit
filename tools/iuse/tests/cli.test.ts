@@ -136,7 +136,7 @@ describe('renderJson', () => {
     const success = JSON.parse(renderJson({ ok: true, rows: [{ rule: 'constitution', state: 'synced' }], exitCode: 0 })) as Record<string, unknown>
     expect(Object.keys(success).toSorted()).toEqual(['exitCode', 'ok', 'rows'])
 
-    const failure = JSON.parse(renderJson({ ok: false, message: "not initialized, run 'iuse init' first", exitCode: 1 })) as Record<string, unknown>
+    const failure = JSON.parse(renderJson({ ok: false, message: "not initialized, run 'ifit init' first", exitCode: 1 })) as Record<string, unknown>
     expect(Object.keys(failure).toSorted()).toEqual(['exitCode', 'message', 'ok'])
   })
 
@@ -191,7 +191,7 @@ describe('renderJson against real core results', () => {
     const parsed = JSON.parse(renderJson(payload)) as { ok: boolean; message: string; exitCode: number }
 
     expect(parsed.ok).toBe(false)
-    expect(parsed.message).toContain('iuse init')
+    expect(parsed.message).toContain('ifit init')
     expect(parsed.exitCode).toBe(1)
   })
 
@@ -247,7 +247,7 @@ describe('exclude/add/remove flag plumbing', () => {
 
     expect(result.ok).toBe(true)
     expect(result.steps).toContainEqual(expect.objectContaining({ op: 'exclude-rule' }))
-    const lockContent = JSON.parse(readFileSync(join(target, '.claude/infra-ai.lock.json'), 'utf8')) as { excluded?: string[] }
+    const lockContent = JSON.parse(readFileSync(join(target, '.claude/ifit.lock.json'), 'utf8')) as { excluded?: string[] }
     expect(lockContent.excluded).toContain('constitution')
 
     // comma-split with spaces trims; empty/whitespace-only entries filter out
@@ -292,7 +292,7 @@ describe('exclude/add/remove flag plumbing', () => {
     const result = await runInit(ctxWith(), { source: sourceDir, profile: 'demo', target, force: false, exclude: ['constitution', 'pattern1'] })
 
     expect(result.ok).toBe(true)
-    const lockContent = JSON.parse(readFileSync(join(target, '.claude/infra-ai.lock.json'), 'utf8')) as { excluded?: string[] }
+    const lockContent = JSON.parse(readFileSync(join(target, '.claude/ifit.lock.json'), 'utf8')) as { excluded?: string[] }
     expect(lockContent.excluded).toEqual(['constitution', 'pattern1'])
 
     const updateResult = await runUpdate(ctxWith(), { source: sourceDir, target, force: false, add: ['constitution', 'pattern1'] })

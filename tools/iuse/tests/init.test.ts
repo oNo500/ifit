@@ -91,7 +91,7 @@ describe('runInit happy path', () => {
     // default landing is under .claude/, never the project root
     expect(existsSync(join(target, 'CLAUDE.md'))).toBe(false)
     // success clears staging (logs and staged files) -- no leftover noise
-    expect(existsSync(join(target, '.iuse-staging'))).toBe(false)
+    expect(existsSync(join(target, '.ifit-staging'))).toBe(false)
     // success never touches the target's .gitignore (nothing to shield)
     expect(existsSync(join(target, '.gitignore'))).toBe(false)
 
@@ -155,7 +155,7 @@ describe('runInit happy path', () => {
     expect(ops).toContain('copy-settings')
     expect(ops).toContain('instantiate')
     expect(ops[ops.length - 1]).toBe('write-lock')
-    expect(steps.find((s) => s.op === 'write-lock')?.target).toBe('.claude/infra-ai.lock.json')
+    expect(steps.find((s) => s.op === 'write-lock')?.target).toBe('.claude/ifit.lock.json')
     expect(steps.find((s) => s.op === 'copy-settings')?.note).toContain('skipped')
     expect(seenOps).toEqual(ops)
   })
@@ -214,7 +214,7 @@ describe('runInit re-init guards', () => {
     const target = mkdtempSync(join(tmpdir(), 'iuse-init-tgt-'))
     mkdirSync(join(target, '.claude'), { recursive: true })
     writeFileSync(
-      join(target, '.claude/infra-ai.lock.json'),
+      join(target, '.claude/ifit.lock.json'),
       JSON.stringify({
         source: { type: 'local', id: 'x', locator: source },
         profile: 'demo',
@@ -226,7 +226,7 @@ describe('runInit re-init guards', () => {
     const ctx = ctxWith(fakeClaudeWriting(() => '# demo\n'))
     const handWritten = await runInit(ctx, { source, profile: 'demo', target, force: false })
     expect(handWritten.ok).toBe(false)
-    expect(handWritten.message).toContain('iuse update')
+    expect(handWritten.message).toContain('ifit update')
     expect(handWritten.message).toContain('--force')
 
     const realSource = fixtureSource()
@@ -236,7 +236,7 @@ describe('runInit re-init guards', () => {
     expect(first.ok).toBe(true)
     const second = await runInit(realCtx, { source: realSource, profile: 'demo', target: realTarget, force: false })
     expect(second.ok).toBe(false)
-    expect(second.message).toContain('iuse update')
+    expect(second.message).toContain('ifit update')
     expect(second.message).toContain('--force')
   })
 
@@ -332,11 +332,11 @@ describe('runInit failure paths return ok:false instead of throwing', () => {
     expect(result.message).toContain('no project facts')
     // an explicit refusal must NOT tell the user to retry -- retrying is futile
     expect(result.message).not.toContain('--force')
-    const logPath = join(target, '.iuse-staging/logs/architecture-2026-07-17T00-00-00Z.jsonl')
+    const logPath = join(target, '.ifit-staging/logs/architecture-2026-07-17T00-00-00Z.jsonl')
     expect(result.message).toContain(`log: ${logPath}`)
     expect(existsSync(logPath)).toBe(true)
     // failure keeps staging, so .gitignore must shield it from an accidental commit
-    expect(readFileSync(join(target, '.gitignore'), 'utf8')).toContain('.iuse-staging/')
+    expect(readFileSync(join(target, '.gitignore'), 'utf8')).toContain('.ifit-staging/')
   })
 
   test('claude produces no file and no reason: real failure keeps the --force hint', async () => {
@@ -362,7 +362,7 @@ describe('runInit failure paths return ok:false instead of throwing', () => {
 
     expect(result.ok).toBe(false)
     expect(result.message).toContain(join(source, 'templates/template-instantiate.md'))
-    expect(result.message).toContain('imeta publish')
+    expect(result.message).toContain('iforge publish')
     expect(calls()).toBe(0)
     expect(loadDownstreamLock(target)).toBeNull()
   })
@@ -395,7 +395,7 @@ describe('runInit --dry-run', () => {
     expect(instantiateTargets.toSorted()).toEqual(['.claude/CLAUDE.md', '.claude/rules/architecture.md'])
 
     const lines = result.message.split('\n')
-    expect(lines).toContain('write-lock .claude/infra-ai.lock.json')
+    expect(lines).toContain('write-lock .claude/ifit.lock.json')
     expect(lines.some((l) => l.startsWith('copy-rule .claude/rules/constitution.md'))).toBe(true)
   })
 
@@ -413,7 +413,7 @@ describe('runInit --dry-run', () => {
     const lockedTarget = mkdtempSync(join(tmpdir(), 'iuse-init-tgt-'))
     mkdirSync(join(lockedTarget, '.claude'), { recursive: true })
     writeFileSync(
-      join(lockedTarget, '.claude/infra-ai.lock.json'),
+      join(lockedTarget, '.claude/ifit.lock.json'),
       JSON.stringify({
         source: { type: 'local', id: 'x', locator: cleanSource },
         profile: 'demo',
@@ -424,7 +424,7 @@ describe('runInit --dry-run', () => {
     )
     const locked = await runInit(ctxWith(fakeClaudeWriting(() => '# demo\n')), { source: cleanSource, profile: 'demo', target: lockedTarget, force: false, dryRun: true })
     expect(locked.ok).toBe(false)
-    expect(locked.message).toContain('iuse update')
+    expect(locked.message).toContain('ifit update')
   })
 })
 
@@ -490,7 +490,7 @@ describe('runInit with explicit --rules (profile "-")', () => {
     expect(existsSync(join(target, '.claude/rules/markdown.md'))).toBe(false)
   })
 
-  test('an unknown name fails listing unknown rules; --exclude is rejected as a profile-only option; missing artifact fails with imeta build hint', async () => {
+  test('an unknown name fails listing unknown rules; --exclude is rejected as a profile-only option; missing artifact fails with iforge build hint', async () => {
     const source = fixtureSource()
     const ctx = ctxWith(fakeClaudeWriting(() => '# demo\n'))
 
@@ -512,7 +512,7 @@ describe('runInit with explicit --rules (profile "-")', () => {
     const brokenTarget = mkdtempSync(join(tmpdir(), 'iuse-init-tgt-'))
     const broken = await runInit(ctx, { source: brokenSource, profile: '-', rules: ['constitution', 'broken'], target: brokenTarget, force: false })
     expect(broken.ok).toBe(false)
-    expect(broken.message).toContain('imeta build')
+    expect(broken.message).toContain('iforge build')
     expect(loadDownstreamLock(brokenTarget)).toBeNull()
   })
 })

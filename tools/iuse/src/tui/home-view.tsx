@@ -67,7 +67,7 @@ export function HomeView({
 
   return (
     <Box flexDirection="column">
-      <Text bold>iuse</Text>
+      <Text bold>ifit</Text>
       <Box flexDirection="column" marginTop={1}>
         {items.map((item, i) => (
           <Box key={item.id} flexDirection="column">

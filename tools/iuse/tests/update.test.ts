@@ -78,7 +78,7 @@ describe('runUpdate error paths', () => {
 
     const noLock = await runUpdate(ctxWith(), { source, target: mkdtempSync(join(tmpdir(), 'iuse-update-tgt-')), force: false })
     expect(noLock.ok).toBe(false)
-    expect(noLock.message).toContain('iuse init')
+    expect(noLock.message).toContain('ifit init')
 
     const target = await initTarget(source)
 
@@ -92,7 +92,7 @@ describe('runUpdate error paths', () => {
     unlinkSync(join(missingCatalogSource, 'catalog.json'))
     const missingCatalogResult = await runUpdate(ctxWith(), { source: missingCatalogSource, target: missingCatalogTarget, force: false })
     expect(missingCatalogResult.ok).toBe(false)
-    expect(missingCatalogResult.message).toContain('imeta catalog')
+    expect(missingCatalogResult.message).toContain('iforge catalog')
 
     const rejectingCtx: IuseContext = { ...ctxWith(), download: async () => { throw new Error('network unreachable') } }
     const ghResult = await runUpdate(rejectingCtx, { source: 'gh:someorg/somerepo', target, force: false })
@@ -378,7 +378,7 @@ describe('runUpdate include/exclude semantics', () => {
     expect(result.steps).toContainEqual({
       op: 'skip-include',
       target: '.claude/rules/constitution.md',
-      note: "local differs, kept (see 'iuse diff --rule <name>', use --force to overwrite)",
+      note: "local differs, kept (see 'ifit diff --rule <name>', use --force to overwrite)",
     })
     expect(seenOps).toContain('skip-include')
   })
@@ -478,7 +478,7 @@ describe('runUpdate --add/--remove failure paths', () => {
     expect(removeResult.message).toContain('nope')
   })
 
-  test('--add a rule with a catalog entry but missing artifact (violation) fails with imeta build hint', async () => {
+  test('--add a rule with a catalog entry but missing artifact (violation) fails with iforge build hint', async () => {
     const source = fixtureSource()
     const target = await initTarget(source)
     addRule(source, 'incomplete', '# Incomplete\n')
@@ -487,7 +487,7 @@ describe('runUpdate --add/--remove failure paths', () => {
     const result = await runUpdate(ctxWith(), { source, target, force: false, add: ['incomplete'] })
 
     expect(result.ok).toBe(false)
-    expect(result.message).toContain('imeta build')
+    expect(result.message).toContain('iforge build')
   })
 })
 

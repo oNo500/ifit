@@ -1,11 +1,11 @@
 {
-  "name": "@infra-ai/iuse",
+  "name": "@ifit/cli",
   "version": "0.0.0",
   "private": true,
-  "description": "Consumer CLI: assemble infra-ai profiles into target projects",
+  "description": "Consumer CLI: assemble ifit profiles into target projects",
   "type": "module",
   "exports": {},
-  "bin": { "iuse": "./src/index.ts" },
+  "bin": { "ifit": "./src/index.ts" },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "lint": "oxlint",

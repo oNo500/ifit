@@ -28,7 +28,7 @@ export async function statusReport(
   if (lock === null) {
     return {
       ok: false,
-      message: `${opts.target}: not initialized, run 'iuse init' first`,
+      message: `${opts.target}: not initialized, run 'ifit init' first`,
       rows: [],
       exitCode: 1,
     }
@@ -38,8 +38,8 @@ export async function statusReport(
   try {
     source = await resolveSource({
       explicit: opts.source,
-      envRoot: ctx.env.INFRA_AI_ROOT,
-      homeDefault: join(ctx.home, 'code/infra-ai'),
+      envRoot: ctx.env.IFIT_ROOT,
+      homeDefault: join(ctx.home, 'code/infra-agent/ifit'),
       cacheDir: ctx.cacheDir,
       download: ctx.download,
       run: ctx.run,

@@ -55,15 +55,15 @@ export async function diffReport(
 ): Promise<DiffResult> {
   const lock = loadDownstreamLock(opts.target)
   if (lock === null) {
-    return { ok: false, message: `${opts.target}: not initialized, run 'iuse init' first`, diffs: [], exitCode: 1 }
+    return { ok: false, message: `${opts.target}: not initialized, run 'ifit init' first`, diffs: [], exitCode: 1 }
   }
 
   let source: Awaited<ReturnType<typeof resolveSource>>
   try {
     source = await resolveSource({
       explicit: opts.source,
-      envRoot: ctx.env.INFRA_AI_ROOT,
-      homeDefault: join(ctx.home, 'code/infra-ai'),
+      envRoot: ctx.env.IFIT_ROOT,
+      homeDefault: join(ctx.home, 'code/infra-agent/ifit'),
       cacheDir: ctx.cacheDir,
       download: ctx.download,
       run: ctx.run,

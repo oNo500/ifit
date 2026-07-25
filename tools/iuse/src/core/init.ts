@@ -47,16 +47,16 @@ function fail(message: string): { ok: false; message: string } {
   return { ok: false, message }
 }
 
-// 实例化失败会把 .iuse-staging（含日志）留在目标项目供排错。此时确保目标
+// 实例化失败会把 .ifit-staging（含日志）留在目标项目供排错。此时确保目标
 // .gitignore 忽略它，以免用户误提交。仅在暂存目录确有残留时才碰 gitignore；
 // 幂等：已忽略则不动。成功路径不调用——暂存目录会被清掉，无需留 ignore 行。
 function ensureStagingIgnored(target: string): void {
-  if (!existsSync(join(target, '.iuse-staging'))) return
+  if (!existsSync(join(target, '.ifit-staging'))) return
   const gitignorePath = join(target, '.gitignore')
   const existing = readTextIfExists(gitignorePath) ?? ''
-  if (existing.split('\n').some((line) => line.trim() === '.iuse-staging/')) return
+  if (existing.split('\n').some((line) => line.trim() === '.ifit-staging/')) return
   const prefix = existing === '' || existing.endsWith('\n') ? existing : `${existing}\n`
-  writeFileAtomic(gitignorePath, `${prefix}.iuse-staging/\n`)
+  writeFileAtomic(gitignorePath, `${prefix}.ifit-staging/\n`)
 }
 
 async function instantiateTemplate(
@@ -77,20 +77,20 @@ async function instantiateTemplate(
     return {
       ok: false,
       skipped: false,
-      message: `${spec.targetRelPath}: contract missing at ${contractPath} -- source has not received the relocated template contract (templates/template-instantiate.md); run imeta publish in the dev repo`,
+      message: `${spec.targetRelPath}: contract missing at ${contractPath} -- source has not received the relocated template contract (templates/template-instantiate.md); run iforge publish in the dev repo`,
     }
   }
   const templatePath = join(artifactBase, spec.sourceRelPath)
   // CLAUDE.md 与 .claude/** 是权限系统的敏感文件，headless 下 allowedTools
   // 无法放行直写——claude 只写非敏感的 staging 文件，落位由本进程完成
-  const stagingRel = `.iuse-staging/${spec.name}.md`
+  const stagingRel = `.ifit-staging/${spec.name}.md`
   const stagingFile = join(target, stagingRel)
 
   // 留痕 claude 事件流到目标项目内，供失败排错（headless 下 claude 声称完成
   // 却未落盘时，这是唯一能看到它实际输出的地方）。时间戳用 ctx.now() 以便测试可控。
-  // logs 目录递归创建，同时建出 .iuse-staging 父目录。
-  const logPath = join(target, '.iuse-staging', 'logs', `${spec.name}-${ctx.now().replaceAll(':', '-')}.jsonl`)
-  mkdirSync(join(target, '.iuse-staging', 'logs'), { recursive: true })
+  // logs 目录递归创建，同时建出 .ifit-staging 父目录。
+  const logPath = join(target, '.ifit-staging', 'logs', `${spec.name}-${ctx.now().replaceAll(':', '-')}.jsonl`)
+  mkdirSync(join(target, '.ifit-staging', 'logs'), { recursive: true })
   const logHint = ` (log: ${logPath})`
   // claude 的 result 事件带最终结论文本。若它跑完 success 却没落盘，这段结论
   // 通常是它「无法实例化」的理由（如目标项目无事实可填），据此区分「明确拒绝」
@@ -173,7 +173,7 @@ async function planInit(
   const existingLock = loadDownstreamLock(opts.target)
   if (existingLock !== null && !opts.force) {
     return fail(
-      `${opts.target}: already initialized (profile '${existingLock.profile}'). Run 'iuse update' to refresh, or pass --force to reinitialize.`,
+      `${opts.target}: already initialized (profile '${existingLock.profile}'). Run 'ifit update' to refresh, or pass --force to reinitialize.`,
     )
   }
 
@@ -185,8 +185,8 @@ async function planInit(
   try {
     source = await resolveSource({
       explicit: opts.source,
-      envRoot: ctx.env.INFRA_AI_ROOT,
-      homeDefault: join(ctx.home, 'code/infra-ai'),
+      envRoot: ctx.env.IFIT_ROOT,
+      homeDefault: join(ctx.home, 'code/infra-agent/ifit'),
       cacheDir: ctx.cacheDir,
       download: ctx.download,
       run: ctx.run,
@@ -324,7 +324,7 @@ export async function runInit(
     }
   }
 
-  // 失败时保留 .iuse-staging（含 claude 事件日志）供排错——message 里的 log:
+  // 失败时保留 .ifit-staging（含 claude 事件日志）供排错——message 里的 log:
   // 路径才有效；只在全部实例化成功后清理，避免留暂存垃圾。
   for (const spec of TEMPLATE_SPECS) {
     const instantiateStep = steps.find((s) => s.op === 'instantiate' && s.target === spec.targetRelPath)
@@ -338,7 +338,7 @@ export async function runInit(
     }
     notes.push(result.message)
   }
-  rmSync(join(opts.target, '.iuse-staging'), { recursive: true, force: true })
+  rmSync(join(opts.target, '.ifit-staging'), { recursive: true, force: true })
 
   const writeLockStep = steps.find((s) => s.op === 'write-lock')
   if (writeLockStep !== undefined) {

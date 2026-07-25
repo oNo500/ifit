@@ -37,7 +37,7 @@ function fixtureSource(): string {
   writeFileSync(join(dir, 'catalog.json'), JSON.stringify(catalog, null, 2))
   writeFileSync(join(dir, 'rules', 'alpha.md'), '# Alpha\n\nbody\n')
   // sigma's artifact carries baked paths frontmatter -- the final install
-  // form file-scoped rules ship in; iuse copies it verbatim.
+  // form file-scoped rules ship in; ifit copies it verbatim.
   writeFileSync(join(dir, 'rules', 'sigma.md'), '---\npaths:\n  - "**/*.md"\n---\n\n# Sigma\n')
   writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ demo: { description: 'Demo', rules: ['alpha'] } }))
   return dir
@@ -163,7 +163,7 @@ describe('showReport', () => {
 
     const missingCatalog = await showReport(fakeCtx(), { source: bareSourceFixture(), target: uninitTarget, name: 'alpha' })
     expect(missingCatalog.ok).toBe(false)
-    expect(missingCatalog.message).toContain('imeta catalog')
+    expect(missingCatalog.message).toContain('iforge catalog')
     expect(missingCatalog.exitCode).toBe(1)
 
     const badSource = mkdtempSync(join(tmpdir(), 'iuse-show-badsrc-'))

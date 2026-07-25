@@ -17,7 +17,7 @@ const validators = {
 }
 
 const SCHEMA_HINT =
-  'source does not match the schema bundled with this iuse checkout -- update the checkout (git pull in the infra-ai repo) or fix the source data'
+  'source does not match the schema bundled with this ifit checkout -- update the checkout (git pull in the ifit repo) or fix the source data'
 
 function loadValidated(root: string, filename: string, validate: ValidateFunction): unknown {
   const raw = readTextIfExists(join(root, filename))

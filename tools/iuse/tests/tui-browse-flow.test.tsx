@@ -28,7 +28,7 @@ function fixtureSource(): string {
   writeFileSync(join(dir, 'templates', 'template-instantiate.md'), '# contract\n')
 
   // catalog.json is the browse view's data source -- handwritten to match the
-  // real build shape (imeta catalog output), not derived via buildCatalog, per
+  // real build shape (iforge catalog output), not derived via buildCatalog, per
   // brief instruction. Two facets ('concern', 'layer') so the t-cycle test can
   // exercise the full undefined -> concern -> layer -> undefined loop, not
   // just a two-state toggle.
@@ -329,7 +329,7 @@ describe('TUI browse flow', () => {
     expect(lastFrame()).toContain('选择 profile')
   })
 
-  test('catalog missing on an uninitialized target lands in error view naming imeta catalog', async () => {
+  test('catalog missing on an uninitialized target lands in error view naming iforge catalog', async () => {
     const source = mkdtempSync(join(tmpdir(), 'iuse-tui-browse-nocatalog-'))
     mkdirSync(join(source, 'rules'), { recursive: true })
     mkdirSync(join(source, 'templates'), { recursive: true })
@@ -348,7 +348,7 @@ describe('TUI browse flow', () => {
     await press(stdin, '\r') // enter: browse
 
     await waitFor(() => (lastFrame() ?? '').includes('出错了'))
-    expect(lastFrame()).toContain('imeta catalog')
+    expect(lastFrame()).toContain('iforge catalog')
 
     rmSync(source, { recursive: true, force: true })
   })

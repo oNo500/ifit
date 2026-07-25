@@ -56,8 +56,8 @@ test('excluded field omitted from serialized JSON when empty or undefined', () =
   saveDownstreamLock(dirEmpty, { ...base, excluded: [] })
   saveDownstreamLock(dirUndefined, base)
 
-  const rawEmpty = readFileSync(join(dirEmpty, '.claude/infra-ai.lock.json'), 'utf8')
-  const rawUndefined = readFileSync(join(dirUndefined, '.claude/infra-ai.lock.json'), 'utf8')
+  const rawEmpty = readFileSync(join(dirEmpty, '.claude/ifit.lock.json'), 'utf8')
+  const rawUndefined = readFileSync(join(dirUndefined, '.claude/ifit.lock.json'), 'utf8')
   expect(rawEmpty).not.toContain('excluded')
   expect(rawUndefined).not.toContain('excluded')
 

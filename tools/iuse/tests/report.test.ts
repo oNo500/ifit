@@ -77,7 +77,7 @@ describe('statusReport error paths', () => {
 
     const noLock = await statusReport(ctxWith(), { source, target: mkdtempSync(join(tmpdir(), 'iuse-report-tgt-')) })
     expect(noLock.ok).toBe(false)
-    expect(noLock.message).toContain('iuse init')
+    expect(noLock.message).toContain('ifit init')
     expect(noLock.rows).toEqual([])
     expect(noLock.exitCode).toBe(1)
 
@@ -94,7 +94,7 @@ describe('statusReport error paths', () => {
     unlinkSync(join(missingCatalogSource, 'catalog.json'))
     const missingCatalogResult = await statusReport(ctxWith(), { source: missingCatalogSource, target: missingCatalogTarget })
     expect(missingCatalogResult.ok).toBe(false)
-    expect(missingCatalogResult.message).toContain('imeta catalog')
+    expect(missingCatalogResult.message).toContain('iforge catalog')
     expect(missingCatalogResult.rows).toEqual([])
 
     const rejectingCtx: IuseContext = { ...ctxWith(), download: async () => { throw new Error('network unreachable') } }

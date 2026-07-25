@@ -93,8 +93,8 @@ export async function listReport(
   try {
     source = await resolveSource({
       explicit: opts.source,
-      envRoot: ctx.env.INFRA_AI_ROOT,
-      homeDefault: join(ctx.home, 'code/infra-ai'),
+      envRoot: ctx.env.IFIT_ROOT,
+      homeDefault: join(ctx.home, 'code/infra-agent/ifit'),
       cacheDir: ctx.cacheDir,
       download: ctx.download,
       run: ctx.run,
@@ -108,7 +108,7 @@ export async function listReport(
   if (catalog === null) {
     return {
       ok: false,
-      message: `${source.root}: catalog.json missing, run 'imeta catalog' in the source`,
+      message: `${source.root}: catalog.json missing, run 'iforge catalog' in the source`,
       rows: [],
       exitCode: 1,
     }

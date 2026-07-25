@@ -27,7 +27,7 @@ async function planUpdate(
 ): Promise<{ ok: true; plan: UpdatePlan } | { ok: false; message: string }> {
   const lock = loadDownstreamLock(opts.target)
   if (lock === null) {
-    return fail(`${opts.target}: not initialized, run 'iuse init' first`)
+    return fail(`${opts.target}: not initialized, run 'ifit init' first`)
   }
 
   const currentlyExcluded = lock.excluded ?? []
@@ -41,8 +41,8 @@ async function planUpdate(
   try {
     source = await resolveSource({
       explicit: opts.source,
-      envRoot: ctx.env.INFRA_AI_ROOT,
-      homeDefault: join(ctx.home, 'code/infra-ai'),
+      envRoot: ctx.env.IFIT_ROOT,
+      homeDefault: join(ctx.home, 'code/infra-agent/ifit'),
       cacheDir: ctx.cacheDir,
       download: ctx.download,
       run: ctx.run,
@@ -174,7 +174,7 @@ async function planUpdate(
     steps.push({
       op: 'skip-include',
       target: targetRelPath,
-      note: "local differs, kept (see 'iuse diff --rule <name>', use --force to overwrite)",
+      note: "local differs, kept (see 'ifit diff --rule <name>', use --force to overwrite)",
     })
   }
 

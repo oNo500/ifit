@@ -32,7 +32,7 @@ export function defaultContext(): IuseContext {
     now: () => new Date().toISOString(),
     env: process.env,
     home: homedir(),
-    cacheDir: join(homedir(), '.cache/iuse'),
+    cacheDir: join(homedir(), '.cache/ifit'),
   }
 }
 
@@ -51,9 +51,9 @@ const initCommand = defineCommand({
       '按 profile 或显式 --rules 向目标项目拼装配置（rules + settings + AI 实例化 CLAUDE.md/architecture）。--profile 与 --rules 二选一。--dry-run 预演。成功退 0。',
   },
   args: {
-    profile: { type: 'string', required: false, description: '要拼装的 profile 名（见 iuse profiles）；与 --rules 二选一' },
+    profile: { type: 'string', required: false, description: '要拼装的 profile 名（见 ifit profiles）；与 --rules 二选一' },
     rules: { type: 'string', description: '显式安装的 rule 名（逗号分隔）；与 --profile 二选一' },
-    source: { type: 'string', description: '中心源（本地路径或 gh: 定位符；缺省 INFRA_AI_ROOT 或 ~/code/infra-ai）' },
+    source: { type: 'string', description: '中心源（本地路径或 gh: 定位符；缺省 IFIT_ROOT 或 ~/code/infra-agent/ifit）' },
     force: { type: 'boolean', description: '重新初始化：覆盖已有内容并重新实例化模板' },
     'dry-run': { type: 'boolean', description: '只打印计划步骤，不写任何文件' },
     exclude: { type: 'string', description: '排除的 rule 名（逗号分隔；记入下游账，之后 update --add 可补回）' },
@@ -65,16 +65,16 @@ const initCommand = defineCommand({
     const rules = splitNames(args.rules)
 
     // 子命令面必须 100% 命令式：同一条命令在 pipe 与 PTY 下行为一致，
-    // AI/脚本才有稳定契约。交互式的唯一入口是裸 iuse，这里只报错并指路。
+    // AI/脚本才有稳定契约。交互式的唯一入口是裸 ifit，这里只报错并指路。
     if ((args.profile === undefined) === (rules === undefined)) {
       console.error(
         [
           'exactly one of --profile / --rules is required',
           '',
           '选装内容二选一：',
-          '  iuse init --profile <名>       用预设组合（iuse profiles 列出可选）',
-          '  iuse init --rules a,b,c        直选 rule（iuse list 浏览全部）',
-          '也可裸跑 iuse 进入交互式 TUI 边看边选。',
+          '  ifit init --profile <名>       用预设组合（ifit profiles 列出可选）',
+          '  ifit init --rules a,b,c        直选 rule（ifit list 浏览全部）',
+          '也可裸跑 ifit 进入交互式 TUI 边看边选。',
         ].join('\n'),
       )
       process.exitCode = 2
@@ -108,7 +108,7 @@ const profilesCommand = defineCommand({
     description: '列出中心源可用的 profile 及各自的 rules。恒退 0。',
   },
   args: {
-    source: { type: 'string', description: '中心源（本地路径或 gh: 定位符；缺省 INFRA_AI_ROOT 或 ~/code/infra-ai）' },
+    source: { type: 'string', description: '中心源（本地路径或 gh: 定位符；缺省 IFIT_ROOT 或 ~/code/infra-agent/ifit）' },
     json: { type: 'boolean', description: '以单行 JSON 输出到 stdout（机器可读）' },
   },
   async run({ args }) {
@@ -135,7 +135,7 @@ const statusCommand = defineCommand({
       '逐 rule 对账下游副本与中心源的漂移（synced/modified/outdated/missing/excluded/available）。有待处理项退 1，干净退 0。',
   },
   args: {
-    source: { type: 'string', description: '中心源（本地路径或 gh: 定位符；缺省 INFRA_AI_ROOT 或 ~/code/infra-ai）' },
+    source: { type: 'string', description: '中心源（本地路径或 gh: 定位符；缺省 IFIT_ROOT 或 ~/code/infra-agent/ifit）' },
     json: { type: 'boolean', description: '以单行 JSON 输出到 stdout（机器可读）' },
     target: { type: 'positional', required: false, description: '目标项目目录（缺省当前目录）' },
   },
@@ -167,7 +167,7 @@ const updateCommand = defineCommand({
       '应用中心源变更到已初始化目标；本地改过的副本默认跳过，--force 才覆盖。--dry-run 预演。成功退 0。',
   },
   args: {
-    source: { type: 'string', description: '中心源（本地路径或 gh: 定位符；缺省 INFRA_AI_ROOT 或 ~/code/infra-ai）' },
+    source: { type: 'string', description: '中心源（本地路径或 gh: 定位符；缺省 IFIT_ROOT 或 ~/code/infra-agent/ifit）' },
     force: { type: 'boolean', description: '覆盖本地已修改或缺失的 rule 副本' },
     'dry-run': { type: 'boolean', description: '只打印计划步骤，不应用任何变更' },
     add: { type: 'string', description: '显式安装的 rule 名（逗号分隔）；若此前排除则补回（本地有不同内容时默认跳过，--force 覆盖）' },
@@ -206,7 +206,7 @@ const diffCommand = defineCommand({
   },
   args: {
     rule: { type: 'string', description: '只看这一条 rule 的完整 diff（可为普通或已排除项）' },
-    source: { type: 'string', description: '中心源（本地路径或 gh: 定位符；缺省 INFRA_AI_ROOT 或 ~/code/infra-ai）' },
+    source: { type: 'string', description: '中心源（本地路径或 gh: 定位符；缺省 IFIT_ROOT 或 ~/code/infra-agent/ifit）' },
     json: { type: 'boolean', description: '以单行 JSON 输出到 stdout（机器可读）' },
     target: { type: 'positional', required: false, description: '目标项目目录（缺省当前目录）' },
   },
@@ -236,7 +236,7 @@ const listCommand = defineCommand({
     description: '列出中心源 catalog 中的 rule；--tag/--grep 过滤；已初始化目标标注安装状态。恒退 0（源/catalog 解析失败除外）。',
   },
   args: {
-    source: { type: 'string', description: '中心源（本地路径或 gh: 定位符；缺省 INFRA_AI_ROOT 或 ~/code/infra-ai）' },
+    source: { type: 'string', description: '中心源（本地路径或 gh: 定位符；缺省 IFIT_ROOT 或 ~/code/infra-agent/ifit）' },
     tag: { type: 'string', description: '按 tag 过滤（逗号分隔，取交集）' },
     grep: { type: 'string', description: '按名称/描述/正文子串过滤（不区分大小写）' },
     json: { type: 'boolean', description: '以单行 JSON 输出到 stdout（机器可读）' },
@@ -272,11 +272,11 @@ const showCommand = defineCommand({
     description: '显示单条 rule 的元数据与正文。名不存在退 1。',
   },
   args: {
-    source: { type: 'string', description: '中心源（本地路径或 gh: 定位符；缺省 INFRA_AI_ROOT 或 ~/code/infra-ai）' },
+    source: { type: 'string', description: '中心源（本地路径或 gh: 定位符；缺省 IFIT_ROOT 或 ~/code/infra-agent/ifit）' },
     json: { type: 'boolean', description: '以单行 JSON 输出到 stdout（机器可读）' },
     // citty 的 positional 匹配是纯声明序 FIFO，不看 required——required 的
-    // positional 必须先声明，否则被后声明的 optional 挡道（见 iuse show <name> [target] 用法）
-    name: { type: 'positional', required: true, description: 'rule 名（见 iuse list）' },
+    // positional 必须先声明，否则被后声明的 optional 挡道（见 ifit show <name> [target] 用法）
+    name: { type: 'positional', required: true, description: 'rule 名（见 ifit list）' },
     target: { type: 'positional', required: false, description: '目标项目目录（缺省当前目录）' },
   },
   async run({ args }) {
@@ -312,9 +312,9 @@ const catCommand = defineCommand({
     description: '输出单条 rule 产物原文（安装形态，纯内容到 stdout，可重定向落盘）。名不存在退 1。',
   },
   args: {
-    source: { type: 'string', description: '中心源（本地路径或 gh: 定位符；缺省 INFRA_AI_ROOT 或 ~/code/infra-ai）' },
+    source: { type: 'string', description: '中心源（本地路径或 gh: 定位符；缺省 IFIT_ROOT 或 ~/code/infra-agent/ifit）' },
     json: { type: 'boolean', description: '以单行 JSON 输出到 stdout（机器可读）' },
-    name: { type: 'positional', required: true, description: 'rule 名（见 iuse list）' },
+    name: { type: 'positional', required: true, description: 'rule 名（见 ifit list）' },
   },
   async run({ args }) {
     const result = await catReport(defaultContext(), { source: args.source, name: args.name })
@@ -332,9 +332,9 @@ const catCommand = defineCommand({
 export function buildMainCommand() {
   return defineCommand({
     meta: {
-      name: 'iuse',
+      name: 'ifit',
       description:
-        '从 infra-ai 中心源按 profile 拼装 Claude Code 配置。典型流程：list/show/cat 查阅 -> profiles -> init --dry-run -> init -> status/update。',
+        '从 ifit 中心源按 profile 拼装 Claude Code 配置。典型流程：list/show/cat 查阅 -> profiles -> init --dry-run -> init -> status/update。',
     },
     subCommands: {
       init: initCommand,
@@ -350,7 +350,7 @@ export function buildMainCommand() {
 }
 
 /**
- * The TUI is only for a bare `iuse` invocation on an interactive terminal --
+ * The TUI is only for a bare `ifit` invocation on an interactive terminal --
  * zero argv and BOTH stdin/stdout are TTYs (an output-only PTY with piped
  * stdin would hang ink's raw-mode input). Anything else (a subcommand, a
  * typo, --help, --json, a stray flag) falls through to citty -- the

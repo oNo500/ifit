@@ -76,7 +76,7 @@ describe('diffReport error paths', () => {
 
     const noLock = await diffReport(ctxWith(), { source, target: mkdtempSync(join(tmpdir(), 'iuse-diff-tgt-')) })
     expect(noLock.ok).toBe(false)
-    expect(noLock.message).toContain('iuse init')
+    expect(noLock.message).toContain('ifit init')
     expect(noLock.diffs).toEqual([])
     expect(noLock.exitCode).toBe(1)
 

@@ -97,7 +97,7 @@ export function DiffView({
             {line}
           </Text>
         ))}
-        {truncated && <Text dimColor>已截断（完整差异：iuse diff --rule {rule}）</Text>}
+        {truncated && <Text dimColor>已截断（完整差异：ifit diff --rule {rule}）</Text>}
       </Box>
       <Box marginTop={1}>
         <Text dimColor>o 覆盖（源赢）  i 忽略（本次跳过）  esc 返回不裁决  q 退出</Text>

@@ -519,6 +519,6 @@ describe('TUI status flow', () => {
     await waitFor(() => (lastFrame() ?? '').includes('完整差异'))
     const diffFrame = lastFrame() ?? ''
     expect(diffFrame).toContain('已截断')
-    expect(diffFrame).toContain('iuse diff --rule gone')
+    expect(diffFrame).toContain('ifit diff --rule gone')
   })
 })

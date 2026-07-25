@@ -12,7 +12,7 @@ type DownloadFn = (input: string, opts: { dir: string; forceClean?: boolean }) =
 
 function assertSourceRoot(root: string, locator: string): void {
   if (!existsSync(join(root, 'profiles.json'))) {
-    throw new Error(`profiles.json not found in source '${locator}' -- not an infra-ai source`)
+    throw new Error(`profiles.json not found in source '${locator}' -- not an ifit source`)
   }
 }
 

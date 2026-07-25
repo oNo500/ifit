@@ -17,7 +17,7 @@ function requireCatalogRules(sourceRoot: string): Record<string, CatalogRule> {
   const { catalogRoot } = detectSourceRoot(sourceRoot)
   const catalog = loadCatalog(catalogRoot)
   if (catalog === null) {
-    throw new Error(`${sourceRoot}: catalog.json missing, run 'imeta catalog' in the source`)
+    throw new Error(`${sourceRoot}: catalog.json missing, run 'iforge catalog' in the source`)
   }
   return catalog.rules
 }
@@ -40,7 +40,7 @@ export function assembleRules(
     const sourcePath = join(artifactBase, entry.path)
     const content = readTextIfExists(sourcePath)
     if (content === null) {
-      violations.push(`${rule}: built artifact missing at ${entry.path} (run imeta build in the source)`)
+      violations.push(`${rule}: built artifact missing at ${entry.path} (run iforge build in the source)`)
       continue
     }
     items.push({ rule, sourcePath, targetRelPath: ruleTargetRelPath(rule), content, hash: sha256(content) })
@@ -52,7 +52,7 @@ export function assembleRules(
  * Catalog-driven composition check, scoped to a single profile -- a
  * downstream consumer only cares whether the one profile it is about to
  * install is internally consistent, not whether every other profile in
- * profiles.json is well-formed (that is imeta's / the source's job).
+ * profiles.json is well-formed (that is iforge's / the source's job).
  */
 function validateProfileComposition(
   profileName: string,

@@ -1,7 +1,7 @@
 import { join } from 'node:path'
 import { readTextIfExists, sha256, writeFileAtomic } from './io'
 
-export const LOCK_PATH = '.claude/infra-ai.lock.json'
+export const LOCK_PATH = '.claude/ifit.lock.json'
 
 export function ruleTargetRelPath(rule: string): string {
   return `.claude/rules/${rule}.md`

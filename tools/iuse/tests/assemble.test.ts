@@ -99,10 +99,10 @@ describe('planAssembly', () => {
     const { violations } = planAssembly(src, 'demo')
     expect(violations).toEqual([])
   })
-  test('missing catalog.json throws with the imeta catalog hint', () => {
+  test('missing catalog.json throws with the iforge catalog hint', () => {
     const dir = mkdtempSync(join(tmpdir(), 'iuse-asm-nocatalog-'))
     writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ demo: { rules: ['constitution'] } }))
-    expect(() => planAssembly(dir, 'demo')).toThrow(`${dir}: catalog.json missing, run 'imeta catalog' in the source`)
+    expect(() => planAssembly(dir, 'demo')).toThrow(`${dir}: catalog.json missing, run 'iforge catalog' in the source`)
   })
 })
 
@@ -120,8 +120,8 @@ describe('assembleRules', () => {
     expect(items.map((i) => i.rule)).toEqual(['constitution'])
     expect(missing).toEqual(['not-in-catalog'])
   })
-  test('missing catalog.json throws with the imeta catalog hint', () => {
+  test('missing catalog.json throws with the iforge catalog hint', () => {
     const dir = mkdtempSync(join(tmpdir(), 'iuse-asm-nocatalog-'))
-    expect(() => assembleRules(dir, ['constitution'])).toThrow(`${dir}: catalog.json missing, run 'imeta catalog' in the source`)
+    expect(() => assembleRules(dir, ['constitution'])).toThrow(`${dir}: catalog.json missing, run 'iforge catalog' in the source`)
   })
 })

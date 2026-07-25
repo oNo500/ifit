@@ -10,10 +10,10 @@ export interface SourceRootLayout {
 
 /**
  * A source root can be either a published layout (catalog.json + rules/ at
- * root -- what iuse ships to a downstream consumer) or a dev-repo checkout
+ * root -- what ifit ships to a downstream consumer) or a dev-repo checkout
  * staged under artifacts/ (Task 1's artifacts/ prefix migration). Detecting
  * this once lets list/show/assemble/browse stay agnostic of which shape they
- * were pointed at: `iuse --source ~/code/meta` works without the caller
+ * were pointed at: `ifit --source ~/code/meta` works without the caller
  * having to know to add /artifacts.
  *
  * Editing-account lookups (profiles.json, skills ledger, lock) are NOT part

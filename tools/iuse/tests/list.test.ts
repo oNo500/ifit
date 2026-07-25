@@ -81,7 +81,7 @@ function addConstitutionToCatalog(source: string): void {
 }
 
 function bareSourceFixture(): string {
-  // A valid infra-ai source (has profiles.json) but never ran `imeta catalog`.
+  // A valid ifit source (has profiles.json) but never ran `iforge catalog`.
   const dir = mkdtempSync(join(tmpdir(), 'iuse-list-bare-src-'))
   writeFileSync(join(dir, 'profiles.json'), JSON.stringify({}))
   return dir
@@ -219,7 +219,7 @@ describe('listReport', () => {
 
     const missingCatalog = await listReport(fakeCtx(), { source: bareSourceFixture(), target: uninitTarget })
     expect(missingCatalog.ok).toBe(false)
-    expect(missingCatalog.message).toContain('imeta catalog')
+    expect(missingCatalog.message).toContain('iforge catalog')
     expect(missingCatalog.rows).toEqual([])
     expect(missingCatalog.exitCode).toBe(1)
 

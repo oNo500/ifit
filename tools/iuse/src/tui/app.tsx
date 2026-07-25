@@ -70,8 +70,8 @@ async function loadBrowseData(
   try {
     source = await resolveSource({
       explicit: opts.source,
-      envRoot: ctx.env.INFRA_AI_ROOT,
-      homeDefault: join(ctx.home, 'code/infra-ai'),
+      envRoot: ctx.env.IFIT_ROOT,
+      homeDefault: join(ctx.home, 'code/infra-agent/ifit'),
       cacheDir: ctx.cacheDir,
       download: ctx.download,
       run: ctx.run,
@@ -83,7 +83,7 @@ async function loadBrowseData(
   const { catalogRoot, artifactBase } = detectSourceRoot(source.root)
   const catalog = loadCatalog(catalogRoot)
   if (catalog === null) {
-    return { ok: false, message: `${source.root}: catalog.json missing, run 'imeta catalog' in the source` }
+    return { ok: false, message: `${source.root}: catalog.json missing, run 'iforge catalog' in the source` }
   }
 
   const contentByName: Record<string, string> = {}
@@ -101,8 +101,8 @@ async function resolveSourceRef(deps: TuiDeps): Promise<{ ok: true; source: Sour
   try {
     const source = await resolveSource({
       explicit: deps.source,
-      envRoot: deps.ctx.env.INFRA_AI_ROOT,
-      homeDefault: join(deps.ctx.home, 'code/infra-ai'),
+      envRoot: deps.ctx.env.IFIT_ROOT,
+      homeDefault: join(deps.ctx.home, 'code/infra-agent/ifit'),
       cacheDir: deps.ctx.cacheDir,
       download: deps.ctx.download,
       run: deps.ctx.run,

@@ -373,6 +373,6 @@ describe('TUI init flow', () => {
     await waitFor(() => (lastFrame() ?? '').includes('出错了'))
     const frame = (lastFrame() ?? '').replaceAll('\n', ' ')
     expect(frame).toContain('profiles.json not found')
-    expect(frame).toContain('not an infra-ai')
+    expect(frame).toContain('not an ifit')
   })
 })
