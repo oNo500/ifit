@@ -10,6 +10,11 @@ TS 的类型红线与日常纪律，只覆盖写 TS 时无法从代码推断的�
 require-unicode-regexp 等）：目标项目配了 lint 时以 lint 配置为准，
 本 rule 覆盖未配 lint 的项目与 lint 管不到的判断（断言边界、收窄方式）。
 
+## 权威校验
+
+- 编辑批次完成后跑 `tsc --noEmit` 与 oxlint，据其输出判断改动是否成立
+  （对应 agent-behavior 「不响应实时 LSP 诊断」在 TS 侧的命令）
+
 ## 红线
 
 - MUST NOT 双重断言——`as X as Y` 经 `unknown`/`any` 中转绕过全部类型检查

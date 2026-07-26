@@ -1,11 +1,12 @@
 {
-  "generatedAt": "2026-07-26T07:17:51.779Z",
+  "generatedAt": "2026-07-26T08:26:13.743Z",
   "tags": {
     "lang": {
       "exclusive": true,
       "values": {
         "ts": "TypeScript/JavaScript 生态",
-        "python": "Python 生态"
+        "python": "Python 生态",
+        "go": "Go 生态"
       }
     },
     "layer": {
@@ -164,6 +165,15 @@
       "profiles": [
         "docs"
       ]
+    },
+    "go": {
+      "description": "Go 工具链与惯用法：go mod/gofmt 内建链、golangci-lint、错误即值与并发纪律",
+      "tags": [
+        "go"
+      ],
+      "requires": [],
+      "path": "rules/go.md",
+      "profiles": []
     },
     "markdown": {
       "description": "Markdown 文档写作规范：结构、格式、术语与来源纪律",

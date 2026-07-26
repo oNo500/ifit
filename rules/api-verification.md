@@ -1,6 +1,6 @@
 ---
 paths:
-  - "**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs,py}"
+  - "**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs,py,go}"
 ---
 
 # API Verification

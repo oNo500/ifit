@@ -8,6 +8,11 @@ paths:
 工具链选型：uv 单一入口、ruff、pyright。PEP 8 细节与可自动修复项交给 ruff 强制，
 不在此重述；本 rule 只写选型纪律与 lint 管不到的判断。
 
+## 权威校验
+
+- 编辑批次完成后跑 `uv run pyright` 与 `uv run ruff check`，据其输出判断改动是否成立
+  （对应 agent-behavior 「不响应实时 LSP 诊断」在 Python 侧的命令）
+
 ## 工具链：uv 单一入口
 
 包管理、venv、Python 版本管理、全局 CLI 工具一律走 uv，
@@ -34,7 +39,7 @@ paths:
 
 ## 类型
 
-- 类型检查用 pyright，经 `uv run pyright` 执行
+- 类型检查用 pyright
 - 注解用现代语法（ruff 的 UP 系列可自动迁移；未配 ruff 的项目手动遵守）：
   - 联合类型（PEP 604）：正 `int | None`；反 `Optional[int]`、`Union[int, str]`
   - 内置容器泛型（PEP 585）：正 `list[int]`、`dict[str, int]`；反 `typing.List[int]`

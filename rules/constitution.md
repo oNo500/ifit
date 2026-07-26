@@ -18,8 +18,9 @@
 
 ## 不可违反规则
 
-- **文件命名**：文件与目录一律 kebab-case，React 组件文件同样适用，
-  不为 PascalCase 惯例开豁免
+- **文件命名**：文件与目录一律 kebab-case，不为任何语言/框架的 PascalCase
+  或 snake_case 惯例开豁免
 - **禁止 emoji**：源代码中禁止使用 emoji（注释、日志输出除外，需明确标注原因）
 - **Commit language**：commit message 使用英文，遵循 Conventional Commits 格式
-- **不修改生成文件**：`AGENTS.md` 是构建产物，禁止手动编辑；只修改其对应的 rules 源文件
+- **不修改生成文件**：生成物禁止手动编辑，改其源再重新生成；判据是文件自称
+  生成（头部 generated/DO NOT EDIT 标记）或由构建步骤产出
