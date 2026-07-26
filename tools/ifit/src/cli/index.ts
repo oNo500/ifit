@@ -12,6 +12,8 @@ import { profilesReport } from '../core/profiles-report'
 import { statusReport } from '../core/report'
 import { catReport, showReport } from '../core/show'
 import { runUpdate } from '../core/update'
+import type { FooterCommand } from './render'
+import { displayWidth, fitToWidth, renderFooter, terminalWidth } from './render'
 
 /**
  * Normalize and split a comma-separated string or array into trimmed strings.
@@ -230,6 +232,28 @@ const diffCommand = defineCommand({
   },
 })
 
+function listStats(result: { rows: unknown[]; skills?: unknown[] }): string | undefined {
+  const parts: string[] = []
+  if (result.rows.length > 0) parts.push(`${result.rows.length} rules`)
+  if (result.skills !== undefined) parts.push(`${result.skills.length} skills`)
+  return parts.length === 0 ? undefined : parts.join(' · ')
+}
+
+/**
+ * Where to go next from a listing. Placeholders are literal `<name>` so an
+ * agent can substitute a row it just saw and run the result verbatim.
+ */
+function listFollowUps(kind: 'rules' | 'skills' | 'all'): FooterCommand[] {
+  const ruleHints: FooterCommand[] = [
+    { command: 'ifit show <name>', hint: '看单条 rule 的元数据与正文' },
+    { command: 'ifit cat <name>', hint: '取 rule 产物原文（可重定向落盘）' },
+    { command: 'ifit init --profile <p> <dir>', hint: '按 profile 向目标项目拼装' },
+  ]
+  if (kind === 'skills') return [{ command: 'ifit list', hint: '列 rule' }, ...ruleHints.slice(0, 2)]
+  if (kind === 'all') return ruleHints
+  return [{ command: 'ifit list --skills', hint: '列 skill 与推荐安装命令' }, ...ruleHints]
+}
+
 const listCommand = defineCommand({
   meta: {
     name: 'list',
@@ -263,13 +287,22 @@ const listCommand = defineCommand({
       console.log(renderJson(payload))
     } else {
       if (result.message !== undefined) console.log(result.message)
-      const nameWidth = Math.max(0, ...result.rows.map((r) => r.name.length))
-      for (const row of result.rows) {
-        const head = `${row.name.padEnd(nameWidth)}  ${row.description}`
-        console.log(row.state !== undefined ? `${head}  [${row.state}]` : head)
+      const width = terminalWidth()
+      const showBothKinds = result.skills !== undefined && result.rows.length > 0
+
+      if (result.rows.length > 0) {
+        if (showBothKinds) console.log(`RULES (${result.rows.length})`)
+        const nameWidth = Math.max(0, ...result.rows.map((r) => r.name.length))
+        for (const row of result.rows) {
+          const state = row.state === undefined ? '' : `  [${row.state}]`
+          const budget = width - nameWidth - 2 - displayWidth(state)
+          console.log(`${row.name.padEnd(nameWidth)}  ${fitToWidth(row.description, budget)}${state}`)
+        }
       }
+
       if (result.skills !== undefined && result.skills.length > 0) {
         if (result.rows.length > 0) console.log('')
+        if (showBothKinds) console.log(`SKILLS (${result.skills.length})`)
         const skillWidth = Math.max(0, ...result.skills.map((s) => s.name.length))
         for (const skill of result.skills) {
           // official skills live upstream, so this repo holds no SKILL.md to
@@ -278,11 +311,14 @@ const listCommand = defineCommand({
             skill.description !== ''
               ? skill.description
               : `(${skill.source}${skill.repo === undefined ? '' : `: ${skill.repo}`}，描述见上游)`
-          console.log(`${skill.name.padEnd(skillWidth)}  ${summary}`)
+          console.log(`${skill.name.padEnd(skillWidth)}  ${fitToWidth(summary, width - skillWidth - 2)}`)
           // Indented so the command is trivially copyable on its own line.
           console.log(`${' '.repeat(skillWidth)}  ${skill.install ?? '(无安装命令：official 条目缺 repo)'}`)
         }
       }
+
+      const footer = renderFooter({ stats: listStats(result), commands: listFollowUps(kind) })
+      if (footer !== '') console.log(footer)
     }
     process.exitCode = result.exitCode
   },
@@ -322,6 +358,14 @@ const showCommand = defineCommand({
           console.log('')
           console.log(result.content)
         }
+        const footer = renderFooter({
+          commands: [
+            { command: `ifit cat ${name}`, hint: '取产物原文（可重定向落盘）' },
+            { command: 'ifit list', hint: '列全部 rule' },
+            { command: 'ifit init --profile <p> <dir>', hint: '按 profile 向目标项目拼装' },
+          ],
+        })
+        if (footer !== '') console.log(footer)
       }
     }
     process.exitCode = result.exitCode
@@ -344,6 +388,15 @@ const catCommand = defineCommand({
       console.log(renderJson({ ok: result.ok, message: result.message, content: result.content }))
     } else if (result.ok && result.content !== undefined) {
       process.stdout.write(result.content)
+      // stdout is the artifact itself (`ifit cat x > x.md`), so the footer goes
+      // to stderr -- it must never land in a redirected file.
+      const footer = renderFooter({
+        commands: [
+          { command: `ifit show ${args.name}`, hint: '看元数据与安装状态' },
+          { command: 'ifit list', hint: '列全部 rule' },
+        ],
+      })
+      if (footer !== '') console.error(footer)
     } else if (result.message !== undefined) {
       console.error(result.message)
     }
