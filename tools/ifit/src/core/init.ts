@@ -150,7 +150,9 @@ async function instantiateTemplate(
   })
 
   if (result.timedOut) {
-    return { ok: false, skipped: false, message: `${spec.targetRelPath}: claude instantiation timed out (rerun with --force to complete instantiation)${logHint}` }
+    // carry the stderr tail so a timeout is diagnosable, not a bare message (mirrors iforge)
+    const stderrTail = result.stderr.trim().split('\n').slice(-3).join(' | ')
+    return { ok: false, skipped: false, message: `${spec.targetRelPath}: claude instantiation timed out${stderrTail === '' ? '' : ` (stderr: ${stderrTail})`} (rerun with --force to complete instantiation)${logHint}` }
   }
   if (result.code !== 0) {
     const stderrTail = result.stderr.trim().split('\n').slice(-3).join(' | ')
