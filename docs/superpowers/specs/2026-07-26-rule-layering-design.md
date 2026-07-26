@@ -524,7 +524,26 @@ P1 用单条 brace 展开绕过了(`**/{package.json,tsconfig*.json,*.ts,...}`,
   并标注归属待定。用户判断 constitution 情况特殊,稍后单独处理。
   「MUST NOT 写死条数」那条约束保留不变
 
-- **P2 剩余两处** — 判据做成 skill、framework rule 保留目录树。
+- **P2 第二处已落地(2026-07-26)** — 新建 `code-placement` skill 的元指令
+  与账(`source: custom`,`status: ready`)。它回答「这段代码放哪」:归属判断、
+  共享提升三条准入、模块间通信优先级、何时建领域层、边界层保持薄、禁 barrel。
+  判据跨语言表述,不绑某语言目录名。`description` 写了自然语言触发词
+  (含 "where should this live"),并明确 MUST NOT 设 `user-invocable: false`
+  ——保留 `/code-placement` 手动兜底,因架构决策常发生在会话早期。
+  产物未构建,停在 `missing`
+
+- **P2 第三处已落地(2026-07-26)** — framework rule 按「保留具体目录树、
+  删跳语言判据」处理:
+  - `nestjs` 删掉 shared-kernel 准入三条、贫血/充血阶梯、通信优先级、
+    Controller 不含业务逻辑四组(已被 skill 跨语言涵盖),保留 DDD 四层目录
+    约定、数据库黄金规则、RFC 9457、DI 踩坑
+  - `react` 条目全部保留——它们绑着 `features/`/`lib/`/`config/app-paths.ts`
+    具体目录名,属 TS 侧形态而非跨语言判据;只加了指向 skill 的说明,
+    并标注 barrel 那条「后半是 JS 特有,前半跨语言」
+  - `nextjs` 加指向,不删内容
+  - `go` 的「消费方定义窄接口」「组合优于继承」不动——属接口设计,
+    归上游 `codebase-design` skill 而非本 skill
+
   原计划的:原则 4 条进 constitution、
   判据做成 skill、framework rule 保留目录树
 - **M5 `paths` 多条目** — iforge 侧建模为单条,官方支持 list
