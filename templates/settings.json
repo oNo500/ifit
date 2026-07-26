@@ -1,21 +1,22 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-
-  "model": "sonnet",
-  "fallbackModel": ["claude-sonnet-4-6", "claude-haiku-4-5"],
-  "effortLevel": "high",
-
+  "env": {
+    "ENABLE_LSP_TOOL": "1",
+    "CLAUDE_CODE_DISABLE_MOUSE_CLICKS": "1"
+  },
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "permissions": {
     "allow": [
       "Read",
-
       "Write(src/**)",
       "Write(tests/**)",
       "Edit(src/**)",
       "Edit(tests/**)",
       "MultiEdit(src/**)",
       "MultiEdit(tests/**)",
-
       "Bash(git status:*)",
       "Bash(git log:*)",
       "Bash(git diff:*)",
@@ -28,17 +29,14 @@
       "Bash(git rebase:*)",
       "Bash(git push:*)",
       "Bash(git tag:*)",
-
       "Bash(gh pr:*)",
       "Bash(gh issue:*)",
       "Bash(gh repo:*)",
       "Bash(gh run:*)",
-
       "Bash(node:*)",
       "Bash(npx:*)",
       "Bash(pnpm:*)",
       "Bash(npm run:*)",
-
       "Bash(cat:*)",
       "Bash(echo:*)",
       "Bash(ls:*)",
@@ -53,31 +51,25 @@
       "Bash(tail:*)",
       "Bash(wc:*)",
       "Bash(date:*)",
-
       "Bash(jq:*)",
       "Bash(yq:*)",
-
       "Bash(cp:*)",
       "Bash(mv:*)",
       "Bash(mkdir:*)",
       "Bash(touch:*)",
-
       "WebSearch",
       "WebFetch(domain:*)"
     ],
     "deny": [],
-    "ask": ["Bash(sudo:*)"],
+    "ask": [
+      "Bash(sudo:*)"
+    ],
     "defaultMode": "acceptEdits"
   },
-
-  // MCP server activation per project type (see docs/mcp/ for install instructions):
-  // Generic TS:   ["github", "context7", "fetch"]
-  // With DB:      ["github", "context7", "fetch", "db"]
-  // With browser: ["github", "context7", "playwright"]
-  "enabledMcpjsonServers": ["context7", "fetch"],
-
-  "autoCompactEnabled": true,
-  "fileCheckpointingEnabled": true,
-  "minimumVersion": "2.1.154",
-  "includeCoAuthoredBy": false
+  "language": "中文",
+  "tui": "fullscreen",
+  "autoCompactEnabled": false,
+  "skipDangerousModePermissionPrompt": true,
+  "verbose": true,
+  "fileCheckpointingEnabled": true
 }

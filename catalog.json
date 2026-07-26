@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-26T07:12:17.833Z",
+  "generatedAt": "2026-07-26T07:17:51.779Z",
   "tags": {
     "lang": {
       "exclusive": true,
@@ -44,10 +44,13 @@
       "requires": [],
       "path": "rules/agent-behavior.md",
       "profiles": [
+        "docs",
+        "minimal",
         "nestjs-api",
         "nextjs-app",
-        "python-cli",
-        "react-spa"
+        "python",
+        "react-spa",
+        "ts-lib"
       ]
     },
     "ai-sdk": {
@@ -67,7 +70,13 @@
       ],
       "requires": [],
       "path": "rules/api-verification.md",
-      "profiles": []
+      "profiles": [
+        "nestjs-api",
+        "nextjs-app",
+        "python",
+        "react-spa",
+        "ts-lib"
+      ]
     },
     "constitution": {
       "description": "跨项目核心工程原则与不可违反规则（Library/MVP/FP-First）",
@@ -77,10 +86,13 @@
       "requires": [],
       "path": "rules/constitution.md",
       "profiles": [
+        "docs",
+        "minimal",
         "nestjs-api",
         "nextjs-app",
-        "python-cli",
-        "react-spa"
+        "python",
+        "react-spa",
+        "ts-lib"
       ]
     },
     "context-management": {
@@ -92,10 +104,13 @@
       "requires": [],
       "path": "rules/context-management.md",
       "profiles": [
+        "docs",
+        "minimal",
         "nestjs-api",
         "nextjs-app",
-        "python-cli",
-        "react-spa"
+        "python",
+        "react-spa",
+        "ts-lib"
       ]
     },
     "css": {
@@ -132,7 +147,8 @@
       "profiles": [
         "nestjs-api",
         "nextjs-app",
-        "react-spa"
+        "react-spa",
+        "ts-lib"
       ]
     },
     "docs-retrieval": {
@@ -145,7 +161,9 @@
         "markdown"
       ],
       "path": "rules/docs-retrieval.md",
-      "profiles": []
+      "profiles": [
+        "docs"
+      ]
     },
     "markdown": {
       "description": "Markdown 文档写作规范：结构、格式、术语与来源纪律",
@@ -155,10 +173,12 @@
       "requires": [],
       "path": "rules/markdown.md",
       "profiles": [
+        "docs",
         "nestjs-api",
         "nextjs-app",
-        "python-cli",
-        "react-spa"
+        "python",
+        "react-spa",
+        "ts-lib"
       ]
     },
     "nestjs": {
@@ -199,7 +219,7 @@
       "requires": [],
       "path": "rules/python.md",
       "profiles": [
-        "python-cli"
+        "python"
       ]
     },
     "react": {
@@ -229,7 +249,8 @@
       "profiles": [
         "nestjs-api",
         "nextjs-app",
-        "react-spa"
+        "react-spa",
+        "ts-lib"
       ]
     },
     "tooling": {
@@ -241,10 +262,13 @@
       "requires": [],
       "path": "rules/tooling.md",
       "profiles": [
+        "docs",
+        "minimal",
         "nestjs-api",
         "nextjs-app",
-        "python-cli",
-        "react-spa"
+        "python",
+        "react-spa",
+        "ts-lib"
       ]
     },
     "typescript": {
@@ -257,7 +281,8 @@
       "profiles": [
         "nestjs-api",
         "nextjs-app",
-        "react-spa"
+        "react-spa",
+        "ts-lib"
       ]
     }
   }
