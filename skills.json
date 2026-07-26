@@ -2,6 +2,7 @@
   {
     "name": "ai-sdk",
     "source": "official",
+    "description": "Vercel AI SDK 用法答疑与 AI 功能开发：generateText/streamText、agent、工具调用、结构化输出",
     "repo": "vercel/ai",
     "refUrl": "https://ai-sdk.dev/docs/getting-started/coding-agents"
   },
@@ -19,6 +20,7 @@
   {
     "name": "deep-research",
     "source": "official",
+    "description": "多源联网深研并产出带引用的报告；依赖 firecrawl/exa MCP，上游自标易漂移",
     "repo": "affaan-m/everything-claude-code"
   },
   {
@@ -43,6 +45,7 @@
   {
     "name": "find-skills",
     "source": "official",
+    "description": "在开放 skill 生态中检索并安装 skill；问「有没有能做 X 的 skill」时用",
     "repo": "vercel-labs/skills"
   },
   {
@@ -77,6 +80,7 @@
   {
     "name": "shadcn",
     "source": "official",
+    "description": "shadcn/ui 组件与项目管理：增删查改组件、registry、preset、components.json",
     "repo": "shadcn-ui/ui"
   },
   {
