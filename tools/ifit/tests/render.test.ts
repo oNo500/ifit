@@ -2,6 +2,7 @@ import { describe, expect, test } from 'bun:test'
 import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { upstreamUrl } from '../src/cli/index'
 import { fitToWidth, renderFooter } from '../src/cli/render'
 
 describe('fitToWidth', () => {
@@ -63,6 +64,20 @@ describe('renderFooter', () => {
   // emit a bare separator with nothing under it.
   test('renders nothing when there are no commands', () => {
     expect(renderFooter({ commands: [] })).toBe('')
+  })
+})
+
+describe('upstreamUrl', () => {
+  test('prefers refUrl, the ledger authoritative doc page', () => {
+    expect(upstreamUrl({ refUrl: 'https://ai-sdk.dev/docs', repo: 'vercel/ai' })).toBe('https://ai-sdk.dev/docs')
+  })
+
+  test('falls back to the repo as a fetchable GitHub URL', () => {
+    expect(upstreamUrl({ repo: 'shadcn-ui/ui' })).toBe('https://github.com/shadcn-ui/ui')
+  })
+
+  test('yields nothing when the entry names no origin at all', () => {
+    expect(upstreamUrl({})).toBeUndefined()
   })
 })
 

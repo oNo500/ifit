@@ -232,6 +232,16 @@ const diffCommand = defineCommand({
   },
 })
 
+/**
+ * Where to read an upstream skill's description. refUrl is the ledger's
+ * "authoritative doc page" field and wins when set; otherwise the repo the
+ * install command already names, spelled as a fetchable URL.
+ */
+export function upstreamUrl(skill: { refUrl?: string; repo?: string }): string | undefined {
+  if (skill.refUrl !== undefined && skill.refUrl !== '') return skill.refUrl
+  return skill.repo === undefined ? undefined : `https://github.com/${skill.repo}`
+}
+
 function listStats(result: { rows: unknown[]; skills?: unknown[] }): string | undefined {
   const parts: string[] = []
   if (result.rows.length > 0) parts.push(`${result.rows.length} rules`)
@@ -306,11 +316,10 @@ const listCommand = defineCommand({
         const skillWidth = Math.max(0, ...result.skills.map((s) => s.name.length))
         for (const skill of result.skills) {
           // official skills live upstream, so this repo holds no SKILL.md to
-          // describe them; name the origin instead of printing a blank line.
-          const summary =
-            skill.description !== ''
-              ? skill.description
-              : `(${skill.source}${skill.repo === undefined ? '' : `: ${skill.repo}`}，描述见上游)`
+          // describe them; point at where the description actually is --
+          // refUrl (an authoritative doc page) when the ledger has one,
+          // otherwise the repo it installs from.
+          const summary = skill.description !== '' ? skill.description : (upstreamUrl(skill) ?? '(official，无本地描述)')
           console.log(`${skill.name.padEnd(skillWidth)}  ${fitToWidth(summary, width - skillWidth - 2)}`)
           // Indented so the command is trivially copyable on its own line.
           console.log(`${' '.repeat(skillWidth)}  ${skill.install ?? '(无安装命令：official 条目缺 repo)'}`)
