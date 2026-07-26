@@ -314,15 +314,18 @@ const listCommand = defineCommand({
         if (result.rows.length > 0) console.log('')
         if (showBothKinds) console.log(`SKILLS (${result.skills.length})`)
         const skillWidth = Math.max(0, ...result.skills.map((s) => s.name.length))
+        const indent = ' '.repeat(skillWidth)
         for (const skill of result.skills) {
-          // official skills live upstream, so this repo holds no SKILL.md to
-          // describe them; point at where the description actually is --
-          // refUrl (an authoritative doc page) when the ledger has one,
-          // otherwise the repo it installs from.
-          const summary = skill.description !== '' ? skill.description : (upstreamUrl(skill) ?? '(official，无本地描述)')
+          const url = upstreamUrl(skill)
+          // A skill with no local SKILL.md and no ledger description has nothing
+          // to say about itself -- name that, rather than printing a blank line.
+          const summary = skill.description !== '' ? skill.description : (url === undefined ? '(无描述)' : '(描述见上游)')
           console.log(`${skill.name.padEnd(skillWidth)}  ${fitToWidth(summary, width - skillWidth - 2)}`)
           // Indented so the command is trivially copyable on its own line.
-          console.log(`${' '.repeat(skillWidth)}  ${skill.install ?? '(无安装命令：official 条目缺 repo)'}`)
+          console.log(`${indent}  ${skill.install ?? '(无安装命令：official 条目缺 repo)'}`)
+          // Upstream origin, for reading what the skill actually does. custom
+          // skills come from this repo and have no upstream to point at.
+          if (url !== undefined) console.log(`${indent}  ${url}`)
         }
       }
 

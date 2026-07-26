@@ -76,6 +76,9 @@ describe('upstreamUrl', () => {
     expect(upstreamUrl({ repo: 'shadcn-ui/ui' })).toBe('https://github.com/shadcn-ui/ui')
   })
 
+  // custom skills are published from this repo, so there is no upstream to
+  // point a reader at -- the listing must omit the URL line rather than
+  // inventing one.
   test('yields nothing when the entry names no origin at all', () => {
     expect(upstreamUrl({})).toBeUndefined()
   })
