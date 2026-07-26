@@ -63,6 +63,10 @@
     "refUrl": "https://github.com/mattpocock/skills"
   },
   {
+    "name": "ifit",
+    "source": "custom"
+  },
+  {
     "name": "note",
     "source": "custom"
   },
