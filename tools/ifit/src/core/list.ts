@@ -5,6 +5,8 @@ import { readTextIfExists, sha256 } from './io'
 import type { IfitContext } from './init'
 import { computeDrift, loadDownstreamLock, localHashFor } from './manifest'
 import type { DownstreamLock, DriftState } from './manifest'
+import { listSkills } from './skills'
+import type { SkillRow } from './skills'
 import { resolveSource } from './source'
 import { detectSourceRoot } from './source-root'
 
@@ -21,6 +23,7 @@ export interface ListResult {
   ok: boolean
   message?: string
   rows: ListRow[]
+  skills?: SkillRow[] // 仅在请求 skill 时出现；rule 与 skill 两本账互不相干
   exitCode: number
 }
 
@@ -87,7 +90,7 @@ function buildFilteredRows(opts: {
 
 export async function listReport(
   ctx: IfitContext,
-  opts: { source?: string; target: string; tags?: string[]; grep?: string },
+  opts: { source?: string; target: string; tags?: string[]; grep?: string; kind?: 'rules' | 'skills' | 'all' },
 ): Promise<ListResult> {
   let source: Awaited<ReturnType<typeof resolveSource>>
   try {
@@ -104,6 +107,15 @@ export async function listReport(
   }
 
   const { catalogRoot, artifactBase } = detectSourceRoot(source.root)
+  const kind = opts.kind ?? 'rules'
+
+  // skills are ledger-driven and independent of catalog.json, so a skills-only
+  // listing must not be blocked by the catalog-missing error below.
+  if (kind === 'skills') {
+    const skills = listSkills(source.root, { grep: opts.grep, artifactBase })
+    return { ok: true, rows: [], skills, exitCode: 0 }
+  }
+
   const catalog = loadCatalog(catalogRoot)
   if (catalog === null) {
     return {
@@ -127,5 +139,8 @@ export async function listReport(
     computeState: (name, _rule, sourceContent) => installStateFor({ name, target: opts.target, sourceContent, lock, profiles }),
   })
 
+  if (kind === 'all') {
+    return { ok: true, rows, skills: listSkills(source.root, { grep: opts.grep, artifactBase }), exitCode: 0 }
+  }
   return { ok: true, rows, exitCode: 0 }
 }

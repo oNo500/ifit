@@ -233,33 +233,55 @@ const diffCommand = defineCommand({
 const listCommand = defineCommand({
   meta: {
     name: 'list',
-    description: '列出中心源 catalog 中的 rule；--tag/--grep 过滤；已初始化目标标注安装状态。恒退 0（源/catalog 解析失败除外）。',
+    description:
+      '列出中心源资产：缺省 rule，--skills 只看 skill（带安装命令），--all 两者都看；--tag/--grep 过滤；已初始化目标标注安装状态。恒退 0（源/catalog 解析失败除外）。',
   },
   args: {
     source: { type: 'string', description: '中心源（本地路径或 gh: 定位符；缺省 IFIT_ROOT 或 ~/code/infra-agent/ifit）' },
     tag: { type: 'string', description: '按 tag 过滤（逗号分隔，取交集）' },
     grep: { type: 'string', description: '按名称/描述/正文子串过滤（不区分大小写）' },
+    skills: { type: 'boolean', description: '只列 skill，附推荐安装命令' },
+    all: { type: 'boolean', description: 'rule 与 skill 都列' },
     json: { type: 'boolean', description: '以单行 JSON 输出到 stdout（机器可读）' },
     target: { type: 'positional', required: false, description: '目标项目目录（缺省当前目录）' },
   },
   async run({ args }) {
     const tags = splitNames(args.tag)
+    const kind = args.all === true ? 'all' : args.skills === true ? 'skills' : 'rules'
 
     const result = await listReport(defaultContext(), {
       source: args.source,
       target: args.target ?? process.cwd(),
       tags,
       grep: args.grep,
+      kind,
     })
     if (args.json === true) {
       const payload = result.ok
-        ? { ok: true, rows: result.rows, exitCode: result.exitCode }
+        ? { ok: true, rows: result.rows, ...(result.skills === undefined ? {} : { skills: result.skills }), exitCode: result.exitCode }
         : { ok: false, message: result.message, exitCode: result.exitCode }
       console.log(renderJson(payload))
     } else {
       if (result.message !== undefined) console.log(result.message)
+      const nameWidth = Math.max(0, ...result.rows.map((r) => r.name.length))
       for (const row of result.rows) {
-        console.log([row.name, row.state, row.description].filter((s) => s !== undefined).join('  '))
+        const head = `${row.name.padEnd(nameWidth)}  ${row.description}`
+        console.log(row.state !== undefined ? `${head}  [${row.state}]` : head)
+      }
+      if (result.skills !== undefined && result.skills.length > 0) {
+        if (result.rows.length > 0) console.log('')
+        const skillWidth = Math.max(0, ...result.skills.map((s) => s.name.length))
+        for (const skill of result.skills) {
+          // official skills live upstream, so this repo holds no SKILL.md to
+          // describe them; name the origin instead of printing a blank line.
+          const summary =
+            skill.description !== ''
+              ? skill.description
+              : `(${skill.source}${skill.repo === undefined ? '' : `: ${skill.repo}`}，描述见上游)`
+          console.log(`${skill.name.padEnd(skillWidth)}  ${summary}`)
+          // Indented so the command is trivially copyable on its own line.
+          console.log(`${' '.repeat(skillWidth)}  ${skill.install ?? '(无安装命令：official 条目缺 repo)'}`)
+        }
       }
     }
     process.exitCode = result.exitCode
