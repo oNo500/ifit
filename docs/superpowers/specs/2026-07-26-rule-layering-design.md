@@ -376,6 +376,59 @@ P1 用单条 brace 展开绕过了(`**/{package.json,tsconfig*.json,*.ts,...}`,
 `meta/prompts/rule-build.md` 契约、可能还有 ifit 侧的 contract/schema
 与 `assembleRules`。未做。
 
+### M6. 元指令不该承载决策历史(已清理 2026-07-26)
+
+元指令是 build 的 prompt 输入,每次构建被 AI 完整读一遍。混入决策历史有三害:
+占 prompt 预算却不影响产物;会腐坏(「glob 曾是 X」在下次改动后即错)且无机制
+提醒更新;git log 与本文已记同样的事。
+
+审计范围覆盖 `meta/`、`artifacts/`、`meta/prompts/`、模板与 `.claude/`。结果:
+
+- 污染只在 `meta/rules/` 与 `meta/skills/`,**6 个文件 11 处**
+- `artifacts/` 全部 19 条产物零处历史叙述——构建环节把它过滤掉了,
+  下游项目上下文未被污染
+- `meta/prompts/` 全部契约干净,均为现在时
+
+分界判据:**约束未来行为的留下,叙述过去变更的删掉。**
+
+- 留:「MUST NOT 写死条数」「MUST NOT 提任何具体 ORM」「MUST NOT 因去重删掉
+  任一处」「产物里 MUST 标明这是 DI 专属例外」
+- 删:「glob 曾是 `src/**/*.ts`」「原为 global 落点…故降为 file-scoped」
+  「前身是本仓 dependencies rule(2026-07-16 拆分)」「已于 2026-07-26 拆往
+  orm-ts」「当时误名 clarify」
+- 混合句改写:只保留机制说明,去掉具体事件。例——
+  「写死是 Feature-based、Self-documenting 两条长期漏出的原因」
+  → 「写死会让 SSoT 里新增的原则静默漏出分发链路」
+
+交叉引用不算历史叙述,应留:「本条只管选哪个工具,何时跑归 typescript rule」
+是职责划分。`meta/rules/tooling.md` 引用本 spec 的那段是元指令引用 spec 的
+正确形态——给定位约束 + 环境前提,不叙述「原来是什么」。
+
+未做的机制补强:`meta/prompts/rule-build.md` 只讲产物怎么写,没有一条讲
+元指令自己的内容边界。所以写元指令时把决策理由塞进去没人拦。建议在
+`meta/README.md` 加规范,并让构建契约在读到历史叙述时报出来
+(构建器已有此判断力——本轮它主动报了「元指令自身的一处陈述滞后」)。
+
+### M7. AI 构建不可重现(已知特性,本轮确认)
+
+同一份元指令重建两次,产物措辞会漂移。`artifacts/` 进 git 就是为了这个
+(architecture rule:「git 追踪因 AI 构建不可重现」),人审 diff 是唯一防线。
+
+本轮清理历史叙述后重建 9 条,6 条产生了与清理无关的额外漂移:
+
+- 改进类:`MUST NOT` 替代「禁止」、贫血模型补 Why、`PRAGMA synchronous`
+  补全前缀、markdown 补代码块围栏
+- 损失类:`constitution` 三条 Core Principles 措辞被重写
+  (「禁止重复造轮子」删掉、「禁止…预建抽象」降为「不为」);
+  `nestjs` 列表嵌套结构被拉平,代码块从列表项内缩进变成顶格
+
+本轮裁决:全部接受新版。但要知道**改一句元指令注释就可能触发产物全文重写**。
+
+可选的机制补强(未做):`rule-build.md` 加「已存在产物时 MUST 只改元指令变动
+涉及的部分,MUST NOT 重写无关段落」。本轮 visualize 的构建器已自发这么做了
+(「本次实际修改:把格式选型里的禁用表格补成…产物其余部分本就与元指令对齐,
+未作改动」),说明这条约束可行。
+
 ### M3. glob 覆盖缺口清单
 
 - `testing.md` — 只认 `**/*.{test,spec,e2e-spec}.{ts,tsx,js,jsx}`,
