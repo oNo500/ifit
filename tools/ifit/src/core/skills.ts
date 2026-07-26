@@ -11,6 +11,7 @@ import { readTextIfExists } from './io'
 export interface SkillEntry {
   name: string
   source: 'custom' | 'mirror' | 'official'
+  description?: string
   repo?: string
   path?: string
   commit?: string
@@ -105,10 +106,14 @@ export function listSkills(root: string, opts?: { grep?: string; artifactBase?: 
     const skillMd = join(skillsBase, 'skills', entry.name, 'SKILL.md')
     const present = existsSync(join(skillsBase, 'skills', entry.name))
     const content = readTextIfExists(skillMd)
+    // The ledger's own description wins: it is the only source for an official
+    // skill (no local directory to read a SKILL.md from), and where both exist
+    // the ledger is the curated one.
+    const fromSkillMd = content === null ? '' : descriptionFromSkillMd(content)
     const row: SkillRow = {
       name: entry.name,
       source: entry.source,
-      description: content === null ? '' : descriptionFromSkillMd(content),
+      description: entry.description !== undefined && entry.description !== '' ? entry.description : fromSkillMd,
       install: installCommandFor(entry),
       present,
       ...(entry.repo === undefined ? {} : { repo: entry.repo }),

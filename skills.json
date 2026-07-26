@@ -6,6 +6,13 @@
     "refUrl": "https://ai-sdk.dev/docs/getting-started/coding-agents"
   },
   {
+    "name": "codebase-design",
+    "source": "official",
+    "description": "深模块接口设计的共享词表：接缝位置、可测性、AI 可导航性",
+    "repo": "mattpocock/skills",
+    "refUrl": "https://github.com/mattpocock/skills"
+  },
+  {
     "name": "commit-lite",
     "source": "custom"
   },
@@ -13,6 +20,13 @@
     "name": "deep-research",
     "source": "official",
     "repo": "affaan-m/everything-claude-code"
+  },
+  {
+    "name": "domain-modeling",
+    "source": "official",
+    "description": "领域模型与统一语言的建立与打磨，架构决策记录（ADR）",
+    "repo": "mattpocock/skills",
+    "refUrl": "https://github.com/mattpocock/skills"
   },
   {
     "name": "drawio",
@@ -32,12 +46,33 @@
     "repo": "vercel-labs/skills"
   },
   {
+    "name": "grilling",
+    "source": "official",
+    "description": "对计划或决策的相对逼问，压测思路直到站得住",
+    "repo": "mattpocock/skills",
+    "refUrl": "https://github.com/mattpocock/skills"
+  },
+  {
+    "name": "handoff",
+    "source": "official",
+    "description": "把当前会话压缩成交接文档，供另一个 agent 接手",
+    "repo": "mattpocock/skills",
+    "refUrl": "https://github.com/mattpocock/skills"
+  },
+  {
     "name": "note",
     "source": "custom"
   },
   {
     "name": "obsidian-cli",
     "source": "custom"
+  },
+  {
+    "name": "prototype",
+    "source": "official",
+    "description": "抛弃式原型：验证状态模型或交互是否成立",
+    "repo": "mattpocock/skills",
+    "refUrl": "https://github.com/mattpocock/skills"
   },
   {
     "name": "shadcn",
@@ -47,5 +82,12 @@
   {
     "name": "visualize",
     "source": "custom"
+  },
+  {
+    "name": "writing-great-skills",
+    "source": "official",
+    "description": "写 skill 的方法论参考：调用方式取舍、信息阶梯、剪枝与失效模式",
+    "repo": "mattpocock/skills",
+    "refUrl": "https://github.com/mattpocock/skills"
   }
 ]

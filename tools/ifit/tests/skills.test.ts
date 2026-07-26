@@ -137,6 +137,28 @@ describe('listSkills', () => {
     }
   })
 
+  // An official skill has no local directory, so the ledger's own description is
+  // the only one there is -- and where a directory does exist, the ledger entry
+  // is the curated text and outranks the upstream frontmatter.
+  test('prefers the ledger description over SKILL.md frontmatter', () => {
+    const dir = fixtureSource()
+    try {
+      const ledger: SkillEntry[] = [
+        { name: 'commit-lite', source: 'custom', description: '账里的描述' },
+        { name: 'upstream-only', source: 'official', repo: 'x/y', description: '仅账描述' },
+      ]
+      writeFileSync(join(dir, 'skills.json'), `${JSON.stringify(ledger, null, 2)}\n`)
+
+      const rows = listSkills(dir)
+      expect(rows.find((r) => r.name === 'commit-lite')?.description).toBe('账里的描述')
+      const official = rows.find((r) => r.name === 'upstream-only')
+      expect(official?.description).toBe('仅账描述')
+      expect(official?.present).toBe(false)
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
+  })
+
   test('filters by case-insensitive substring across name and description', () => {
     const dir = fixtureSource()
     try {
