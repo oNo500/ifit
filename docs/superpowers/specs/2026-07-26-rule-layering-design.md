@@ -388,9 +388,24 @@ P1 用单条 brace 展开绕过了(`**/{package.json,tsconfig*.json,*.ts,...}`,
 语义等价、10 个展开 pattern 远在预算内),但这不是通用解:
 需要「TS 源文件 + migration 目录」这类**不同前缀**组合时,单条 glob 表达不了。
 
-改动面:`manifest.ts` 类型、`kinds.ts` 的 verifyArtifact、
-`meta/prompts/rule-build.md` 契约、可能还有 ifit 侧的 contract/schema
-与 `assembleRules`。未做。
+**已实现(2026-07-26)。** 改动全在 iforge,五处:
+
+- `assets.schema.json` — `paths` 改 `oneOf: [string, array(minItems:1)]`
+- `manifest.ts` — `RuleEntry.paths?: string | string[]`
+- `meta.ts` — `MetaAsset.paths` 内部统一为 `string[] | null`,
+  新增 `normalizePaths` 把单条字符串归一成数组,下游只处理一种形态
+- `kinds.ts` — 新增导出 `pathsFrontmatter(globs)` 单点定义那个精确字节块,
+  `verifyArtifact` 改用它;错误信息 join 全部 glob
+- `rule-build.md` — 说明数组时逐条一行,顺序须与 manifest 一致
+
+ifit 侧**无需改动**:它不读 `paths`,产物即安装形态,原样拷贝。
+
+设计决定:空数组由 schema 拒绝而非归一成 null——声明了 `paths` 却给零个 glob
+是写错了,静默当 global 会让 rule 无声地从 file-scoped 变成无条件加载。
+
+向后兼容已验证:19 条现有 rule 全是单条写法,改动前后 `iforge status`
+输出完全一致。测试 152 pass(新增 2 条:多条目渲染含顺序敏感性、
+归一的三种输入形态)。
 
 ### M6. 元指令不该承载决策历史(已清理 2026-07-26)
 
@@ -546,7 +561,6 @@ P1 用单条 brace 展开绕过了(`**/{package.json,tsconfig*.json,*.ts,...}`,
 
   原计划的:原则 4 条进 constitution、
   判据做成 skill、framework rule 保留目录树
-- **M5 `paths` 多条目** — iforge 侧建模为单条,官方支持 list
 - **`testing` 停在 `modified`** — 产物已正确生成(拆分完成、glob 更新、
   红线泛化到三语言),但构建被 API 529 打断在更新 lock 前。产物保留,
   下次明确构建时一并转 synced。注意 publish 只选 synced,该条暂发不出去
