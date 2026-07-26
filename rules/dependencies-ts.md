@@ -1,3 +1,8 @@
+---
+paths:
+  - "**/{package.json,tsconfig*.json,*.ts,*.tsx,*.mts,*.cts,*.js,*.jsx,*.mjs,*.cjs}"
+---
+
 # TS/JS Dependencies
 
 - 选包先查 e18e 生态（e18e/awesome）找轻量替代，同类之间优先小而精——依赖即债务，引入的体积与维护面越小越好

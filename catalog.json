@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-26T08:35:10.449Z",
+  "generatedAt": "2026-07-26T08:43:07.811Z",
   "tags": {
     "lang": {
       "exclusive": true,
@@ -219,6 +219,18 @@
       "path": "rules/nextjs.md",
       "profiles": [
         "nextjs-app"
+      ]
+    },
+    "orm-ts": {
+      "description": "TS 端 ORM 选型（Drizzle 主线）与 drizzle-kit 迁移红线",
+      "tags": [
+        "ts",
+        "backend"
+      ],
+      "requires": [],
+      "path": "rules/orm-ts.md",
+      "profiles": [
+        "nestjs-api"
       ]
     },
     "python": {
