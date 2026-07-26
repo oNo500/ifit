@@ -40,12 +40,14 @@ paths:
 
 - 已确定要画图时，形式选 Mermaid 而非 ASCII art 或截图（该不该用图由 docs-retrieval rule 判，与本条不同层）
 
+  ````markdown
   ```mermaid
   graph TD
       A[Input] --> B{Decision}
       B -->|Yes| C[Action]
       B -->|No| D[Skip]
   ```
+  ````
 
 - 结构化 ASCII（目录树、状态机、拓扑）信息密度高，可用；MUST NOT 使用装饰性 ASCII（花框、分隔线、ASCII art）
 
