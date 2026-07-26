@@ -1,6 +1,6 @@
 ---
 paths:
-  - "src/**/*.ts"
+  - "**/*.{module,controller,service,repository,guard,interceptor,pipe,filter,decorator,dto,entity}.ts"
 ---
 
 # NestJS
@@ -72,10 +72,17 @@ src/
 - Controller 不含业务逻辑：只做参数校验、调用 service、组装响应
 - 错误统一转 RFC 9457 Problem Details（`type`/`title`/`status`/`detail`/`instance`）
 
+## 命名与导入
+
+- 类私有字段用 `#` 语法，不用 `_` 前缀约定
+- 导入用 `@/*` 别名
+
 ## 踩坑纪录
 
 - MUST 关闭 `typescript/consistent-type-imports` lint 规则——NestJS DI 依赖
   constructor 参数的运行时类引用，该规则会将注入类错误转成 `import type`，
-  类型擦除后 DI token 变 undefined，注入失败
-- constructor 参数属性（DI 注入）保留 `private readonly` 写法——typescript rule
-  的 `#` 私有字段约定不适用于此，TS 参数属性语法不支持 `#`
+  类型擦除后 DI token 变 undefined，注入失败。这是 DI 注入类专属的例外，
+  不推翻 typescript rule 的 `import type` 约定：该约定对本项目其余纯类型导入
+  依然成立，只有进入 DI 容器的 constructor 参数类型豁免
+- constructor 参数属性（DI 注入）保留 `private readonly` 写法——上面的 `#`
+  私有字段约定不适用于此，TS 参数属性语法不支持 `#`

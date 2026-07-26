@@ -38,7 +38,7 @@ paths:
 
 ## 图示
 
-- 表达架构、流程、关系优先 Mermaid
+- 已确定要画图时，形式选 Mermaid 而非 ASCII art 或截图（该不该用图由 docs-retrieval rule 判，与本条不同层）
 
   ```mermaid
   graph TD
