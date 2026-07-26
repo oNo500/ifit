@@ -78,7 +78,28 @@ NestJS 分层与 DI 踩坑无条件灌入。需收窄为 NestJS 特征路径,或
 但 Python module 名不能用 kebab-case(`import my-mod` 是语法错误)。
 条目本身有正确性缺口,需记录豁免。
 
-## P1 — global 层的语言污染
+## P1 — global 层的语言污染(已完成 2026-07-26)
+
+三处全部降为 file-scoped。global 层从 7 条收敛到 5 条
+(constitution、agent-behavior、context-management、tooling、database),
+复扫无语言/框架专属工具名。
+
+共同根因:三条元指令都写着「global 落点(由 profile 决定是否装入)」
+——把 profile 门控当成了作用域控制。但 profile 只决定装不装,装了就无条件
+加载,在 monorepo 里写其他语言时照样常驻。
+
+处理:
+
+- G1 `dependencies-ts` → `**/{package.json,tsconfig*.json,*.ts,*.tsx,...}`,
+  单条 glob 合并「改依赖清单时」与「写代码选库时」两类触发点
+- G2 `database` 拆分:TS ORM 选型三条拆出新 rule `orm-ts`
+  (`**/*.{ts,mts,cts}`),`database` 留游标分页与 SQLite WAL 两条跨语言事实,
+  元指令加了「MUST NOT 提任何具体 ORM 或语言」的约束。`nestjs-api` profile
+  补 `orm-ts`
+- G3 `ai-sdk` → `**/*{ai,llm,agent,chat,prompt,completion,embedding}*.{ts,tsx}`。
+  它是选型偏好而非跨场景纪律,漏触发代价低于常驻成本
+
+### 原始清单
 
 global 无条件加载,却写死特定栈,装到其他语言项目即噪音。
 
@@ -322,8 +343,38 @@ MVP-First、FP-First)」。这是 Feature-based 与 Self-documenting 被丢掉�
 typescript/python/go(命令)。前三处显式回指 agent-behavior,是受控的
 「原则 global + 命令 per-language」分层,属良性。
 
-但 `dependencies-ts.md:7` 第四次重复了 `tsc --noEmit` + oxlint 的选型,
-与 `typescript.md:15` 冗余,该处应删。
+审计原判「`dependencies-ts` 第四次重复 `tsc --noEmit` + oxlint,该处应删」
+**不采纳**(2026-07-26 复审):两处职责不同——`dependencies-ts` 管
+**选哪个工具**(选 oxlint 而非 ESLint、选 tsc 做 type check),
+`typescript` 管**何时跑**(编辑批次完成后)。同一命令名出现两次不是冗余。
+已在 `dependencies-ts` 元指令里标明这个分工,防止以后被当成重复删掉。
+
+### M5. iforge 不支持 `paths` 多条目(2026-07-26 发现)
+
+Claude Code 官方支持 `paths` 为多条目 list,是一等语法:
+
+```yaml
+paths:
+  - "src/**/*.{ts,tsx}"
+  - "lib/**/*.ts"
+  - "tests/**/*.test.ts"
+```
+
+预算是「a rule's whole `paths` **list** shares one budget of 1,000 expanded
+patterns and 4 MiB」(memory 文档)。
+
+但 iforge 侧建模为单条:`manifest.ts` 的 `paths?: string`,
+`kinds.ts` 的 `verifyArtifact` 按
+`` `---\npaths:\n  - "${asset.paths}"\n---\n\n` `` 精确匹配产物开头。
+多条目产物过不了校验。
+
+P1 用单条 brace 展开绕过了(`**/{package.json,tsconfig*.json,*.ts,...}`,
+语义等价、10 个展开 pattern 远在预算内),但这不是通用解:
+需要「TS 源文件 + migration 目录」这类**不同前缀**组合时,单条 glob 表达不了。
+
+改动面:`manifest.ts` 类型、`kinds.ts` 的 verifyArtifact、
+`meta/prompts/rule-build.md` 契约、可能还有 ifit 侧的 contract/schema
+与 `assembleRules`。未做。
 
 ### M3. glob 覆盖缺口清单
 
