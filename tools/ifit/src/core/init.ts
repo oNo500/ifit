@@ -368,6 +368,13 @@ export async function runInit(
       ? ['注意：项目根仍有 CLAUDE.md；本次已落位到 .claude/CLAUDE.md，两者会同时加载，确认后可删除根文件']
       : []
 
+  // rule 与 skill 是两条独立分发链：ifit 只装 rule，skill 由 pnpx skills 管。
+  // 大量横切内容（落位判据、命名规范、检索链等）住在 skill 里，装完 rule 的
+  // 项目若不装 skill 就只有 tooling 的担保条指路，故在此显式提示一次。
+  const skillNote = [
+    'skill 不随 ifit 安装，用 pnpx skills 管理：`ifit list --skills` 查可选项与安装命令',
+  ]
+
   // 实例化循环的清理是不变量：无论成功、失败(!ok)、还是抛异常，都必须收敛
   // .ifit-staging——成功清掉全部暂存；失败/异常保留暂存（含 claude 事件日志）供
   // 排错，并确保它进 .gitignore 不被误提交。故用 try/finally，异常路径也走清理。
@@ -422,7 +429,12 @@ export async function runInit(
 
   return {
     ok: true,
-    message: [`initialized profile '${opts.profile}' from ${source.locator}`, ...notes, ...legacyNote].join('\n'),
+    message: [
+      `initialized profile '${opts.profile}' from ${source.locator}`,
+      ...notes,
+      ...skillNote,
+      ...legacyNote,
+    ].join('\n'),
     steps: finalSteps,
   }
 }
