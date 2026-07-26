@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-26T05:55:30.545Z",
+  "generatedAt": "2026-07-26T06:58:28.138Z",
   "tags": {
     "lang": {
       "exclusive": true,
@@ -58,6 +58,15 @@
       ],
       "requires": [],
       "path": "rules/ai-sdk.md",
+      "profiles": []
+    },
+    "api-verification": {
+      "description": "API 用法查证时机：项目内无先例才查，凭训练数据写是默认失效",
+      "tags": [
+        "workflow"
+      ],
+      "requires": [],
+      "path": "rules/api-verification.md",
       "profiles": []
     },
     "constitution": {
