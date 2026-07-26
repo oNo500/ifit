@@ -205,16 +205,22 @@ dependency-cruiser)。实质原则全部落在两个 glob 后面,写 Python/Go/�
 
 - **SOLID 五条** — 教科书知识模型已有,整块分发只烧上下文。仅 DIP 与 ISP
   有非显然的操作边,且已被上面两条覆盖。建议不整块分发
-- **类型集中 `src/types/`** — 与 feature-based 及 `react.md` 的
-  feature 内 `types.ts` **直接矛盾**,且集中 `index.ts` 本身就是
-  `react.md` 禁的 barrel。notes 该条标 `growing`、日期早于 feature-based 决策,
-  疑为过期。需人裁决:退役该笔记,或写下明确的作用域豁免
+- **类型集中 `src/types/`**(已裁决 2026-07-26:**不进分发链路**)
+  — notes 仓 `TS-工程实践.md` 要求「所有类型集中 `src/types/`,禁止在
+  组件/服务内定义临时类型」+「通过 `index.ts` 统一导出」。与现有 rule
+  三重矛盾:`react.md` 把 `types.ts` 放在 feature 内;集中式的汇总
+  `index.ts` 正是 `react.md` 禁的 barrel;而 constitution 的 Feature-based
+  要求按业务能力组织。该笔记标 `tags: [growing]`、2025-06 创建,
+  早于 feature-based 决策,判定过期。
+  **feature-based 胜出,该条 MUST NOT 作为素材进入任何 rule。**
+  不改 notes(那是用户的仓),此处记录裁决以防再次被捐入
 - **API 设计** — RFC 9457 已在 `nestjs.md`、游标分页已在 `database.md`。
   未分发的是版本策略(URL Path)与成功响应封套形状。前者可移植,
   后者疑为项目事实而非可移植规则
-- **Electron 安全基线** — 有真实的非显然纪律(preload 最小暴露、
-  校验 `event.senderFrame`),但 notes 是概念讲解形态,提炼需从约 20 份文件
-  抽 5-8 行。且当前无 profile 面向 Electron。有活跃 Electron 项目才值得做
+- **Electron 安全基线**(已裁决 2026-07-26:**不做**)
+  — 有真实的非显然纪律(preload 最小暴露、校验 `event.senderFrame`),
+  但 notes 是概念讲解形态,提炼需从约 20 份文件抽 5-8 行,且当前无活跃
+  Electron 项目、无 profile 面向它。有项目时再起
 - **Web 安全响应头** — 多为参考文档;唯一明确可分发的
   「untrusted 边界 MUST parse」已在 `dependencies-ts.md`。CSP 骨架更像模板
   而非 rule,建议走模板链
@@ -236,10 +242,11 @@ dependency-cruiser)。实质原则全部落在两个 glob 后面,写 Python/Go/�
 - **skill 漏触发的代价接受。** 漏触发的根因是「识别当前正在做架构决策」
   这一步,任何机制都消除不了它,只能改变它发生在哪一层
 
-待解决(记录在案,非本阶段):rule 引用 skill 的引用完整性没有机制保证。
-rule 与 skill 在 iforge 是两条独立流水线,profile 校验只查 rule 间
-`requires`,一条 rule 提到某 skill 时无法校验它是否装了,
-`iforge status` / `ifit status` 也对不了这个账。
+引用完整性(已裁决 2026-07-26:**不做**)。rule 与 skill 在 iforge 是两条
+独立流水线,profile 校验只查 rule 间 `requires`,一条 rule 提到某 skill 时
+无法校验它是否装了。但实际落地的 `tooling` 那条**指向 `ifit list --skills`
+查询命令而非具体 skill 名**,已从根上规避:命令是稳定契约,skill 改名/拆分
+都不影响,且输出自带安装命令,构成自恢复闭环。无需再建校验机制。
 
 三处形态:
 
@@ -476,15 +483,32 @@ P1 用单条 brace 展开绕过了(`**/{package.json,tsconfig*.json,*.ts,...}`,
 5. **M3 glob 补全 + M4 跨语言条目** — 机械性工作,可批量
 6. **存疑项** — 逐项人裁决,尤其 B2(类型集中与 feature-based 矛盾)
 
-## 待人裁决清单
+## 裁决记录
 
-已裁决:架构内容承载体(见上节)。
+全部已定(2026-07-26):
 
-待定:
+- 架构内容承载体 → 原则进 constitution / 判据进 skill / 目录树留
+  framework rule;兜底交上游 code-review,本阶段不自建
+- rule 侧工作流指引 → global 层的 `tooling`,指向 `ifit list --skills`
+  查询命令而非点名 skill
+- `nestjs.md` glob → 按 NestJS 特征文件名后缀收窄
+- `ai-sdk.md` → 降 file-scoped(保留在 rule 体系内)
+- `src/types/` 与 feature-based 矛盾 → feature-based 胜出,笔记判定过期,
+  不进分发链路
+- Electron rule → 不做,有活跃项目再起
+- `testing.md` → 扩跨语言 glob,但拆分:跨语言纪律留 `testing`,
+  Python/Go 的组织约定归各自语言 rule
+- rule 引用 skill 的引用完整性 → 不做,指向命令已规避
 
-- rule 侧工作流指引放哪一层、指引粒度(点名 skill 还是只写环节)
-- `nestjs.md` glob 怎么收窄(特征路径?还是靠 requires 门控?)
-- `ai-sdk.md` 去留(降 scoped 还是迁出 rule 体系)
-- `src/types/` 集中式与 feature-based 的矛盾(退役笔记?还是写豁免?)
-- Electron rule 是否值得做(取决于有无活跃项目)
-- `testing.md` 是否扩成跨语言 glob(涉及 Python 并置惯例与生态相反的问题)
+## 未完成的工作
+
+- **P2 架构内容搬迁** — 承载体已定但一条未动:原则 4 条进 constitution、
+  判据做成 skill、framework rule 保留目录树
+- **M5 `paths` 多条目** — iforge 侧建模为单条,官方支持 list
+- **`testing` 停在 `modified`** — 产物已正确生成(拆分完成、glob 更新、
+  红线泛化到三语言),但构建被 API 529 打断在更新 lock 前。产物保留,
+  下次明确构建时一并转 synced。注意 publish 只选 synced,该条暂发不出去
+- **`go` / `python` 停在 `outdated`** — 元指令已改完(抑制注释纪律、
+  标识符 case 约定、python 测试节、go 测试组织),等构建
+- **`go` 与 `ai-sdk` 是孤儿 rule** — 无 profile 引用。需要时
+  `--rules` 手拼,或建 profile
