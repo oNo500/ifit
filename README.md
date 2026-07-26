@@ -17,7 +17,7 @@ rule、模板。资产内容由开发仓（`~/code/infra-agent/iforge`）构建�
 - [`catalog.json`](catalog.json) — 资产查询视图（描述/tags/profile 隶属），供 `ifit list/show` 消费
 - [`profiles.json`](profiles.json) — rule 组合账：项目 profile 显式清单
 - [`rules/`](rules/) — 可分发 rule 产物，产物即安装形态：file-scoped 规则自带 `paths` frontmatter，`ifit` 原样拷贝，不做安装时渲染（`ifit cat <name>` 即产物原文）
-- [`templates/`](templates/) — 新项目模板（CLAUDE.md、settings.json、architecture 等），分发时按目标项目实例化占位符
+- [`templates/`](templates/) — 新项目模板：`claude-md.md` 与 `architecture.md` 含占位符，分发时按目标项目实例化；`settings.json` 是最终形态，整份拷贝
 - [`schema/`](schema/) — 数据契约：catalog/profiles 两份 JSON
   Schema（发布副本，SSoT 在开发仓 `packages/meta-cli/schema/`）。`ifit`
   据此生成契约类型（包内 `pnpm codegen`）并在加载数据时做 ajv 运行时校验
@@ -55,6 +55,20 @@ ifit update <project>                  # 拉中心源新版（本地被改的默
 ifit update --add x --remove y <project>   # 显式增装（含回补排除）/ 移除（删副本并记入排除）
 # 子命令面 100% 命令式（AI/脚本稳定契约），全命令支持 --json
 ```
+
+> [!IMPORTANT]
+> `ifit init` 的落位分两类，其中一类要起 claude 进程：
+>
+> - **直接复制**（纯文件操作）：`rules/` 下的 rule 原样拷进
+>   `.claude/rules/`、`templates/settings.json` 拷成 `.claude/settings.json`、
+>   `.claude/ifit.lock.json` 由 CLI 生成
+> - **AI 实例化**（headless claude）：只有 `.claude/rules/architecture.md`
+>   与 `.claude/CLAUDE.md` 两份——模板含 `[ALL_CAPS]` 占位符，要读目标项目
+>   真实结构才能填
+>
+> 所以 init 需要环境里有可用的 `claude`，缺了会失败而非降级。claude 只写
+> `.ifit-staging/`，落位由 CLI 完成（`.claude/**` 是权限敏感路径，headless
+> 放行不了直写）；任一模板失败即回滚本轮落位，暂存目录连事件日志保留供排错。
 
 本仓收到 publish 提交并 push 后，其他设备 `git pull` 再 `ifit update`
 各项目，skill 用 `pnpx skills update` 更新。
