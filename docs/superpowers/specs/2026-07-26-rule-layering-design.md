@@ -255,6 +255,15 @@ dependency-cruiser)。实质原则全部落在两个 glob 后面,写 Python/Go/�
 - 新 skill — 带判据的内容(shared-kernel 准入三条、`lib/` vs `utils/`
   判据、模块通信优先级、贫血/充血阶梯)。保留 `/<name>` 手动兜底,
   **不设** `user-invocable: false`
+
+  查重结论(2026-07-26):账里两个上游架构类 skill **不覆盖**这些内容,
+  互补而非重复,新建不算造轮子——
+  `codebase-design`(mattpocock/skills)是深模块设计词表:模块/接口/实现、
+  深度、seam 位置、leverage 与 locality,管「接口该多深、缝放哪」;
+  `domain-modeling`(同上游)管领域术语、统一语言与 ADR 记录。
+  要搬的是**目录归属与共享提升的判据**:新功能放哪个 feature、
+  `lib/` 与 `utils/` 怎么分、什么条件才能提升到 shared。三者不冲突。
+  两个上游 skill 当前均未装在本机(`source: official`,只记 repo)
 - framework rule — 各自的具体目录树留原处,作为原则的语言侧实例。
   触发条件确实是「在编辑这类文件」,glob 是准确的
 
@@ -502,7 +511,21 @@ P1 用单条 brace 展开绕过了(`**/{package.json,tsconfig*.json,*.ts,...}`,
 
 ## 未完成的工作
 
-- **P2 架构内容搬迁** — 承载体已定但一条未动:原则 4 条进 constitution、
+- **P2 第一处已落地(2026-07-26)** — 四条原则全进 `constitution`:
+  Feature-based 与 Self-documenting 随 M1 修复进入(第五、六条),
+  Acyclic Dependencies 与 Rule of Three 本次新增(第七、八条)。
+  两条都只写原则本身,判据明确指向 framework rule 与架构 skill。
+  产物未重建(用户要求不构建),`constitution` 停在 `outdated`
+
+  **SSoT 归属待定**:M1 曾把元指令写成「Core Principles 以用户个人
+  `~/.claude/CLAUDE.md` 的 Core Principles 节为准」,但新增这两条不在该节里,
+  契约会自相矛盾——构建器照契约会把它们删掉。已把元指令改为「清单以本元指令
+  为准,允许收录不在个人 CLAUDE.md 的原则,MUST NOT 因不在那里而删除」,
+  并标注归属待定。用户判断 constitution 情况特殊,稍后单独处理。
+  「MUST NOT 写死条数」那条约束保留不变
+
+- **P2 剩余两处** — 判据做成 skill、framework rule 保留目录树。
+  原计划的:原则 4 条进 constitution、
   判据做成 skill、framework rule 保留目录树
 - **M5 `paths` 多条目** — iforge 侧建模为单条,官方支持 list
 - **`testing` 停在 `modified`** — 产物已正确生成(拆分完成、glob 更新、
