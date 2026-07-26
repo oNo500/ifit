@@ -40,6 +40,10 @@ paths:
 ## 类型
 
 - 类型检查用 pyright
+- MUST NOT 用抑制注释压掉诊断（`# type: ignore`、`# noqa`）——被压掉的错误不会消失，
+  只会失去追踪。必须压时 MUST 收窄到具体规则码并在同行注明原因
+  - 正：`x = f(y)  # type: ignore[arg-type]  # 上游 stub 把 path 标成 str，实际收 Path`
+  - 反：`x = f(y)  # type: ignore`
 - 注解用现代语法（ruff 的 UP 系列可自动迁移；未配 ruff 的项目手动遵守）：
   - 联合类型（PEP 604）：正 `int | None`；反 `Optional[int]`、`Union[int, str]`
   - 内置容器泛型（PEP 585）：正 `list[int]`、`dict[str, int]`；反 `typing.List[int]`

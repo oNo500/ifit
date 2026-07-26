@@ -5,8 +5,8 @@ paths:
 
 # Next.js
 
-Next.js App Router 专属结构约定。通用 React 架构（feature-based、目录语义、
-状态管理阶梯）见 react rule，此处不重复。
+Next.js App Router 专属结构约定。通用 React 架构与 `features/` 目录语义见
+react rule，「边界层保持薄」的跨语言判据见 `code-placement`，此处均不重复。
 
 ## app/ 只做路由编排
 

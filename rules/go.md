@@ -7,6 +7,8 @@ paths:
 
 工具链选型与从 JS/TS 换栈时最易写错的惯用法。语法与并发模式属可查阅内容，
 本 rule 只写选型纪律与判断；格式细节由 gofmt 强制，不在此重述。
+接口设计与组合见 codebase-design skill，并发见 go-concurrency skill，
+标识符命名见 naming-conventions skill，测试组织见 testing rule。
 
 ## 权威校验
 
@@ -38,30 +40,18 @@ paths:
 
 - `github.com/pkg/errors` 已废弃（`%w` 进标准库），新代码 MUST NOT 引入
 
-## 接口与组合
+## 零值可用
 
-- 接口隐式满足，惯例在**消费方**定义窄接口，而非实现方声明——
-  这让 mock 退化成传入假实现，不需要 mock 框架：
-
-  ```go
-  // 消费方 package，只声明自己用得到的方法
-  type UserStore interface {
-      Find(ctx context.Context, id string) (*User, error)
-  }
-
-  func NewHandler(store UserStore) *Handler { return &Handler{store: store} }
-  ```
-
-- 组合优于继承：无 class 无继承，用 struct 嵌入 + interface 组合
-
-## 并发
-
-- goroutine 无「函数颜色」（无 async 传染），但 MUST 明确生命周期归属：
-  每个 goroutine 都要有能取消它的 `context`，或能等它的 `WaitGroup`/`errgroup`，
-  MUST NOT 起了不管
-- 传数据用 channel，护共享状态用 `sync.Mutex`
+- 变量声明即被初始化为零值，不存在 undefined
 - 零值可用的类型（`sync.Mutex`、`bytes.Buffer`）声明即用，不必初始化
 
-## 测试
+## lint 抑制
 
-- 用内建 `testing` + table-driven tests，不引入 BDD 框架
+- MUST NOT 用裸 `//nolint` 压掉 golangci-lint 报告——被压掉的问题不会消失，
+  只会失去追踪
+- 必须压时 MUST 收窄到具体 linter 并紧跟原因：
+
+  ```go
+  //nolint:errcheck // 原因：清理路径的 Close 失败无可挽回，调用方无需感知
+  defer f.Close()
+  ```

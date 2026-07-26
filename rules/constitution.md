@@ -26,6 +26,15 @@
 
 语义命名优于注释；注释写 why，不写 what。
 
+### 七、Acyclic Dependencies
+
+依赖单向流动，禁止跨层跳跃与反向依赖。
+
+### 八、Rule of Three
+
+重复两次容忍，第三次才抽象——相似不等于重复：两段代码看起来一样但
+变化原因不同，强行合并就是过早抽象。
+
 ---
 
 ## 不可违反规则
@@ -34,6 +43,5 @@
   或 snake_case 惯例开豁免。唯一例外是语言语法强制处——Python 的 module
   与 package 名 MUST 用 snake_case（`import my-mod` 是语法错误）
 - **禁止 emoji**：源代码中禁止使用 emoji（注释、日志输出除外，需明确标注原因）
-- **Commit language**：commit message 使用英文，遵循 Conventional Commits 格式
 - **不修改生成文件**：生成物禁止手动编辑，改其源再重新生成；判据是文件自称
   生成（头部 generated/DO NOT EDIT 标记）或由构建步骤产出

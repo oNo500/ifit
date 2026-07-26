@@ -57,10 +57,8 @@ require-unicode-regexp 等）：目标项目配了 lint 时以 lint 配置为准
 - 正则统一带 `u` flag——正确处理 surrogate pair，非法转义在编译期报错
   - 正：`/\w+/gu`；反：`/\w+/g`
 
-## 枚举与类
+## 枚举
 
 - MUST NOT 用 `enum`；用 `as const` 对象 + 派生联合类型——字面量联合零运行时开销、
   无 IIFE 编译产物、类型更安全
   - 正：`const Status = { Open: "open", Done: "done" } as const; type Status = typeof Status[keyof typeof Status]`；反：`enum Status { Open, Done }`
-- 类的私有字段用 `#` 语法，不用 `_` 前缀约定——`#` 是语言级私有，运行时真正不可访问
-  - 正：`#cache = new Map()`；反：`private _cache = new Map()`

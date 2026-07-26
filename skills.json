@@ -7,6 +7,10 @@
     "refUrl": "https://ai-sdk.dev/docs/getting-started/coding-agents"
   },
   {
+    "name": "code-placement",
+    "source": "custom"
+  },
+  {
     "name": "codebase-design",
     "source": "official",
     "description": "深模块接口设计的共享词表：接缝位置、可测性、AI 可导航性",
@@ -49,6 +53,10 @@
     "repo": "vercel-labs/skills"
   },
   {
+    "name": "go-concurrency",
+    "source": "custom"
+  },
+  {
     "name": "grilling",
     "source": "official",
     "description": "对计划或决策的相对逼问，压测思路直到站得住",
@@ -64,6 +72,18 @@
   },
   {
     "name": "ifit",
+    "source": "custom"
+  },
+  {
+    "name": "lib-research",
+    "source": "custom"
+  },
+  {
+    "name": "memory-hygiene",
+    "source": "custom"
+  },
+  {
+    "name": "naming-conventions",
     "source": "custom"
   },
   {
@@ -108,6 +128,10 @@
     "description": "抛弃式原型：验证状态模型或交互是否成立",
     "repo": "mattpocock/skills",
     "refUrl": "https://github.com/mattpocock/skills"
+  },
+  {
+    "name": "react-state",
+    "source": "custom"
   },
   {
     "name": "shadcn",
