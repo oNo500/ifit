@@ -67,6 +67,34 @@
     "source": "custom"
   },
   {
+    "name": "next-cache-components-adoption",
+    "source": "official",
+    "description": "开启 Next.js Cache Components 并处理它暴露的阻塞路由；一次性迁移用",
+    "repo": "vercel/next.js",
+    "refUrl": "https://github.com/vercel/next.js/tree/canary/skills"
+  },
+  {
+    "name": "next-cache-components-optimizer",
+    "source": "official",
+    "description": "用 agentic loop 把 Next.js 路由优化到即时导航（Cache Components / PPR，硬导航与软导航）",
+    "repo": "vercel/next.js",
+    "refUrl": "https://github.com/vercel/next.js/tree/canary/skills"
+  },
+  {
+    "name": "next-dev-loop",
+    "source": "official",
+    "description": "改完代码验证 Next.js 运行时行为（不只是编译通过）；需 next dev 运行中 + /_next/mcp + agent-browser",
+    "repo": "vercel/next.js",
+    "refUrl": "https://github.com/vercel/next.js/tree/canary/skills"
+  },
+  {
+    "name": "next-partial-prefetching-adoption",
+    "source": "official",
+    "description": "开启 Next.js Partial Prefetching 并处理暴露的问题；一次性迁移用",
+    "repo": "vercel/next.js",
+    "refUrl": "https://github.com/vercel/next.js/tree/canary/skills"
+  },
+  {
     "name": "note",
     "source": "custom"
   },
