@@ -116,8 +116,29 @@
     "repo": "shadcn-ui/ui"
   },
   {
+    "name": "vercel-composition-patterns",
+    "source": "official",
+    "description": "可扩展的 React 组合模式：治布尔 prop 泛滥、复合组件、render props、context；含 React 19 API 变更",
+    "repo": "vercel-labs/agent-skills",
+    "refUrl": "https://github.com/vercel-labs/agent-skills/tree/main/skills"
+  },
+  {
+    "name": "vercel-react-best-practices",
+    "source": "official",
+    "description": "Vercel 工程团队的 React/Next.js 性能优化指南：组件、数据获取、bundle 优化",
+    "repo": "vercel-labs/agent-skills",
+    "refUrl": "https://github.com/vercel-labs/agent-skills/tree/main/skills"
+  },
+  {
     "name": "visualize",
     "source": "custom"
+  },
+  {
+    "name": "web-design-guidelines",
+    "source": "official",
+    "description": "按 Web Interface Guidelines 审查 UI 代码：可访问性、UX、设计规范",
+    "repo": "vercel-labs/agent-skills",
+    "refUrl": "https://github.com/vercel-labs/agent-skills/tree/main/skills"
   },
   {
     "name": "writing-great-skills",
