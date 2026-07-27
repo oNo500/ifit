@@ -42,5 +42,5 @@ export function loadCatalog(root: string): Catalog | null {
 }
 
 export function loadProfiles(root: string): Profiles {
-  return (loadValidated(root, 'profiles.json', validators.profiles) as Profiles | null) ?? {}
+  return (loadValidated(root, 'profiles.json', validators.profiles) as Profiles | null) ?? { profiles: {} }
 }

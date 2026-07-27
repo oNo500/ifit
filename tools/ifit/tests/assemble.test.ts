@@ -12,7 +12,7 @@ function fixtureSource(): string {
   // markdown.md carries baked paths frontmatter directly in the artifact --
   // the final install form file-scoped rules ship in.
   writeFileSync(join(dir, 'rules', 'markdown.md'), '---\npaths:\n  - "**/*.md"\n---\n\n# Markdown\n')
-  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ demo: { rules: ['constitution', 'markdown'] } }))
+  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ profiles: { demo: { rules: ['constitution', 'markdown'] } } }))
   const catalog: Catalog = {
     generatedAt: '2026-07-19T00:00:00Z',
     tags: {},
@@ -41,6 +41,30 @@ describe('planAssembly', () => {
     const src = fixtureSource()
     expect(() => planAssembly(src, 'nope')).toThrow("unknown profile 'nope' (available: demo)")
   })
+  test('layers expand into the assembly plan; requires closure holds across layer boundaries', () => {
+    const src = fixtureSource()
+    writeFileSync(
+      join(src, 'profiles.json'),
+      JSON.stringify({
+        layers: { base: { rules: ['constitution'] } },
+        profiles: { layered: { layers: ['base'], rules: ['markdown'] } },
+      }),
+    )
+    const { items, violations } = planAssembly(src, 'layered')
+    expect(violations).toEqual([])
+    expect(items.map((i) => i.rule)).toEqual(['constitution', 'markdown'])
+  })
+  test('unknown layer is a violation, not a crash', () => {
+    const src = fixtureSource()
+    writeFileSync(
+      join(src, 'profiles.json'),
+      JSON.stringify({
+        profiles: { layered: { layers: ['ghost-layer'], rules: ['constitution'] } },
+      }),
+    )
+    const { violations } = planAssembly(src, 'layered')
+    expect(violations).toContain("profile layered: unknown layer 'ghost-layer'")
+  })
   test('missing built artifact becomes a violation', () => {
     const src = fixtureSource()
     const catalog: Catalog = {
@@ -53,7 +77,7 @@ describe('planAssembly', () => {
       },
     }
     writeFileSync(join(src, 'catalog.json'), JSON.stringify(catalog, null, 2))
-    writeFileSync(join(src, 'profiles.json'), JSON.stringify({ demo: { rules: ['constitution', 'markdown', 'ghost'] } }))
+    writeFileSync(join(src, 'profiles.json'), JSON.stringify({ profiles: { demo: { rules: ['constitution', 'markdown', 'ghost'] } } }))
     const { violations } = planAssembly(src, 'demo')
     expect(violations.some((v) => v.includes('ghost') && v.includes('built artifact missing'))).toBe(true)
   })
@@ -70,20 +94,20 @@ describe('planAssembly', () => {
     }
     writeFileSync(join(src, 'catalog.json'), JSON.stringify(catalog, null, 2))
     writeFileSync(join(src, 'rules', 'strict.md'), '# Strict\n')
-    writeFileSync(join(src, 'profiles.json'), JSON.stringify({ demo: { rules: ['markdown', 'strict'] } }))
+    writeFileSync(join(src, 'profiles.json'), JSON.stringify({ profiles: { demo: { rules: ['markdown', 'strict'] } } }))
     const { violations } = planAssembly(src, 'demo')
     expect(violations).toContain("profile demo: 'markdown' requires 'constitution' which is not in the profile")
     expect(violations).toContain("profile demo: 'strict' requires 'constitution' which is not in the profile")
   })
   test('profile missing constitution becomes a violation', () => {
     const src = fixtureSource()
-    writeFileSync(join(src, 'profiles.json'), JSON.stringify({ demo: { rules: ['markdown'] } }))
+    writeFileSync(join(src, 'profiles.json'), JSON.stringify({ profiles: { demo: { rules: ['markdown'] } } }))
     const { violations } = planAssembly(src, 'demo')
     expect(violations).toContain('profile demo: missing constitution')
   })
   test('profile member not in catalog becomes a violation', () => {
     const src = fixtureSource()
-    writeFileSync(join(src, 'profiles.json'), JSON.stringify({ demo: { rules: ['constitution', 'ghost'] } }))
+    writeFileSync(join(src, 'profiles.json'), JSON.stringify({ profiles: { demo: { rules: ['constitution', 'ghost'] } } }))
     const { violations } = planAssembly(src, 'demo')
     expect(violations).toContain("profile demo: unknown rule 'ghost'")
   })
@@ -92,8 +116,10 @@ describe('planAssembly', () => {
     writeFileSync(
       join(src, 'profiles.json'),
       JSON.stringify({
-        demo: { rules: ['constitution', 'markdown'] },
-        broken: { rules: ['ghost'] }, // unrelated profile with violations of its own
+        profiles: {
+          demo: { rules: ['constitution', 'markdown'] },
+          broken: { rules: ['ghost'] }, // unrelated profile with violations of its own
+        },
       }),
     )
     const { violations } = planAssembly(src, 'demo')
@@ -101,7 +127,7 @@ describe('planAssembly', () => {
   })
   test('missing catalog.json throws with the iforge catalog hint', () => {
     const dir = mkdtempSync(join(tmpdir(), 'iuse-asm-nocatalog-'))
-    writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ demo: { rules: ['constitution'] } }))
+    writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ profiles: { demo: { rules: ['constitution'] } } }))
     expect(() => planAssembly(dir, 'demo')).toThrow(`${dir}: catalog.json missing, run 'iforge catalog' in the source`)
   })
 })

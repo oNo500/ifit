@@ -13,7 +13,7 @@ function fixtureSource(): string {
   mkdirSync(join(dir, 'rules'), { recursive: true })
   mkdirSync(join(dir, 'templates'), { recursive: true })
   writeFileSync(join(dir, 'rules', 'constitution.md'), '# Constitution\n')
-  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ demo: { rules: ['constitution'] } }))
+  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ profiles: { demo: { rules: ['constitution'] } } }))
   writeFileSync(join(dir, 'templates', 'settings.json'), JSON.stringify({ model: 'sonnet' }))
   writeFileSync(join(dir, 'templates', 'architecture.md'), '# [PROJECT_NAME] - Architecture\n\nbody\n')
   writeFileSync(join(dir, 'templates', 'claude-md.md'), '# [PROJECT_NAME]\n\nbody\n')
@@ -37,7 +37,7 @@ function addRule(source: string, name: string, ruleBody: string, tags: string[] 
 }
 
 function setProfileRules(source: string, rules: string[]): void {
-  writeFileSync(join(source, 'profiles.json'), JSON.stringify({ demo: { rules } }))
+  writeFileSync(join(source, 'profiles.json'), JSON.stringify({ profiles: { demo: { rules } } }))
 }
 
 function fakeClaudeWriting(): IfitContext['claude'] {
@@ -150,7 +150,7 @@ describe('diffReport summary mode (no --rule)', () => {
     // mirrors statusReport's SSoT-lock model.
     const source = fixtureSource()
     const target = await initTarget(source)
-    writeFileSync(join(source, 'profiles.json'), JSON.stringify({ demo: { rules: ['constitution', 'ghost'] } }))
+    writeFileSync(join(source, 'profiles.json'), JSON.stringify({ profiles: { demo: { rules: ['constitution', 'ghost'] } } }))
 
     const result = await diffReport(ctxWith(), { source, target })
 

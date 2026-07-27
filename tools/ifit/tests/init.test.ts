@@ -13,7 +13,7 @@ function fixtureSource(): string {
   mkdirSync(join(dir, 'templates'), { recursive: true })
   writeFileSync(join(dir, 'rules', 'constitution.md'), '# Constitution\n')
   writeFileSync(join(dir, 'rules', 'markdown.md'), '# Markdown\n')
-  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ demo: { rules: ['constitution', 'markdown'] } }))
+  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ profiles: { demo: { rules: ['constitution', 'markdown'] } } }))
   writeFileSync(join(dir, 'templates', 'settings.json'), JSON.stringify({ model: 'sonnet' }))
   writeFileSync(join(dir, 'templates', 'architecture.md'), '# [PROJECT_NAME] - Architecture\n\nbody\n')
   writeFileSync(join(dir, 'templates', 'claude-md.md'), '# [PROJECT_NAME]\n\nbody\n')
@@ -176,7 +176,7 @@ function devSourceFixture(): string {
   mkdirSync(join(dir, 'artifacts', 'rules'), { recursive: true })
   mkdirSync(join(dir, 'artifacts', 'templates'), { recursive: true })
   writeFileSync(join(dir, 'artifacts', 'rules', 'constitution.md'), '# Constitution\n')
-  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ demo: { rules: ['constitution'] } }))
+  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ profiles: { demo: { rules: ['constitution'] } } }))
   writeFileSync(join(dir, 'artifacts', 'templates', 'settings.json'), JSON.stringify({ model: 'sonnet' }))
   writeFileSync(join(dir, 'artifacts', 'templates', 'architecture.md'), '# [PROJECT_NAME] - Architecture\n\nbody\n')
   writeFileSync(join(dir, 'artifacts', 'templates', 'claude-md.md'), '# [PROJECT_NAME]\n\nbody\n')
@@ -274,7 +274,7 @@ describe('runInit re-init guards', () => {
 describe('runInit failure paths return ok:false instead of throwing', () => {
   test('composition violations, unknown profile, source resolution failure, and gh: download rejection all fail cleanly without a lock', async () => {
     const source = fixtureSource()
-    writeFileSync(join(source, 'profiles.json'), JSON.stringify({ demo: { rules: ['constitution', 'markdown', 'ghost'] } }))
+    writeFileSync(join(source, 'profiles.json'), JSON.stringify({ profiles: { demo: { rules: ['constitution', 'markdown', 'ghost'] } } }))
     const compositionTarget = mkdtempSync(join(tmpdir(), 'iuse-init-tgt-'))
     const composition = await runInit(ctxWith(fakeClaudeWriting(() => '# demo\n')), { source, profile: 'demo', target: compositionTarget, force: false })
     expect(composition.ok).toBe(false)
@@ -476,7 +476,7 @@ describe('runInit --dry-run', () => {
 
   test('still fails on composition violations and on an existing lock without --force, without writing anything', async () => {
     const source = fixtureSource()
-    writeFileSync(join(source, 'profiles.json'), JSON.stringify({ demo: { rules: ['constitution', 'markdown', 'ghost'] } }))
+    writeFileSync(join(source, 'profiles.json'), JSON.stringify({ profiles: { demo: { rules: ['constitution', 'markdown', 'ghost'] } } }))
     const compositionTarget = mkdtempSync(join(tmpdir(), 'iuse-init-tgt-'))
     const composition = await runInit(ctxWith(fakeClaudeWriting(() => '# demo\n')), { source, profile: 'demo', target: compositionTarget, force: false, dryRun: true })
     expect(composition.ok).toBe(false)

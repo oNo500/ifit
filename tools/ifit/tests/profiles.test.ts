@@ -7,8 +7,11 @@ import { listProfiles } from '../src/core/profiles'
 function fixtureSource(): string {
   const dir = mkdtempSync(join(tmpdir(), 'iuse-prof-'))
   writeFileSync(join(dir, 'profiles.json'), JSON.stringify({
-    demo: { description: 'Demo profile', rules: ['constitution', 'markdown'] },
-    minimal: { rules: ['constitution'] },
+    layers: { base: { rules: ['constitution'] } },
+    profiles: {
+      demo: { description: 'Demo profile', rules: ['constitution', 'markdown'] },
+      minimal: { layers: ['base'] },
+    },
   }))
   return dir
 }

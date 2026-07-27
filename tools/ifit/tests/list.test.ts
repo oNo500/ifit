@@ -48,7 +48,7 @@ function fixtureSource(): string {
   writeFileSync(join(dir, 'catalog.json'), JSON.stringify(catalog, null, 2))
   writeFileSync(join(dir, 'rules', 'alpha.md'), '# Alpha\n\nbody\n')
   writeFileSync(join(dir, 'rules', 'beta.md'), '# Beta\n\nbody\n')
-  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ demo: { description: 'Demo', rules: ['alpha', 'constitution'] } }))
+  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ profiles: { demo: { description: 'Demo', rules: ['alpha', 'constitution'] } } }))
   writeFileSync(join(dir, 'templates', 'settings.json'), JSON.stringify({ model: 'sonnet' }))
   writeFileSync(join(dir, 'templates', 'architecture.md'), '# [PROJECT_NAME] - Architecture\n\nbody\n')
   writeFileSync(join(dir, 'templates', 'claude-md.md'), '# [PROJECT_NAME]\n\nbody\n')
@@ -83,7 +83,7 @@ function addConstitutionToCatalog(source: string): void {
 function bareSourceFixture(): string {
   // A valid ifit source (has profiles.json) but never ran `iforge catalog`.
   const dir = mkdtempSync(join(tmpdir(), 'iuse-list-bare-src-'))
-  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({}))
+  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ profiles: {} }))
   return dir
 }
 
@@ -181,7 +181,7 @@ describe('listReport', () => {
     // Grow the profile after init so 'beta' becomes an available seed.
     writeFileSync(
       join(source, 'profiles.json'),
-      JSON.stringify({ demo: { description: 'Demo', rules: ['alpha', 'beta', 'constitution'] } }),
+      JSON.stringify({ profiles: { demo: { description: 'Demo', rules: ['alpha', 'beta', 'constitution'] } } }),
     )
 
     const result = await listReport(fakeCtx(), { source, target })
@@ -243,7 +243,7 @@ describe('listReport', () => {
       },
     }
     writeFileSync(join(dir, 'artifacts', 'catalog.json'), JSON.stringify(catalog, null, 2))
-    writeFileSync(join(dir, 'profiles.json'), JSON.stringify({}))
+    writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ profiles: {} }))
     const uninitTarget = mkdtempSync(join(tmpdir(), 'iuse-list-devsrc-tgt-'))
 
     const result = await listReport(fakeCtx(), { source: dir, target: uninitTarget })

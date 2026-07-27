@@ -100,7 +100,7 @@ describe('cat stdout purity', () => {
         rules: { alpha: { description: 'a', tags: [], requires: [], path: 'rules/alpha.md', profiles: [] } },
       }),
     )
-    writeFileSync(join(source, 'profiles.json'), JSON.stringify({}))
+    writeFileSync(join(source, 'profiles.json'), JSON.stringify({ profiles: {} }))
 
     const proc = Bun.spawn(['bun', 'run', join(import.meta.dir, '..', 'src', 'index.ts'), 'cat', '--source', source, 'alpha'], {
       cwd: join(import.meta.dir, '..'),

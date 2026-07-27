@@ -85,7 +85,7 @@ function fixtureSource(): string {
   mkdirSync(join(dir, 'rules'), { recursive: true })
   mkdirSync(join(dir, 'templates'), { recursive: true })
   writeFileSync(join(dir, 'rules', 'constitution.md'), '# Constitution\n')
-  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ demo: { description: 'Demo profile', rules: ['constitution'] } }))
+  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ profiles: { demo: { description: 'Demo profile', rules: ['constitution'] } } }))
   writeFileSync(join(dir, 'templates', 'settings.json'), JSON.stringify({ model: 'sonnet' }))
   writeFileSync(join(dir, 'templates', 'architecture.md'), '# [PROJECT_NAME] - Architecture\n\nbody\n')
   writeFileSync(join(dir, 'templates', 'claude-md.md'), '# [PROJECT_NAME]\n\nbody\n')
@@ -204,11 +204,11 @@ describe('renderJson against real core results', () => {
     const payload = result.ok ? { ok: true, profiles: result.profiles ?? [] } : { ok: false, message: result.message }
     const parsed = JSON.parse(renderJson(payload)) as {
       ok: boolean
-      profiles: Array<{ name: string; description: string; rules: string[] }>
+      profiles: Array<{ name: string; description: string; layers: string[]; rules: string[] }>
     }
 
     expect(parsed.ok).toBe(true)
-    expect(parsed.profiles).toEqual([{ name: 'demo', description: 'Demo profile', rules: ['constitution'] }])
+    expect(parsed.profiles).toEqual([{ name: 'demo', description: 'Demo profile', layers: [], rules: ['constitution'] }])
   })
 })
 
@@ -282,7 +282,7 @@ describe('exclude/add/remove flag plumbing', () => {
       repeatedCatalog.rules[name] = { description: 'x', tags: ['core'], requires: [], path: `rules/${name}.md`, profiles: ['demo'] }
     }
     writeFileSync(join(sourceDir, 'catalog.json'), JSON.stringify(repeatedCatalog, null, 2))
-    writeFileSync(join(sourceDir, 'profiles.json'), JSON.stringify({ demo: { description: 'Demo profile', rules: ['constitution', 'pattern1', 'pattern2'] } }))
+    writeFileSync(join(sourceDir, 'profiles.json'), JSON.stringify({ profiles: { demo: { description: 'Demo profile', rules: ['constitution', 'pattern1', 'pattern2'] } } }))
     writeFileSync(join(sourceDir, 'templates', 'settings.json'), JSON.stringify({ model: 'sonnet' }))
     writeFileSync(join(sourceDir, 'templates', 'architecture.md'), '# [PROJECT_NAME] - Architecture\n\nbody\n')
     writeFileSync(join(sourceDir, 'templates', 'claude-md.md'), '# [PROJECT_NAME]\n\nbody\n')

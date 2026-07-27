@@ -39,13 +39,13 @@ function fixtureSource(): string {
   // sigma's artifact carries baked paths frontmatter -- the final install
   // form file-scoped rules ship in; ifit copies it verbatim.
   writeFileSync(join(dir, 'rules', 'sigma.md'), '---\npaths:\n  - "**/*.md"\n---\n\n# Sigma\n')
-  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ demo: { description: 'Demo', rules: ['alpha'] } }))
+  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ profiles: { demo: { description: 'Demo', rules: ['alpha'] } } }))
   return dir
 }
 
 function bareSourceFixture(): string {
   const dir = mkdtempSync(join(tmpdir(), 'iuse-show-bare-src-'))
-  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({}))
+  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ profiles: {} }))
   return dir
 }
 

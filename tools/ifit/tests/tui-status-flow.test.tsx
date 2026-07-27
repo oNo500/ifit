@@ -19,7 +19,7 @@ function fixtureSource(): string {
   writeFileSync(join(dir, 'rules', 'gone.md'), '# Gone\n')
   writeFileSync(
     join(dir, 'profiles.json'),
-    JSON.stringify({ demo: { description: 'Demo profile', rules: ['constitution', 'edited', 'gone'] } }),
+    JSON.stringify({ profiles: { demo: { description: 'Demo profile', rules: ['constitution', 'edited', 'gone'] } } }),
   )
   writeFileSync(join(dir, 'templates', 'settings.json'), JSON.stringify({ model: 'sonnet' }))
   writeFileSync(join(dir, 'templates', 'architecture.md'), '# [PROJECT_NAME] - Architecture\n\nbody\n')
@@ -153,7 +153,7 @@ async function initTargetWithAllStates(source: string): Promise<string> {
   writeFileSync(join(source, 'rules', 'extra.md'), '# Extra\n')
   writeFileSync(
     join(source, 'profiles.json'),
-    JSON.stringify({ demo: { description: 'Demo profile', rules: ['constitution', 'edited', 'gone', 'extra'] } }),
+    JSON.stringify({ profiles: { demo: { description: 'Demo profile', rules: ['constitution', 'edited', 'gone', 'extra'] } } }),
   )
   const catalog = JSON.parse(readFileSync(join(source, 'catalog.json'), 'utf8')) as Catalog
   catalog.rules.extra = { description: 'x', tags: ['core'], requires: [], path: 'rules/extra.md', profiles: ['demo'] }

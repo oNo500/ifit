@@ -18,8 +18,10 @@ function fixtureSource(): string {
   writeFileSync(
     join(dir, 'profiles.json'),
     JSON.stringify({
-      'python-cli': { description: 'Python CLI profile', rules: ['constitution', 'extra'] },
-      'node-web': { description: 'Node web profile', rules: ['constitution'] },
+      profiles: {
+        'python-cli': { description: 'Python CLI profile', rules: ['constitution', 'extra'] },
+        'node-web': { description: 'Node web profile', rules: ['constitution'] },
+      },
     }),
   )
   writeFileSync(join(dir, 'templates', 'settings.json'), JSON.stringify({ model: 'sonnet' }))
@@ -82,7 +84,7 @@ function fixtureSourceWithManyRules(count: number): string {
   const dir = mkdtempSync(join(tmpdir(), 'iuse-tui-browse-src-'))
   mkdirSync(join(dir, 'rules'), { recursive: true })
   mkdirSync(join(dir, 'templates'), { recursive: true })
-  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({}))
+  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ profiles: {} }))
   writeFileSync(join(dir, 'templates', 'settings.json'), JSON.stringify({ model: 'sonnet' }))
   writeFileSync(join(dir, 'templates', 'architecture.md'), '# [PROJECT_NAME] - Architecture\n\nbody\n')
   writeFileSync(join(dir, 'templates', 'claude-md.md'), '# [PROJECT_NAME]\n\nbody\n')
@@ -138,8 +140,10 @@ async function initTargetWithAllStates(source: string): Promise<string> {
   writeFileSync(
     join(source, 'profiles.json'),
     JSON.stringify({
-      'python-cli': { description: 'Python CLI profile', rules: ['constitution', 'extra'] },
-      'node-web': { description: 'Node web profile', rules: ['constitution', 'extra'] },
+      profiles: {
+        'python-cli': { description: 'Python CLI profile', rules: ['constitution', 'extra'] },
+        'node-web': { description: 'Node web profile', rules: ['constitution', 'extra'] },
+      },
     }),
   )
 
@@ -333,7 +337,7 @@ describe('TUI browse flow', () => {
     const source = mkdtempSync(join(tmpdir(), 'iuse-tui-browse-nocatalog-'))
     mkdirSync(join(source, 'rules'), { recursive: true })
     mkdirSync(join(source, 'templates'), { recursive: true })
-    writeFileSync(join(source, 'profiles.json'), JSON.stringify({}))
+    writeFileSync(join(source, 'profiles.json'), JSON.stringify({ profiles: {} }))
     // Deliberately no catalog.json -- browse's bootstrap must surface this as
     // an actionable error rather than crashing or rendering an empty browse.
     const target = mkdtempSync(join(tmpdir(), 'iuse-tui-browse-tgt-'))

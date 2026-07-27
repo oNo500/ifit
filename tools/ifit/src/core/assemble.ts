@@ -1,6 +1,7 @@
 import { join } from 'node:path'
 import { loadCatalog, loadProfiles } from './contract'
-import type { CatalogRule, Profile } from './contract'
+import type { CatalogRule } from './contract'
+import { expandProfileRules } from './profiles'
 import { readTextIfExists, sha256 } from './io'
 import { ruleTargetRelPath } from './manifest'
 import { detectSourceRoot } from './source-root'
@@ -56,23 +57,23 @@ export function assembleRules(
  */
 function validateProfileComposition(
   profileName: string,
-  profile: Profile,
+  expandedRules: string[],
   catalogRules: Record<string, CatalogRule>,
 ): string[] {
   const violations: string[] = []
-  for (const member of profile.rules) {
+  for (const member of expandedRules) {
     const entry = catalogRules[member]
     if (entry === undefined) {
       violations.push(`profile ${profileName}: unknown rule '${member}'`)
       continue
     }
     for (const dep of entry.requires) {
-      if (!profile.rules.includes(dep)) {
+      if (!expandedRules.includes(dep)) {
         violations.push(`profile ${profileName}: '${member}' requires '${dep}' which is not in the profile`)
       }
     }
   }
-  if (!profile.rules.includes('constitution')) {
+  if (!expandedRules.includes('constitution')) {
     violations.push(`profile ${profileName}: missing constitution`)
   }
   return violations
@@ -82,13 +83,19 @@ export function planAssembly(
   sourceRoot: string,
   profileName: string,
 ): { items: AssemblyItem[]; violations: string[] } {
-  const profiles = loadProfiles(sourceRoot)
-  const profile = profiles[profileName]
+  const file = loadProfiles(sourceRoot)
+  const profile = file.profiles[profileName]
   if (profile === undefined) {
-    throw new Error(`unknown profile '${profileName}' (available: ${Object.keys(profiles).toSorted().join(', ')})`)
+    throw new Error(
+      `unknown profile '${profileName}' (available: ${Object.keys(file.profiles).toSorted().join(', ')})`,
+    )
   }
+  const { rules: expandedRules, unknownLayers } = expandProfileRules(file, profile)
   const catalogRules = requireCatalogRules(sourceRoot)
-  const compositionViolations = validateProfileComposition(profileName, profile, catalogRules)
-  const { items, violations: assemblyViolations } = assembleRules(sourceRoot, profile.rules)
+  const compositionViolations = [
+    ...unknownLayers.map((layer) => `profile ${profileName}: unknown layer '${layer}'`),
+    ...validateProfileComposition(profileName, expandedRules, catalogRules),
+  ]
+  const { items, violations: assemblyViolations } = assembleRules(sourceRoot, expandedRules)
   return { items, violations: [...compositionViolations, ...assemblyViolations] }
 }

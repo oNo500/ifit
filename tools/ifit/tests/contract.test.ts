@@ -21,15 +21,15 @@ describe('schema-validated loaders', () => {
         },
       }),
     )
-    writeFileSync(join(d, 'profiles.json'), JSON.stringify({ demo: { rules: ['constitution'] } }))
+    writeFileSync(join(d, 'profiles.json'), JSON.stringify({ profiles: { demo: { rules: ['constitution'] } } }))
     expect(loadCatalog(d)?.rules['constitution']?.path).toBe('rules/constitution.md')
-    expect(loadProfiles(d)['demo']?.rules).toEqual(['constitution'])
+    expect(loadProfiles(d).profiles['demo']?.rules).toEqual(['constitution'])
   })
 
   test('missing files keep the established semantics', () => {
     const d = dir()
     expect(loadCatalog(d)).toBeNull()
-    expect(loadProfiles(d)).toEqual({})
+    expect(loadProfiles(d)).toEqual({ profiles: {} })
   })
 
   test('schema violation throws with the update hint', () => {

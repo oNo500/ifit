@@ -13,7 +13,7 @@ function fixtureSource(): string {
   mkdirSync(join(dir, 'rules'), { recursive: true })
   mkdirSync(join(dir, 'templates'), { recursive: true })
   writeFileSync(join(dir, 'rules', 'constitution.md'), '# Constitution\n')
-  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ demo: { rules: ['constitution'] } }))
+  writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ profiles: { demo: { rules: ['constitution'] } } }))
   writeFileSync(join(dir, 'templates', 'settings.json'), JSON.stringify({ model: 'sonnet' }))
   writeFileSync(join(dir, 'templates', 'architecture.md'), '# [PROJECT_NAME] - Architecture\n\nbody\n')
   writeFileSync(join(dir, 'templates', 'claude-md.md'), '# [PROJECT_NAME]\n\nbody\n')
@@ -37,7 +37,7 @@ function addRule(source: string, name: string, ruleBody: string, tags: string[] 
 }
 
 function setProfileRules(source: string, rules: string[]): void {
-  writeFileSync(join(source, 'profiles.json'), JSON.stringify({ demo: { rules } }))
+  writeFileSync(join(source, 'profiles.json'), JSON.stringify({ profiles: { demo: { rules } } }))
 }
 
 function fakeClaudeWriting(): IfitContext['claude'] {
@@ -232,7 +232,7 @@ describe('statusReport profile/lock.rules SSoT and exit-code neutrality', () => 
   test('status no longer runs composition validation; a bogus profile rule surfaces as available, not a failure, and disappears entirely if the profile is deleted', async () => {
     const source = fixtureSource()
     const target = await initTarget(source)
-    writeFileSync(join(source, 'profiles.json'), JSON.stringify({ demo: { rules: ['constitution', 'ghost'] } }))
+    writeFileSync(join(source, 'profiles.json'), JSON.stringify({ profiles: { demo: { rules: ['constitution', 'ghost'] } } }))
 
     const bogus = await statusReport(ctxWith(), { source, target })
     expect(bogus.ok).toBe(true)
@@ -242,7 +242,7 @@ describe('statusReport profile/lock.rules SSoT and exit-code neutrality', () => 
     ])
     expect(bogus.exitCode).toBe(0)
 
-    writeFileSync(join(source, 'profiles.json'), JSON.stringify({}))
+    writeFileSync(join(source, 'profiles.json'), JSON.stringify({ profiles: {} }))
     const deleted = await statusReport(ctxWith(), { source, target })
     expect(deleted.ok).toBe(true)
     expect(deleted.rows).toEqual([{ rule: 'constitution', state: 'synced' }])

@@ -1,6 +1,7 @@
 import { join } from 'node:path'
 import { loadCatalog, loadProfiles } from './contract'
 import type { Catalog, CatalogRule, Profiles } from './contract'
+import { expandProfileRules } from './profiles'
 import { readTextIfExists, sha256 } from './io'
 import type { IfitContext } from './init'
 import { computeDrift, loadDownstreamLock, localHashFor } from './manifest'
@@ -53,7 +54,10 @@ export function installStateFor(opts: {
     return baselineHash === undefined ? 'missing' : computeDrift(localHash, baselineHash, sourceHash)
   }
   if ((lock.excluded ?? []).includes(name)) return 'excluded'
-  if (lock.profile !== '-' && (profiles[lock.profile]?.rules ?? []).includes(name)) return 'available'
+  const seedProfile = lock.profile === '-' ? undefined : profiles.profiles[lock.profile]
+  if (seedProfile !== undefined && expandProfileRules(profiles, seedProfile).rules.includes(name)) {
+    return 'available'
+  }
   return 'uninstalled'
 }
 

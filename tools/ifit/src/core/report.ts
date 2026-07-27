@@ -1,5 +1,6 @@
 import { join } from 'node:path'
 import { loadProfiles } from './contract'
+import { expandProfileRules } from './profiles'
 import { readTextIfExists } from './io'
 import { assembleRules } from './assemble'
 import type { IfitContext } from './init'
@@ -80,7 +81,9 @@ export async function statusReport(
   // vanished upstream, this section is simply empty -- the seed reference was
   // informational, not a standing dependency.
   if (lock.profile !== '-') {
-    const profileRules = loadProfiles(source.root)[lock.profile]?.rules ?? []
+    const file = loadProfiles(source.root)
+    const seedProfile = file.profiles[lock.profile]
+    const profileRules = seedProfile === undefined ? [] : expandProfileRules(file, seedProfile).rules
     for (const rule of profileRules) {
       if (Object.hasOwn(lock.rules, rule)) continue
       if (excludedSet.has(rule)) continue

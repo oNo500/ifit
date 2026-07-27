@@ -2,14 +2,57 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Profiles",
   "type": "object",
-  "additionalProperties": {
-    "title": "Profile",
-    "type": "object",
-    "required": ["rules"],
-    "additionalProperties": false,
-    "properties": {
-      "description": { "type": "string" },
-      "rules": { "type": "array", "items": { "type": "string" } }
+  "required": [
+    "profiles"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "layers": {
+      "type": "object",
+      "additionalProperties": {
+        "title": "ProfileLayer",
+        "type": "object",
+        "required": [
+          "rules"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "rules": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "profiles": {
+      "type": "object",
+      "additionalProperties": {
+        "title": "Profile",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "layers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rules": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -1,98 +1,90 @@
 {
-  "minimal": {
-    "description": "通用最小预设（语言无关的行为底座）",
-    "rules": [
-      "constitution",
-      "context-management",
-      "agent-behavior",
-      "tooling"
-    ]
+  "layers": {
+    "base": {
+      "description": "任何项目的行为底座：原则、偏好、协作姿态、文档写作",
+      "rules": ["constitution", "preferences", "agent-behavior", "tooling", "context-management", "markdown"]
+    },
+    "ts": {
+      "description": "TS/JS 生态：类型纪律、依赖选型、API 查证、测试组织",
+      "rules": ["typescript", "dependencies-ts", "api-verification", "testing"]
+    },
+    "python": {
+      "description": "Python 生态：uv 工具链、API 查证、测试组织",
+      "rules": ["python", "api-verification", "testing"]
+    },
+    "go": {
+      "description": "Go 生态：内建工具链、API 查证、测试组织",
+      "rules": ["go", "api-verification", "testing"]
+    },
+    "react-ui": {
+      "description": "React 界面层：组件约定与样式纪律",
+      "rules": ["react", "css"]
+    }
   },
-  "ts-lib": {
-    "description": "无框架 TS 项目（库 / Node CLI）",
-    "rules": [
-      "constitution",
-      "context-management",
-      "agent-behavior",
-      "tooling",
-      "dependencies-ts",
-      "typescript",
-      "api-verification",
-      "testing",
-      "markdown"
-    ]
-  },
-  "nextjs-app": {
-    "description": "Next.js App Router 应用",
-    "rules": [
-      "constitution",
-      "context-management",
-      "agent-behavior",
-      "tooling",
-      "dependencies-ts",
-      "typescript",
-      "api-verification",
-      "react",
-      "nextjs",
-      "css",
-      "testing",
-      "markdown"
-    ]
-  },
-  "react-spa": {
-    "description": "React SPA（Vite 等）",
-    "rules": [
-      "constitution",
-      "context-management",
-      "agent-behavior",
-      "tooling",
-      "dependencies-ts",
-      "typescript",
-      "api-verification",
-      "react",
-      "css",
-      "testing",
-      "markdown"
-    ]
-  },
-  "nestjs-api": {
-    "description": "NestJS 后端服务",
-    "rules": [
-      "constitution",
-      "context-management",
-      "agent-behavior",
-      "tooling",
-      "dependencies-ts",
-      "typescript",
-      "api-verification",
-      "nestjs",
-      "database",
-      "orm-ts",
-      "testing",
-      "markdown"
-    ]
-  },
-  "python": {
-    "description": "Python 项目",
-    "rules": [
-      "constitution",
-      "context-management",
-      "agent-behavior",
-      "tooling",
-      "python",
-      "api-verification",
-      "markdown"
-    ]
-  },
-  "docs": {
-    "description": "文档 / 知识库仓",
-    "rules": [
-      "constitution",
-      "context-management",
-      "agent-behavior",
-      "tooling",
-      "markdown",
-      "docs-retrieval"
-    ]
+  "profiles": {
+    "minimal": {
+      "description": "通用最小预设（语言无关的行为底座）",
+      "layers": ["base"]
+    },
+    "ts-lib": {
+      "description": "无框架 TS 项目（库 / Node CLI）",
+      "layers": ["base", "ts"]
+    },
+    "react-spa": {
+      "description": "React SPA（Vite 等）",
+      "layers": ["base", "ts", "react-ui"]
+    },
+    "nextjs-app": {
+      "description": "Next.js App Router 应用（纯前端）",
+      "layers": ["base", "ts", "react-ui"],
+      "rules": ["nextjs"]
+    },
+    "nextjs-fullstack": {
+      "description": "单栈 Next.js 全栈（含数据层）",
+      "layers": ["base", "ts", "react-ui"],
+      "rules": ["nextjs", "database", "orm-ts"]
+    },
+    "fullstack-ts": {
+      "description": "NestJS + Next.js 全栈 monorepo（对标 nestjs-boilerplate）",
+      "layers": ["base", "ts", "react-ui"],
+      "rules": ["nextjs", "nestjs", "database", "orm-ts", "monorepo"]
+    },
+    "nestjs-api": {
+      "description": "NestJS 后端服务",
+      "layers": ["base", "ts"],
+      "rules": ["nestjs", "database", "orm-ts"]
+    },
+    "python": {
+      "description": "Python 项目",
+      "layers": ["base", "python"]
+    },
+    "python-web": {
+      "description": "Python web 服务（FastAPI）",
+      "layers": ["base", "python"],
+      "rules": ["fastapi"]
+    },
+    "python-agent": {
+      "description": "Python agent 包（agent 资产群由 triage 落账后加入）",
+      "layers": ["base", "python"]
+    },
+    "go": {
+      "description": "Go 项目",
+      "layers": ["base", "go"]
+    },
+    "go-web": {
+      "description": "Go web 服务",
+      "layers": ["base", "go"],
+      "rules": ["go-web"]
+    },
+    "go-cli": {
+      "description": "Go 终端程序（CLI/TUI）",
+      "layers": ["base", "go"],
+      "rules": ["go-cli"]
+    },
+    "docs": {
+      "description": "文档 / 知识库仓",
+      "layers": ["base"],
+      "rules": ["docs-retrieval"]
+    }
   }
 }

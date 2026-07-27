@@ -18,8 +18,10 @@ function fixtureSource(): string {
   writeFileSync(
     join(dir, 'profiles.json'),
     JSON.stringify({
-      'python-cli': { description: 'Python CLI profile', rules: ['constitution', 'extra'] },
-      'node-web': { description: 'Node web profile', rules: ['constitution'] },
+      profiles: {
+        'python-cli': { description: 'Python CLI profile', rules: ['constitution', 'extra'] },
+        'node-web': { description: 'Node web profile', rules: ['constitution'] },
+      },
     }),
   )
   writeFileSync(join(dir, 'templates', 'settings.json'), JSON.stringify({ model: 'sonnet' }))
