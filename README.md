@@ -15,7 +15,7 @@ rule、模板。资产内容由开发仓（`~/code/infra-agent/iforge`）构建�
   清单记录的是目标态，允许比实际超前。溯源分两层：`refUrl` 参考来源 +
   实际来源（repo 或 `install`）。专题见 [`SKILLS.md`](SKILLS.md)。
 - [`catalog.json`](catalog.json) — 资产查询视图（描述/tags/profile 隶属），供 `ifit list/show` 消费
-- [`profiles.json`](profiles.json) — rule 组合账：项目 profile 显式清单
+- [`profiles.json`](profiles.json) — rule 组合账：`{ layers, profiles }`，profile 由层叠加 + 直引 rules 展开（`ifit profiles` 列出的即展开结果）
 - [`rules/`](rules/) — 可分发 rule 产物，产物即安装形态：file-scoped 规则自带 `paths` frontmatter，`ifit` 原样拷贝，不做安装时渲染（`ifit cat <name>` 即产物原文）
 - [`templates/`](templates/) — 新项目模板：`claude-md.md` 与 `architecture.md` 含占位符，分发时按目标项目实例化；`settings.json` 是最终形态，整份拷贝
 - [`schema/`](schema/) — 数据契约：catalog/profiles 两份 JSON
