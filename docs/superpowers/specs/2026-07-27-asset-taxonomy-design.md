@@ -57,7 +57,20 @@ nature（互斥）：principle、preference、behavior、discipline、toolchain�
 
 规划确定要建的资产，即使素材不足也立即以 stub 状态落 `meta/assets.json`（`iforge sync --create` 生成骨架），对应 profile 同步建出。缺口由 `iforge status` 的 stub 行持续可见，而不是只存在于 spec 文字。素材积累够后转 ready。
 
-### 7. 目标 profile 清单
+### 7. skill 不做 profile 组合：索引指导 + 按需安装
+
+skill 的分发模型维持「中心源 + 查询发现 + 按需安装」，不引入 per-project 组合账——只有真用到的 skill 才落地，description 常驻预算问题在源头不存在。需要强化的是索引，双轨：
+
+- **tooling 担保条**管跨域动作入口：触发面 → `ifit list --skills` 查询命令（既有机制，不变）
+- **rule 域内指针成为约定**：rule 元指令声明归口出去的 skill，产物 MUST 留一行指针（go 产物「并发见 go-concurrency skill」是范式）；构建契约补这条要求
+
+个人全局类（note、obsidian-cli、visualize、drawio、ifit）全局安装，与项目 profile 无关。
+
+### 8. workflow 独立成类
+
+skill 之间的顺序与衔接关系（编排）以第四类资产表达：`meta/workflows/` 元指令 → `artifacts/workflows/` 产物，沿用既有源→产物模型（kinds 注册表加一类，build/writeback 契约、skeleton、publish 全链路同构）。编排文件的步骤引用 skill 名，`iforge status` 校验引用存在性——链路有 SSoT 可对账，不散落在各 skill 正文里。首批实例不预造：机制落地后从真实重复链路提炼，候选观察是 agent 开发链（架构模式选择 → 实现 → eval）。
+
+### 9. 目标 profile 清单
 
 - `fullstack-ts` = base + ts + react-ui + [nextjs, nestjs, database, orm-ts]（对标 nestjs-boilerplate monorepo）
 - `nextjs-fullstack` = base + ts + react-ui + [nextjs, database, orm-ts]
@@ -70,8 +83,8 @@ nature（互斥）：principle、preference、behavior、discipline、toolchain�
 
 按依赖排序，阶段内条目可并行：
 
-1. **机制与基座**：profiles.json layers（iforge 校验 + ifit 解析，跨仓 schema 契约变更，本路线图唯一有代码量的项）；constitution 拆分出 preferences；tags.json 增 nature 面
-2. **组合即得**：fullstack-ts、nextjs-fullstack、go 基础 profile 建出；现有 profile 层化重写；orm-ts paths 收窄到 Drizzle 特征路径（前期审计遗留）
+1. **机制与基座**：profiles.json layers（iforge 校验 + ifit 解析，跨仓 schema 契约变更）；workflow 成类（kinds 注册表 + 契约 + skeleton + publish，与 layers 互不阻塞可并行）；constitution 拆分出 preferences；tags.json 增 nature 面；rule 构建契约补「域内 skill 指针」要求
+2. **组合即得与清账**：fullstack-ts、nextjs-fullstack、go 基础 profile 建出；现有 profile 层化重写；orm-ts paths 收窄到 Drizzle 特征路径（前期审计遗留）；monorepo rule stub（Turborepo workspace 布局与 task pipeline，fullstack-ts 引用）；official skill 名录 triage 淘汰——与 superpowers 插件重叠者（grilling、handoff、prototype、writing-great-skills）、方向已变者（ai-sdk，agent 方向是 python）、无项目在用的一次性迁移类（next-* 四个），留下的写明保留理由
 3. **python agent**：notes agent 节点 15 篇走 asset-triage 契约逐篇判归属（文档链 / skill / rule），定名后立即落 stub；fastapi rule stub + python-web profile
 4. **go 形态**：go-web、go-cli rule stub 与 profile 现在建出；形态素材（框架惯例、cobra/bubbletea 选型）在 notes 积累，够了转 ready
 
@@ -80,3 +93,5 @@ nature（互斥）：principle、preference、behavior、discipline、toolchain�
 - 不为未点名的形态（electron、miniprogram 等 notes 有痕迹者）预建资产或 profile——层齐了随时可拼
 - 不把 python/go 的工具链拆成独立 rule 与 dependencies-ts 同构——体量小，内嵌语言 rule
 - 不引入层继承/嵌套（层引层）——一级叠加够用，嵌套是过早抽象
+- 不为 skill 建 per-project 组合账——按需安装模型下是多余机制（见决策 7）
+- 观察清单（有 notes 素材但不建，等真实项目催）：api-design、web-security、devops/CI
