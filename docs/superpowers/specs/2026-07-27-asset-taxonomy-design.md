@@ -13,11 +13,11 @@
 
 ### 1. 三轴模型
 
-- **轴一·知识性质（nature）**：principle / preference / behavior / discipline / toolchain。skill 天然是 procedure，不标注
+- **轴一·可剥离性（preference 二分标记）**：个人偏好（等价选项任意固定）打 `preference` 标记，可整块剥离；无标记即工程约束，不再细分。曾按五值 nature 分面（principle/behavior/discipline/toolchain/preference）实施过一轮，按 MECE 与最小分类原则收缩为二分：behavior/discipline/toolchain 的互斥界线在混合 rule 上不成立（只能靠「主导判断」裁），且除可剥离性外没有任何机制消费分类
 - **轴二·适用面（layer）**：base 基座 → 生态（ts/python/go）→ 框架 → 项目形态，profile 是层的叠加
 - **轴三·加载机制**：无条件 / 按路径 / 按意图，已由 rule-layering spec 定，本 spec 不动
 
-三轴正交：一条 rule 同时有 nature（它是什么性质的知识）、layer 归属（谁需要它）、加载机制（何时进上下文）。
+三轴正交：一条 rule 同时有可剥离性标记、layer 归属（谁需要它）、加载机制（何时进上下文）。
 
 ### 2. 原则与偏好的界定判据
 
@@ -27,9 +27,9 @@
 
 新建 preferences rule（global，nature=preference），收拢文件命名 kebab-case、禁 emoji 等个人偏好；constitution 只留工程原则与客观红线。所有 profile 经 base 层获得 preferences，不逐个改清单。
 
-### 4. tags.json 增 nature 分面
+### 4. tags.json 增 preference 标记
 
-nature（互斥）：principle、preference、behavior、discipline、toolchain。沿用既有分面机制（互斥面内至多一值、孤儿校验）。混合条目所在 rule 按主导性质标注，条目级混合在元指令正文说明。
+`preference` 进 concern 面（不互斥），标记可剥离的个人偏好 rule（当前 preferences、markdown）。不建完整的性质分面——见决策 1 的收缩理由。条目级混合（纪律 rule 里夹带的偏好条目）在元指令正文说明，不拆文件。
 
 ### 5. profiles.json 引入 layers
 
