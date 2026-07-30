@@ -268,11 +268,10 @@ const listCommand = defineCommand({
   meta: {
     name: 'list',
     description:
-      '列出中心源资产：缺省 rule，--skills 只看 skill（带安装命令），--all 两者都看；--tag/--grep 过滤；已初始化目标标注安装状态。恒退 0（源/catalog 解析失败除外）。',
+      '列出中心源资产：缺省 rule，--skills 只看 skill（带安装命令），--all 两者都看；--grep 过滤；已初始化目标标注安装状态。恒退 0（源/catalog 解析失败除外）。',
   },
   args: {
     source: { type: 'string', description: '中心源（本地路径或 gh: 定位符；缺省 IFIT_ROOT 或 ~/code/infra-agent/ifit）' },
-    tag: { type: 'string', description: '按 tag 过滤（逗号分隔，取交集）' },
     grep: { type: 'string', description: '按名称/描述/正文子串过滤（不区分大小写）' },
     skills: { type: 'boolean', description: '只列 skill，附推荐安装命令' },
     all: { type: 'boolean', description: 'rule 与 skill 都列' },
@@ -280,13 +279,11 @@ const listCommand = defineCommand({
     target: { type: 'positional', required: false, description: '目标项目目录（缺省当前目录）' },
   },
   async run({ args }) {
-    const tags = splitNames(args.tag)
     const kind = args.all === true ? 'all' : args.skills === true ? 'skills' : 'rules'
 
     const result = await listReport(defaultContext(), {
       source: args.source,
       target: args.target ?? process.cwd(),
-      tags,
       grep: args.grep,
       kind,
     })
@@ -360,10 +357,10 @@ const showCommand = defineCommand({
     } else {
       if (result.message !== undefined) console.log(result.message)
       if (result.entry !== undefined) {
-        const { name, description, tags, profiles, state } = result.entry
+        const { name, description, preference, profiles, state } = result.entry
         console.log(`name: ${name}`)
         console.log(`description: ${description}`)
-        console.log(`tags: ${tags.join(', ')}`)
+        if (preference) console.log('preference: 可剥离的个人偏好')
         console.log(`profiles: ${profiles.join(', ')}`)
         if (state !== undefined) console.log(`state: ${state}`)
         if (result.content !== undefined) {

@@ -16,7 +16,7 @@ export type InstallState = DriftState | 'uninstalled' | 'broken'
 export interface ListRow {
   name: string
   description: string
-  tags: string[]
+  preference: boolean
   state?: InstallState // 未初始化目标无 state；broken=catalog 指向的产物缺失
 }
 
@@ -68,33 +68,31 @@ function matchesGrep(name: string, rule: CatalogRule, content: string | null, gr
 }
 
 /**
- * Shared tags/grep filter + row-building loop for list -- install state is
+ * Shared grep filter + row-building loop for list -- install state is
  * computed via a caller-supplied callback.
  */
 function buildFilteredRows(opts: {
   artifactBase: string
   catalogRules: Catalog['rules']
-  tags?: string[]
   grepLower?: string
   computeState: (name: string, rule: CatalogRule, sourceContent: string | null) => ListRow['state']
 }): ListRow[] {
-  const { artifactBase, catalogRules, tags, grepLower, computeState } = opts
+  const { artifactBase, catalogRules, grepLower, computeState } = opts
   const rows: ListRow[] = []
   for (const [name, rule] of Object.entries(catalogRules).toSorted(([a], [b]) => a.localeCompare(b))) {
-    if (tags !== undefined && !tags.every((t) => rule.tags.includes(t))) continue
 
     const sourceContent = readTextIfExists(join(artifactBase, rule.path))
     if (grepLower !== undefined && !matchesGrep(name, rule, sourceContent, grepLower)) continue
 
     const state = computeState(name, rule, sourceContent)
-    rows.push({ name, description: rule.description, tags: rule.tags, state })
+    rows.push({ name, description: rule.description, preference: rule.preference, state })
   }
   return rows
 }
 
 export async function listReport(
   ctx: IfitContext,
-  opts: { source?: string; target: string; tags?: string[]; grep?: string; kind?: 'rules' | 'skills' | 'all' },
+  opts: { source?: string; target: string; grep?: string; kind?: 'rules' | 'skills' | 'all' },
 ): Promise<ListResult> {
   let source: Awaited<ReturnType<typeof resolveSource>>
   try {
@@ -138,7 +136,6 @@ export async function listReport(
   const rows = buildFilteredRows({
     artifactBase,
     catalogRules: catalog.rules,
-    tags: opts.tags,
     grepLower,
     computeState: (name, _rule, sourceContent) => installStateFor({ name, target: opts.target, sourceContent, lock, profiles }),
   })

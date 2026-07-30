@@ -96,8 +96,7 @@ describe('cat stdout purity', () => {
       join(source, 'catalog.json'),
       JSON.stringify({
         generatedAt: '2026-07-18T00:00:00Z',
-        tags: {},
-        rules: { alpha: { description: 'a', tags: [], requires: [], path: 'rules/alpha.md', profiles: [] } },
+        rules: { alpha: { description: 'a', preference: false, requires: [], path: 'rules/alpha.md', profiles: [] } },
       }),
     )
     writeFileSync(join(source, 'profiles.json'), JSON.stringify({ profiles: {} }))

@@ -30,11 +30,10 @@ function fixtureSource(): string {
   // handwritten to match the base profile rules present at fixture creation.
   const catalog: Catalog = {
     generatedAt: '2026-07-18T00:00:00Z',
-    tags: { concern: { exclusive: false, values: { core: 'x' } } },
     rules: {
-      constitution: { description: 'x', tags: ['core'], requires: [], path: 'rules/constitution.md', profiles: ['demo'] },
-      edited: { description: 'x', tags: ['core'], requires: [], path: 'rules/edited.md', profiles: ['demo'] },
-      gone: { description: 'x', tags: ['core'], requires: [], path: 'rules/gone.md', profiles: ['demo'] },
+      constitution: { description: 'x', preference: false, requires: [], path: 'rules/constitution.md', profiles: ['demo'] },
+      edited: { description: 'x', preference: false, requires: [], path: 'rules/edited.md', profiles: ['demo'] },
+      gone: { description: 'x', preference: false, requires: [], path: 'rules/gone.md', profiles: ['demo'] },
     },
   }
   writeFileSync(join(dir, 'catalog.json'), JSON.stringify(catalog, null, 2))
@@ -156,7 +155,7 @@ async function initTargetWithAllStates(source: string): Promise<string> {
     JSON.stringify({ profiles: { demo: { description: 'Demo profile', rules: ['constitution', 'edited', 'gone', 'extra'] } } }),
   )
   const catalog = JSON.parse(readFileSync(join(source, 'catalog.json'), 'utf8')) as Catalog
-  catalog.rules.extra = { description: 'x', tags: ['core'], requires: [], path: 'rules/extra.md', profiles: ['demo'] }
+  catalog.rules.extra = { description: 'x', preference: false, requires: [], path: 'rules/extra.md', profiles: ['demo'] }
   writeFileSync(join(source, 'catalog.json'), JSON.stringify(catalog, null, 2))
 
   return target

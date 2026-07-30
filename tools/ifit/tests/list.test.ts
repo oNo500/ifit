@@ -27,19 +27,17 @@ function fixtureSource(): string {
 
   const catalog: Catalog = {
     generatedAt: '2026-07-18T00:00:00Z',
-    tags: { concern: { exclusive: false, values: { core: 'core concern', extra: 'extra concern' } } },
     rules: {
       alpha: {
         description: '甲说明',
-        tags: ['core'],
+        preference: false,
         requires: [],
         path: 'rules/alpha.md',
         profiles: ['demo'],
       },
       beta: {
         description: 'beta description',
-        tags: ['extra'],
-        requires: [],
+        preference: false, requires: [],
         path: 'rules/beta.md',
         profiles: [],
       },
@@ -64,7 +62,7 @@ function fixtureSource(): string {
 function addSigmaRule(source: string): void {
   writeFileSync(join(source, 'rules', 'sigma.md'), '---\npaths:\n  - "**/*.md"\n---\n\n# Sigma\n')
   const catalog = JSON.parse(readFileSync(join(source, 'catalog.json'), 'utf8')) as Catalog
-  catalog.rules.sigma = { description: 'file-scoped rule', tags: ['extra'], requires: [], path: 'rules/sigma.md', profiles: [] }
+  catalog.rules.sigma = { description: 'file-scoped rule', preference: false, requires: [], path: 'rules/sigma.md', profiles: [] }
   writeFileSync(join(source, 'catalog.json'), JSON.stringify(catalog, null, 2))
 }
 
@@ -76,7 +74,7 @@ function addSigmaRule(source: string): void {
  */
 function addConstitutionToCatalog(source: string): void {
   const catalog = JSON.parse(readFileSync(join(source, 'catalog.json'), 'utf8')) as Catalog
-  catalog.rules.constitution = { description: 'x', tags: ['core'], requires: [], path: 'rules/constitution.md', profiles: ['demo'] }
+  catalog.rules.constitution = { description: 'x', preference: false, requires: [], path: 'rules/constitution.md', profiles: ['demo'] }
   writeFileSync(join(source, 'catalog.json'), JSON.stringify(catalog, null, 2))
 }
 
@@ -129,21 +127,10 @@ describe('listReport', () => {
     expect(all.rows[0]?.state).toBeUndefined()
     expect(all.exitCode).toBe(0)
 
-    const tagged = await listReport(fakeCtx(), { source, target: uninitTarget, tags: ['core'] })
-    expect(tagged.rows.map((r) => r.name)).toEqual(['alpha'])
-
     const grepped = await listReport(fakeCtx(), { source, target: uninitTarget, grep: '甲' })
     expect(grepped.rows.map((r) => r.name)).toEqual(['alpha'])
   })
 
-  test('--tag with multiple values requires intersection (rule must carry all named tags)', async () => {
-    const source = fixtureSource()
-    const uninitTarget = mkdtempSync(join(tmpdir(), 'iuse-list-uninit-'))
-
-    const result = await listReport(fakeCtx(), { source, target: uninitTarget, tags: ['core', 'extra'] })
-
-    expect(result.rows).toEqual([])
-  })
 
   test('--grep matches on artifact content as well as name/description, case-insensitively', async () => {
     const source = fixtureSource()
@@ -237,9 +224,8 @@ describe('listReport', () => {
     writeFileSync(join(dir, 'artifacts', 'rules', 'alpha.md'), '# Alpha\n\nbody\n')
     const catalog: Catalog = {
       generatedAt: '2026-07-19T00:00:00Z',
-      tags: {},
       rules: {
-        alpha: { description: '甲说明', tags: ['core'], requires: [], path: 'rules/alpha.md', profiles: [] },
+        alpha: { description: '甲说明', preference: false, requires: [], path: 'rules/alpha.md', profiles: [] },
       },
     }
     writeFileSync(join(dir, 'artifacts', 'catalog.json'), JSON.stringify(catalog, null, 2))

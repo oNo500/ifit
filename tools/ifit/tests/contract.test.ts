@@ -15,9 +15,8 @@ describe('schema-validated loaders', () => {
       join(d, 'catalog.json'),
       JSON.stringify({
         generatedAt: '2026-07-20T00:00:00Z',
-        tags: { lang: { exclusive: true, values: { ts: 'TypeScript' } } },
         rules: {
-          constitution: { description: 'x', tags: ['ts'], requires: [], path: 'rules/constitution.md', profiles: [] },
+          constitution: { description: 'x', preference: false, requires: [], path: 'rules/constitution.md', profiles: [] },
         },
       }),
     )

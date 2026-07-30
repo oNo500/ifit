@@ -92,9 +92,8 @@ function fixtureSource(): string {
   writeFileSync(join(dir, 'templates', 'template-instantiate.md'), '# contract\n')
   const catalog: Catalog = {
     generatedAt: '2026-07-18T00:00:00Z',
-    tags: { concern: { exclusive: false, values: { core: 'x' } } },
     rules: {
-      constitution: { description: 'x', tags: ['core'], requires: [], path: 'rules/constitution.md', profiles: ['demo'] },
+      constitution: { description: 'x', preference: false, requires: [], path: 'rules/constitution.md', profiles: ['demo'] },
     },
   }
   writeFileSync(join(dir, 'catalog.json'), JSON.stringify(catalog, null, 2))
@@ -274,12 +273,12 @@ describe('exclude/add/remove flag plumbing', () => {
     const sourceDir = mkdtempSync(join(tmpdir(), 'iuse-repeated-exclude-src-'))
     mkdirSync(join(sourceDir, 'rules'), { recursive: true })
     mkdirSync(join(sourceDir, 'templates'), { recursive: true })
-    const repeatedCatalog: Catalog = { generatedAt: '2026-07-18T00:00:00Z', tags: { concern: { exclusive: false, values: { core: 'x' } } }, rules: {} }
+    const repeatedCatalog: Catalog = { generatedAt: '2026-07-18T00:00:00Z', rules: {} }
     // 'pattern2' avoids colliding with the 'architecture' instantiated template
     // (both would target .claude/rules/architecture.md).
     for (const name of ['constitution', 'pattern1', 'pattern2']) {
       writeFileSync(join(sourceDir, 'rules', `${name}.md`), `# ${name}\n`)
-      repeatedCatalog.rules[name] = { description: 'x', tags: ['core'], requires: [], path: `rules/${name}.md`, profiles: ['demo'] }
+      repeatedCatalog.rules[name] = { description: 'x', preference: false, requires: [], path: `rules/${name}.md`, profiles: ['demo'] }
     }
     writeFileSync(join(sourceDir, 'catalog.json'), JSON.stringify(repeatedCatalog, null, 2))
     writeFileSync(join(sourceDir, 'profiles.json'), JSON.stringify({ profiles: { demo: { description: 'Demo profile', rules: ['constitution', 'pattern1', 'pattern2'] } } }))

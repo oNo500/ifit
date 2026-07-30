@@ -1,16 +1,16 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Box, Text, useInput } from 'ink'
 import { ScrollView } from 'ink-scroll-view'
 import type { ScrollViewRef } from 'ink-scroll-view'
-import type { TagVocabulary } from '../core/contract'
 import type { ListRow } from '../core/list'
 
 const LEFT_WIDTH = 32
 // Rows the browse view spends on chrome around the two-column body: the title
 // line, the margin above the body, and the margin+text of the help line.
 const CHROME_ROWS = 4
-// Right-pane header rows above the scrollable body: name, description, tags,
-// plus the blank margin line before the body starts.
+// Right-pane header rows above the scrollable body: name, description, the
+// always-rendered preference line (blank for engineering rules, so the scroll
+// math stays deterministic), plus the blank margin line before the body starts.
 const PREVIEW_HEADER_ROWS = 4
 // Bottom-of-pane row reserved for the scroll position indicator.
 const POSITION_INDICATOR_ROWS = 1
@@ -36,21 +36,6 @@ export interface BrowseViewProps {
   onPickProfile: () => void
   onBack: () => void
   onQuit: () => void
-  tags: TagVocabulary
-}
-
-/** 无过滤 -> 各 facet 依序 -> 回到无过滤，循环一圈。 */
-function nextFacet(facets: string[], current: string | undefined): string | undefined {
-  if (current === undefined) return facets[0]
-  const idx = facets.indexOf(current)
-  if (idx < 0 || idx === facets.length - 1) return undefined
-  return facets[idx + 1]
-}
-
-function rowsForFacet(rows: ListRow[], tags: TagVocabulary, facet: string | undefined): ListRow[] {
-  if (facet === undefined) return rows
-  const facetTags = new Set(Object.keys(tags[facet]?.values ?? {}))
-  return rows.filter((row) => row.tags.some((t) => facetTags.has(t)))
 }
 
 export interface ListWindow {
@@ -103,10 +88,7 @@ export function BrowseView({
   onPickProfile,
   onBack,
   onQuit,
-  tags,
 }: BrowseViewProps) {
-  const facets = useMemo(() => Object.keys(tags).toSorted(), [tags])
-  const [facet, setFacet] = useState<string | undefined>(undefined)
   const [cursor, setCursor] = useState(0)
   const [selected, setSelected] = useState<ReadonlySet<string>>(new Set())
   // useInput's handler closes over render-time state; two keystrokes landing in the
@@ -117,7 +99,7 @@ export function BrowseView({
   const scrollRef = useRef<ScrollViewRef>(null)
   const [scrollOffset, setScrollOffset] = useState(0)
 
-  const visibleRows = useMemo(() => rowsForFacet(rows, tags, facet), [rows, tags, facet])
+  const visibleRows = rows
 
   const bodyAreaHeight = Math.max(1, terminalRows - CHROME_ROWS)
   const previewBodyHeight = Math.max(1, bodyAreaHeight - PREVIEW_HEADER_ROWS - POSITION_INDICATOR_ROWS)
@@ -172,7 +154,6 @@ export function BrowseView({
       return
     }
     if (input === 't') {
-      setFacet((f) => nextFacet(facets, f))
       setCursor(0)
       cursorRef.current = 0
       return
@@ -232,7 +213,7 @@ export function BrowseView({
 
   return (
     <Box flexDirection="column">
-      <Text bold>浏览{facet === undefined ? '' : `（tag: ${facet}）`}</Text>
+      <Text bold>浏览</Text>
       <Box marginTop={1} height={bodyAreaHeight}>
         <Box flexDirection="column" width={LEFT_WIDTH} marginRight={2}>
           {listSlice.hasMoreAbove && <Text dimColor>...</Text>}
@@ -260,7 +241,7 @@ export function BrowseView({
             <>
               <Text bold>{currentRow.name}</Text>
               <Text dimColor>{currentRow.description}</Text>
-              <Text dimColor>tags: {currentRow.tags.join(', ')}</Text>
+              <Text dimColor>{currentRow.preference ? 'preference: 可剥离的个人偏好' : ' '}</Text>
               {currentRow.state === 'broken' ? (
                 <Box flexDirection="column" marginTop={1}>
                   <Text color="red">broken：源端产物缺失</Text>

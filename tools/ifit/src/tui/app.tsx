@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { Box, Text, useApp, useInput, useStdout } from 'ink'
 import { join } from 'node:path'
 import { loadCatalog } from '../core/contract'
-import type { TagVocabulary } from '../core/contract'
 import { readTextIfExists } from '../core/io'
 import type { ActionStep, IfitContext } from '../core/init'
 import { runInit } from '../core/init'
@@ -34,7 +33,6 @@ interface BrowseData {
   source: SourceRef
   rows: ListRow[]
   contentByName: Record<string, string>
-  tags: TagVocabulary
 }
 
 type View =
@@ -94,7 +92,7 @@ async function loadBrowseData(
     if (content !== null) contentByName[row.name] = content
   }
 
-  return { ok: true, data: { source, rows: listed.rows, contentByName, tags: catalog.tags } }
+  return { ok: true, data: { source, rows: listed.rows, contentByName } }
 }
 
 async function resolveSourceRef(deps: TuiDeps): Promise<{ ok: true; source: SourceRef } | { ok: false; message: string }> {
@@ -341,7 +339,6 @@ export function App({ deps }: { deps: TuiDeps }) {
           rows={view.data.rows}
           terminalRows={rows}
           contentFor={(name) => view.data.contentByName[name] ?? ''}
-          tags={view.data.tags}
           initialized={view.initialized}
           onInitRules={(rules) => {
             runInit(deps.ctx, { rules, profile: '-', source: deps.source, target: deps.target, force: false, dryRun: true }).then((result) => {

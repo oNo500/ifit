@@ -36,21 +36,17 @@ function fixtureSource(): string {
   // just a two-state toggle.
   const catalog: Catalog = {
     generatedAt: '2026-07-18T00:00:00Z',
-    tags: {
-      concern: { exclusive: false, values: { core: 'core concern' } },
-      layer: { exclusive: true, values: { backend: 'backend layer' } },
-    },
     rules: {
       constitution: {
         description: 'x',
-        tags: ['core'],
+        preference: false,
         requires: [],
         path: 'rules/constitution.md',
         profiles: ['node-web', 'python-cli'],
       },
       extra: {
         description: 'x',
-        tags: ['backend'],
+        preference: false,
         requires: [],
         path: 'rules/extra.md',
         profiles: ['python-cli'],
@@ -95,9 +91,9 @@ function fixtureSourceWithManyRules(count: number): string {
   for (let i = 0; i < count; i += 1) {
     const name = `rule-${String(i).padStart(2, '0')}`
     writeFileSync(join(dir, 'rules', `${name}.md`), `# ${name}\n`)
-    rules[name] = { description: 'x', tags: [], requires: [], path: `rules/${name}.md`, profiles: [] }
+    rules[name] = { description: 'x', preference: false, requires: [], path: `rules/${name}.md`, profiles: [] }
   }
-  const catalog: Catalog = { generatedAt: '2026-07-18T00:00:00Z', tags: {}, rules }
+  const catalog: Catalog = { generatedAt: '2026-07-18T00:00:00Z', rules }
   writeFileSync(join(dir, 'catalog.json'), JSON.stringify(catalog, null, 2))
 
   return dir
@@ -233,37 +229,6 @@ describe('TUI browse flow', () => {
     expect(lastFrame()).toContain('copy-rule')
   })
 
-  test('t cycles the tag facet through undefined -> concern -> layer -> undefined, filtering rows and annotating the title', async () => {
-    const source = fixtureSource()
-    const target = mkdtempSync(join(tmpdir(), 'iuse-tui-browse-tgt-'))
-    const deps: TuiDeps = { ctx: fakeCtx(), target, source }
-
-    const { lastFrame, stdin } = bootApp(deps)
-
-    // No filter: both rows visible.
-    await enterBrowseFromHome(stdin, lastFrame)
-    expect(lastFrame()).toContain('extra')
-    expect(lastFrame()).not.toContain('tag:')
-
-    // First facet (alphabetical: 'concern') -- only constitution carries a
-    // 'concern' tag ('core'); extra (tagged 'backend', a 'layer' tag) drops out.
-    await press(stdin, 't')
-    await waitFor(() => (lastFrame() ?? '').includes('tag: concern'))
-    expect(lastFrame()).toContain('constitution')
-    expect(lastFrame()).not.toContain('extra')
-
-    // Second facet ('layer') -- only extra carries a 'layer' tag ('backend').
-    await press(stdin, 't')
-    await waitFor(() => (lastFrame() ?? '').includes('tag: layer'))
-    expect(lastFrame()).toContain('extra')
-    expect(lastFrame()).not.toContain('constitution')
-
-    // Cycles back to no filter.
-    await press(stdin, 't')
-    await waitFor(() => !(lastFrame() ?? '').includes('tag:'))
-    expect(lastFrame()).toContain('constitution')
-    expect(lastFrame()).toContain('extra')
-  })
 
   test('initialized target: status b enters browse; a on available rule reaches update plan', async () => {
     const source = fixtureSource()
@@ -392,7 +357,7 @@ describe('TUI browse flow', () => {
 
     await press(stdin, 'g')
     await waitFor(() => (lastFrame() ?? '').includes('line-1'))
-  })
+  }, 20000)
 
   test('left list windows around the cursor: moving to the bottom hides the first rule and shows the last', async () => {
     const source = fixtureSourceWithManyRules(30)

@@ -15,10 +15,9 @@ function fixtureSource(): string {
   writeFileSync(join(dir, 'profiles.json'), JSON.stringify({ profiles: { demo: { rules: ['constitution', 'markdown'] } } }))
   const catalog: Catalog = {
     generatedAt: '2026-07-19T00:00:00Z',
-    tags: {},
     rules: {
-      constitution: { description: 'x', tags: ['core'], requires: [], path: 'rules/constitution.md', profiles: ['demo'] },
-      markdown: { description: 'x', tags: ['docs'], requires: [], path: 'rules/markdown.md', profiles: ['demo'] },
+      constitution: { description: 'x', preference: false, requires: [], path: 'rules/constitution.md', profiles: ['demo'] },
+      markdown: { description: 'x', preference: false, requires: [], path: 'rules/markdown.md', profiles: ['demo'] },
     },
   }
   writeFileSync(join(dir, 'catalog.json'), JSON.stringify(catalog, null, 2))
@@ -69,11 +68,10 @@ describe('planAssembly', () => {
     const src = fixtureSource()
     const catalog: Catalog = {
       generatedAt: '2026-07-19T00:00:00Z',
-      tags: {},
       rules: {
-        constitution: { description: 'x', tags: ['core'], requires: [], path: 'rules/constitution.md', profiles: ['demo'] },
-        markdown: { description: 'x', tags: ['docs'], requires: [], path: 'rules/markdown.md', profiles: ['demo'] },
-        ghost: { description: 'x', tags: [], requires: [], path: 'rules/ghost.md', profiles: ['demo'] },
+        constitution: { description: 'x', preference: false, requires: [], path: 'rules/constitution.md', profiles: ['demo'] },
+        markdown: { description: 'x', preference: false, requires: [], path: 'rules/markdown.md', profiles: ['demo'] },
+        ghost: { description: 'x', preference: false, requires: [], path: 'rules/ghost.md', profiles: ['demo'] },
       },
     }
     writeFileSync(join(src, 'catalog.json'), JSON.stringify(catalog, null, 2))
@@ -85,11 +83,10 @@ describe('planAssembly', () => {
     const src = fixtureSource()
     const catalog: Catalog = {
       generatedAt: '2026-07-19T00:00:00Z',
-      tags: {},
       rules: {
-        constitution: { description: 'x', tags: ['core'], requires: [], path: 'rules/constitution.md', profiles: ['demo'] },
-        markdown: { description: 'x', tags: ['docs'], requires: ['constitution'], path: 'rules/markdown.md', profiles: ['demo'] },
-        strict: { description: 'x', tags: [], requires: ['constitution'], path: 'rules/strict.md', profiles: ['demo'] },
+        constitution: { description: 'x', preference: false, requires: [], path: 'rules/constitution.md', profiles: ['demo'] },
+        markdown: { description: 'x', preference: false, requires: ['constitution'], path: 'rules/markdown.md', profiles: ['demo'] },
+        strict: { description: 'x', preference: false, requires: ['constitution'], path: 'rules/strict.md', profiles: ['demo'] },
       },
     }
     writeFileSync(join(src, 'catalog.json'), JSON.stringify(catalog, null, 2))

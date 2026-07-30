@@ -7,7 +7,7 @@ import type { Catalog } from './contract-gen/catalog'
 import type { Profiles } from './contract-gen/profiles'
 import { readTextIfExists } from './io'
 
-export type { Catalog, CatalogRule, TagFacet, TagVocabulary } from './contract-gen/catalog'
+export type { Catalog, CatalogRule } from './contract-gen/catalog'
 export type { Profile, Profiles } from './contract-gen/profiles'
 
 const ajv = new Ajv({ allErrors: true })

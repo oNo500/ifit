@@ -33,18 +33,17 @@ function fixtureSource(): string {
   // target now bootstraps into browse (Task 5), which fails without it.
   const catalog: Catalog = {
     generatedAt: '2026-07-18T00:00:00Z',
-    tags: { concern: { exclusive: false, values: { core: 'x' } } },
     rules: {
       constitution: {
         description: 'x',
-        tags: ['core'],
+        preference: false,
         requires: [],
         path: 'rules/constitution.md',
         profiles: ['node-web', 'python-cli'],
       },
       extra: {
         description: 'x',
-        tags: ['core'],
+        preference: false,
         requires: [],
         path: 'rules/extra.md',
         profiles: ['python-cli'],

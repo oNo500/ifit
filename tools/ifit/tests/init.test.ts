@@ -20,10 +20,9 @@ function fixtureSource(): string {
   writeFileSync(join(dir, 'templates', 'template-instantiate.md'), '# contract\n')
   const catalog: Catalog = {
     generatedAt: '2026-07-19T00:00:00Z',
-    tags: { concern: { exclusive: false, values: { core: 'x', docs: 'x' } } },
     rules: {
-      constitution: { description: 'x', tags: ['core'], requires: [], path: 'rules/constitution.md', profiles: ['demo'] },
-      markdown: { description: 'x', tags: ['docs'], requires: [], path: 'rules/markdown.md', profiles: ['demo'] },
+      constitution: { description: 'x', preference: false, requires: [], path: 'rules/constitution.md', profiles: ['demo'] },
+      markdown: { description: 'x', preference: false, requires: [], path: 'rules/markdown.md', profiles: ['demo'] },
     },
   }
   writeFileSync(join(dir, 'catalog.json'), JSON.stringify(catalog, null, 2))
@@ -183,9 +182,8 @@ function devSourceFixture(): string {
   writeFileSync(join(dir, 'artifacts', 'templates', 'template-instantiate.md'), '# contract\n')
   const catalog: Catalog = {
     generatedAt: '2026-07-19T00:00:00Z',
-    tags: {},
     rules: {
-      constitution: { description: 'x', tags: ['core'], requires: [], path: 'rules/constitution.md', profiles: ['demo'] },
+      constitution: { description: 'x', preference: false, requires: [], path: 'rules/constitution.md', profiles: ['demo'] },
     },
   }
   writeFileSync(join(dir, 'artifacts', 'catalog.json'), JSON.stringify(catalog, null, 2))
@@ -582,7 +580,7 @@ describe('runInit with explicit --rules (profile "-")', () => {
 
     const brokenSource = fixtureSource()
     const catalog = JSON.parse(readFileSync(join(brokenSource, 'catalog.json'), 'utf8')) as Catalog
-    catalog.rules.broken = { description: 'x', tags: ['core'], requires: [], path: 'rules/broken.md', profiles: [] }
+    catalog.rules.broken = { description: 'x', preference: false, requires: [], path: 'rules/broken.md', profiles: [] }
     writeFileSync(join(brokenSource, 'catalog.json'), JSON.stringify(catalog, null, 2))
     const brokenTarget = mkdtempSync(join(tmpdir(), 'iuse-init-tgt-'))
     const broken = await runInit(ctx, { source: brokenSource, profile: '-', rules: ['constitution', 'broken'], target: brokenTarget, force: false })

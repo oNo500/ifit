@@ -16,18 +16,17 @@ function fixtureSource(): string {
 
   const catalog: Catalog = {
     generatedAt: '2026-07-18T00:00:00Z',
-    tags: { concern: { exclusive: false, values: { core: 'core concern' } } },
     rules: {
       alpha: {
         description: '甲说明',
-        tags: ['core'],
+        preference: false,
         requires: [],
         path: 'rules/alpha.md',
         profiles: ['demo'],
       },
       sigma: {
         description: 'file-scoped 规则',
-        tags: ['core'],
+        preference: false,
         requires: [],
         path: 'rules/sigma.md',
         profiles: [],

@@ -2,37 +2,50 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Catalog",
   "type": "object",
-  "required": ["generatedAt", "tags", "rules"],
+  "required": [
+    "generatedAt",
+    "rules"
+  ],
   "additionalProperties": false,
   "properties": {
-    "generatedAt": { "type": "string" },
-    "tags": {
-      "title": "TagVocabulary",
-      "type": "object",
-      "additionalProperties": {
-        "title": "TagFacet",
-        "type": "object",
-        "required": ["exclusive", "values"],
-        "additionalProperties": false,
-        "properties": {
-          "exclusive": { "type": "boolean" },
-          "values": { "type": "object", "additionalProperties": { "type": "string" } }
-        }
-      }
+    "generatedAt": {
+      "type": "string"
     },
     "rules": {
       "type": "object",
       "additionalProperties": {
         "title": "CatalogRule",
         "type": "object",
-        "required": ["description", "tags", "requires", "path", "profiles"],
+        "required": [
+          "description",
+          "requires",
+          "path",
+          "profiles",
+          "preference"
+        ],
         "additionalProperties": false,
         "properties": {
-          "description": { "type": "string" },
-          "tags": { "type": "array", "items": { "type": "string" } },
-          "requires": { "type": "array", "items": { "type": "string" } },
-          "path": { "type": "string" },
-          "profiles": { "type": "array", "items": { "type": "string" } }
+          "description": {
+            "type": "string"
+          },
+          "requires": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "path": {
+            "type": "string"
+          },
+          "profiles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "preference": {
+            "type": "boolean"
+          }
         }
       }
     }

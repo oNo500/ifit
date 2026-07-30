@@ -25,11 +25,10 @@ function fixtureSource(): string {
 
   const catalog: Catalog = {
     generatedAt: '2026-07-19T00:00:00Z',
-    tags: { concern: { exclusive: false, values: { core: 'x' } } },
     rules: {
       constitution: {
         description: 'x',
-        tags: ['core'],
+        preference: false,
         requires: [],
         path: 'rules/constitution.md',
         profiles: ['demo'],
