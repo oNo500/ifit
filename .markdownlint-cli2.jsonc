@@ -1,0 +1,69 @@
+// Same rule set as iforge/.markdownlint-cli2.jsonc — one markdown standard across both repos.
+// Only `ignores` differs: here the published assets are the generated files.
+{
+  "globs": [
+    "**/*.md"
+  ],
+
+  // Ignore files referenced by .gitignore (node_modules, generated AGENTS.md/CLAUDE.md)
+  "gitignore": true,
+
+  "ignores": [
+    // Published assets: built in iforge, landed here by `iforge publish`.
+    // Fix the meta instruction upstream and re-publish, never edit in place.
+    "rules/**",
+    "skills/**",
+    "templates/**",
+
+    // Historical design docs and MCP notes: records of past decisions, not live specs
+    "docs/**"
+  ],
+
+  "config": {
+    // Enforced: structural and format rules that markdown rule states as hard lines
+    "MD001": true, // heading levels increment by one
+    "MD040": true, // fenced code blocks have a language
+    "MD041": true, // first line is a top-level heading
+    "MD049": { "style": "asterisk" }, // *italic*, not _italic_
+    "MD050": { "style": "asterisk" }, // **bold**, not __bold__
+
+    // Off: line length is a prose judgement, not a lint rule
+    "MD013": false,
+
+    // Off: hard tabs and raw HTML are legitimate here (code samples, <details>)
+    "MD010": false,
+    "MD033": false,
+
+    // Off: cosmetic whitespace and list-marker churn on existing files
+    "MD004": false, // unordered list marker style
+    "MD007": false, // unordered list indentation
+    "MD009": false, // trailing spaces
+    "MD012": false, // multiple consecutive blank lines
+    "MD022": false, // blanks around headings
+    "MD030": false, // spaces after list markers
+    "MD031": false, // blanks around fences
+    "MD032": false, // blanks around lists
+    "MD047": false, // file ends with single newline
+
+    // Off: duplicate/emphasis-as-heading patterns are intentional in design docs
+    "MD024": false, // duplicate headings
+    "MD025": false, // multiple top-level headings
+    "MD036": false, // emphasis used instead of heading
+
+    // Off: bare URLs and shell prompts appear in command examples
+    "MD014": false, // dollar signs before commands without output
+    "MD034": false, // bare URLs
+
+    // Off: images are illustrative, alt text not load-bearing
+    "MD045": false,
+
+    // Off: link/reference hygiene not worth the churn on existing files
+    "MD028": false, // blank line inside blockquote
+    "MD029": false, // ordered list item prefix
+    "MD035": false, // horizontal rule style
+    "MD051": false, // link fragments valid
+    "MD053": false, // unused link/image reference definitions
+    "MD059": false, // descriptive link text
+    "MD060": false // link/image style
+  }
+}

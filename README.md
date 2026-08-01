@@ -14,7 +14,7 @@ rule、模板。资产内容由开发仓（`~/code/infra-agent/iforge`）构建�
 
   清单记录的是目标态，允许比实际超前。溯源分两层：`refUrl` 参考来源 +
   实际来源（repo 或 `install`）。专题见 [`SKILLS.md`](SKILLS.md)。
-- [`catalog.json`](catalog.json) — 资产查询视图（描述/tags/profile 隶属），供 `ifit list/show` 消费
+- [`catalog.json`](catalog.json) — 资产查询视图（描述/preference/profile 隶属），供 `ifit list/show` 消费
 - [`profiles.json`](profiles.json) — rule 组合账：`{ layers, profiles }`，profile 由层叠加 + 直引 rules 展开（`ifit profiles` 列出的即展开结果）
 - [`rules/`](rules/) — 可分发 rule 产物，产物即安装形态：file-scoped 规则自带 `paths` frontmatter，`ifit` 原样拷贝，不做安装时渲染（`ifit cat <name>` 即产物原文）
 - [`templates/`](templates/) — 新项目模板：`claude-md.md` 与 `architecture.md` 含占位符，分发时按目标项目实例化；`settings.json` 是最终形态，整份拷贝
@@ -27,8 +27,8 @@ rule、模板。资产内容由开发仓（`~/code/infra-agent/iforge`）构建�
 - [`docs/mcp/`](docs/mcp/) — MCP server 说明
 
 维护端（元指令、构建契约、iforge 源码）在开发仓 `~/code/infra-agent/iforge`，
-不要在此修改经 publish 落位的内容。`tools/`、`docs/superpowers/`（设计
-文档存档）、`.claude/` 与 `.mcp.json`（自用配置）是本仓自有，不分发。
+不要在此修改经 publish 落位的内容。`tools/`、`docs/mcp/`、`.claude/` 与
+`.mcp.json`（自用配置）是本仓自有，不分发；设计文档统一在工作区根 `../docs/`。
 
 ## 使用
 
@@ -43,7 +43,7 @@ pnpx skills add <owner>/<repo> -s <name>
 # 规则与模板：使用端 CLI（本仓 tools/ifit；全局命令用直接符号链接，
 # 因 pnpm 多包 link --global 会互清 binstub，见 .claude/CLAUDE.md）
 ifit                                   # TTY 裸跑进 TUI：主菜单 → 浏览/初始化/对账/更新（交互式唯一入口）
-ifit list [--tag a,b] [--grep <kw>]    # 查询资产：描述、tags、安装状态（已初始化目标附状态列）
+ifit list [--grep <kw>]                # 查询资产：描述、安装状态（已初始化目标附状态列）
 ifit show <name>                       # 单条资产元数据 + 产物全文
 ifit cat <name>                        # 输出产物原文（安装形态，可重定向落盘）
 ifit profiles                          # 列出可选 profile 及其 rules
