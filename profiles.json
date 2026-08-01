@@ -138,7 +138,7 @@
       ]
     },
     "python-agent": {
-      "description": "Python agent 包（agent 资产群由 triage 落账后加入）",
+      "description": "Python agent 包",
       "layers": [
         "base",
         "code"

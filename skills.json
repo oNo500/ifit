@@ -1,5 +1,10 @@
 [
   {
+    "name": "agent-sandbox",
+    "source": "custom",
+    "description": "Agent 代码执行沙箱的选型与隔离判据：隔离分级、网络策略、资源限额"
+  },
+  {
     "name": "code-placement",
     "source": "custom"
   },
@@ -58,6 +63,16 @@
     "source": "custom"
   },
   {
+    "name": "llm-cost",
+    "source": "custom",
+    "description": "LLM 应用降本判据：ROI 排序、prompt caching 决策、模型分级、计费陷阱"
+  },
+  {
+    "name": "llm-eval",
+    "source": "custom",
+    "description": "LLM 应用的 Eval 与可观测判据：四类 eval、LLM-as-judge 注意点、反模式与工具选型"
+  },
+  {
     "name": "memory-hygiene",
     "source": "custom"
   },
@@ -81,8 +96,18 @@
     "source": "custom"
   },
   {
+    "name": "prompt-injection-defense",
+    "source": "custom",
+    "description": "Agent 安全边界设计：prompt 注入的六层防御取舍与 OWASP LLM Top 10"
+  },
+  {
     "name": "react-state",
     "source": "custom"
+  },
+  {
+    "name": "reasoning-models",
+    "source": "custom",
+    "description": "推理模型选型与使用判据：适用场景、effort 选择、prompt 禁忌"
   },
   {
     "name": "shadcn",
