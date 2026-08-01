@@ -4,7 +4,7 @@
 
 `meta/assets.json` 的 `skills` 分组是全部 skill 的清单：一个 skill 是否存在、来自哪里、如何安装，以它为准。每条按 `source` 分三类：
 
-- `custom` — 自建。内容源是开发仓 `meta/maps/skills/<name>.md` map 与 `meta/topics/`，开发仓 `artifacts/skills/<name>/` 是构建产物，可重新构建。字段只有 `status`
+- `custom` — 自建。内容源是开发仓 `meta/maps/skills/<name>.ditamap` DITA map 与其引用的 `meta/topics/**/*.dita` topics，开发仓 `artifacts/skills/<name>/` 是构建产物，可重新构建。字段只有 `status`
 - `mirror` — 上游有可用 SKILL.md 但不符合 skills.sh 标准，giget 拉单目录到开发仓 `artifacts/skills/<name>/`。字段 `repo`、`path`、`commit`、`updated`
 - `official` — 符合 skills.sh 标准，不入仓，只记 `repo`；同时是 Anthropic 官方插件的另带 `plugin`
 
@@ -20,9 +20,10 @@ publish 时 `meta/assets.json` 的 skill 账落位为发布仓根 `skills.json`
 
 ## 创建
 
-- `custom`：在开发仓 `meta/maps/skills/<name>.md` 写 map，在 `meta/assets.json`
+- `custom`：在开发仓 `meta/maps/skills/<name>.ditamap` 写 DITA map，并在 `meta/topics/`
+  编写 map 引用的 `.dita` topics；在 `meta/assets.json`
   的 `skills` 分组加一条 `{ "source": "custom", "status": "stub" }`，让
-  headless provider 构建。map/topic 格式见开发仓工作区根 `../docs/meta-format.md`，AI 构建契约见
+  headless provider 构建。map/topic 格式以仓内现有 DITA source 为例，AI 构建契约见
   开发仓 `meta/prompts/skill-build.md`
 - `mirror`：往 `meta/assets.json` 加条目（`source`/`repo`/`path`），在 `iforge`
   的 `s` 视图按 `u` 拉取，或 `iforge sync --pull`

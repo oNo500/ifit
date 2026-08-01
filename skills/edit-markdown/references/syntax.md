@@ -59,12 +59,12 @@ Markdown 语法按渲染器支持面分三层，查语法先定位在哪层—�
 
 ### 代码块
 
-```markdown
+````markdown
 ```ts
 const greeting: string = "Hello";
 console.log(greeting);
 ```
-```
+````
 
 ## 2. GFM 扩展
 
@@ -118,13 +118,13 @@ $$\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$$
 
 ### Mermaid 图表
 
-```markdown
+````markdown
 ```mermaid
 graph TD;
     A-->B;
     A-->C;
 ```
-```
+````
 
 ### 脚注
 
@@ -133,3 +133,53 @@ graph TD;
 
 [^1]: 脚注详细解释内容。
 ```
+
+### GitHub citation autolinks
+
+GitHub 自动将以下引用转为链接：
+
+- Issue / PR：`#123`（同仓库）、`owner/repo#123`（跨仓库）
+- Commit：40 位完整 SHA 或 7 位短 SHA（如 `a5c3785`）
+- 用户：`@username`；团队：`@org/team`
+
+### GitHub code highlighting
+
+围栏代码块在开栏反引号后写语言标识。`diff` 高亮可突出前后变化：
+
+````markdown
+```diff
+- 删除的行
++ 新增的行
+```
+````
+
+### GitHub GeoJSON and TopoJSON maps
+
+使用 `geojson` 或 `topojson` 语言标识让 GitHub 渲染交互地图：
+
+````markdown
+```geojson
+{
+  "type": "FeatureCollection",
+  "features": []
+}
+```
+
+```topojson
+{
+  "type": "Topology",
+  "objects": {}
+}
+```
+````
+
+### GitHub STL models
+
+使用 `stl` 语言标识让 GitHub 渲染 ASCII STL 3D 模型：
+
+````markdown
+```stl
+solid example
+endsolid example
+```
+````
