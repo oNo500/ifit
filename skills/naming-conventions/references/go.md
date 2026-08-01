@@ -1,34 +1,32 @@
-# Go 标识符
+# Go 命名与封装规范
 
-## 导出
+## 命名形态与可见性
 
-导出与否靠首字母大小写，没有关键字：包外要用的才大写开头，其余一律小写。
+- **导出与否**靠首字母大小写，没有关键字：包外要用的才大写开头，其余一律小写。
+- 标识符 MUST NOT 用下划线分隔（应用 `userID` 而非 `user_id`）。
+- 缩写整体保持大写（如 `ID`、`URL`、`HTTP`），MUST NOT 写成 `Id`、`Url`、`Http`；非导出时整体小写（局部变量写 `id`、`rawURL`）。
+- 包名要求短、全小写、无下划线，MUST NOT 使用 `util`、`common`、`helper` 这类无信息量名——包名是调用点的前缀（如 `pricing.Apply` 而非 `common.Apply`），无信息的包名会变成什么都往里塞的垃圾桶。
+- 单方法接口推荐使用 `-er` 后缀命名：如 `Reader`、`Closer`、`Notifier`。
 
-## 形态
+### 函数签名对照示例
 
-- 标识符 MUST NOT 用下划线分隔：`userID`，不是 `user_id`
-- 缩写整体保持大写：`ID`、`URL`、`HTTP`，MUST NOT 写 `Id`、`Url`、`Http`
-  （非导出时整体小写：`userID` 的局部变量写 `id`、`rawURL` 写 `rawURL`）
+```go
+// 正确：无下划线，缩写全大写，包名有意义，单方法接口用 -er
+package pricing
 
-```diff
-- func FetchUser(user_id string, base_url string) (*User, error)
-+ func FetchUser(userID string, baseURL string) (*User, error)
+type RateCalculator interface {
+    Calculate(rawURL string) (int, error)
+}
+
+// 错误：带下划线，缩写大小写混用，包名无意义（common），接口不用 -er
+package common
+
+type Calc interface {
+    Calc_Price(rawUrl string) (int, error)
+}
 ```
 
-## 包名
+## Linter 边界
 
-短、全小写、无下划线。MUST NOT 用 `util`、`common`、`helper` 这类无信息
-名——包名是调用点的前缀（`pricing.Apply` 而非 `common.Apply`），无信息的
-包名会变成什么都往里塞的垃圾桶。
-
-## 接口名
-
-单方法接口用 `-er` 后缀：`Reader`、`Closer`、`Notifier`。
-
-## linter 边界
-
-golangci-lint 能强制大部分：
-
-- `revive` / `stylecheck`：缩写大写形态（`var-naming`、ST1003）、
-  下划线分隔、包名下划线
-- 靠判断的：包名是否有信息量、接口名是否贴 `-er` 惯例
+- **靠 Linter 强制**：golangci-lint 的 `revive` / `stylecheck` 能强制缩写大写形态（`var-naming`、ST1003）、禁止下划线分隔、限制包名下划线。
+- **靠人工判断**：包名是否有信息量、接口命名是否符合 `-er` 惯例。

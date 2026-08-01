@@ -4,16 +4,16 @@
 
 - **Runtime**: [Runtime]
 - **Framework**: [Framework]
-- **Language**: TypeScript
-- **Database**: [Database · ORM]
-- **Testing**: [Testing framework]
-- **Toolchain**: [Package manager · Linter · CI]
+- **Language**: [Language]
+- **Database**: [Database]
+- **Testing**: [Testing]
+- **Toolchain**: [Toolchain]
 
 ## Architecture
 
 [描述整体架构模式，例如：Feature-Based、分层架构等]
 
-```
+```text
 src/
 ├── [directory]/    # [说明]
 ├── [directory]/    # [说明]

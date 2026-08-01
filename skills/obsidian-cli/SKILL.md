@@ -1,6 +1,6 @@
 ---
 name: obsidian-cli
-description: Operate Obsidian vaults using obsidian-cli (NotesMD CLI) for vault audits, file operations, search, and theme debugging.
+description: Operate Obsidian vaults using obsidian-cli (NotesMD CLI) for vault audits, file operations, search, and theme debugging when performing file modifications or full-vault audits.
 ---
 
 # obsidian-cli skill
@@ -9,20 +9,19 @@ description: Operate Obsidian vaults using obsidian-cli (NotesMD CLI) for vault 
 
 分工边界：笔记的 frontmatter、路由与命名归 note skill，本 skill 只管操作面，两边 MUST NOT 重复。
 
-## vault-link-safe-file-ops
+## 链接安全的文件操作
 
 vault 内文件移动/重命名 MUST 走 `obsidian-cli move`——它自动更新反向链接；手动 `mv`/`cp`/`rm` 会造成坏链。
-
 移动或修复后 MUST 验证链接存活：搜索旧名，确认无残留引用。
 
-## obsidian-cli-command-surface
+## 命令面与操作
 
 - `obsidian-cli move <旧> <新>` — 改名/移动，反链安全
 - `obsidian-cli search-content <词>` — 全文检索，审计勘探的主力
 - Obsidian 未运行时也能操作 vault（NotesMD CLI 特性）
 - 主题调试三件套：reload vault、eval CSS 变量、截图
 
-## vault-maintenance-workflow
+## 库维护工作流
 
 「建」与「维护」分开做，MUST NOT 在写笔记的过程中顺手改结构。
 

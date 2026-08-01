@@ -1,9 +1,6 @@
 # CLAUDE.md 模板
 
-项目入口 `CLAUDE.md` 的模板。分发时结合目标项目实例化，落 `.claude/CLAUDE.md`
-（Claude Code 官方支持根与 `.claude/` 两处；ifit 默认落 `.claude/` 以内聚
-所有 Claude 配置）。入口与 `.claude/rules/` 的分工：架构约定、编码规范、
-测试纪律由 rules（profile 拼装）承载，入口只做「项目一句话 + 红线 + 命令 + 指路」。
+项目入口 `CLAUDE.md` 的模板。分发时结合目标项目实例化，落 `.claude/CLAUDE.md`（Claude Code 官方支持根与 `.claude/` 两处；ifit 默认落 `.claude/` 以内聚所有 Claude 配置）。入口与 `.claude/rules/` 的分工：架构约定、编码规范、测试纪律由 rules（profile 拼装）承载，入口只做「项目一句话 + 红线 + 命令 + 指路」。
 
 ## 骨架
 
@@ -43,12 +40,10 @@ When unsure about requirements, implementation, or scope, ASK before changing co
 
 ## 填空规则
 
-- 实例化后总行数 <50；不适用的章节整节删除，不留空标题
-- H1 即一行项目概括，例：`acme-dashboard · Next.js App Router · TypeScript · Node 22`；
-  无框架的项目省略对应段
+- 实例化后总行数 &lt;50；不适用的章节整节删除，不留空标题
+- H1 即一行项目概括，例：`acme-dashboard · Next.js App Router · TypeScript · Node 22`；无框架的项目省略对应段
 - Golden Rule 是所有项目共用的默认文案，直接保留；项目有更具体的判断边界时才替换
-- `[NEVER_LIST]` — 每条独立 `- NEVER ...` 行；项目没给就只放
-  `- NEVER push to main directly`
+- `[NEVER_LIST]` — 每条独立 `- NEVER ...` 行；项目没给就只放 `- NEVER push to main directly`
 - `[COMMANDS]` — 从 package.json scripts 抽 3-5 条（dev/test/build/lint/typecheck）
 - `[ARCHITECTURE_PRINCIPLE]` — 一行；按框架给默认：
   - Next.js App Router → `Server Components by default; Client Components only when interaction is required.`
@@ -56,8 +51,7 @@ When unsure about requirements, implementation, or scope, ASK before changing co
   - 不确定 → `Feature-based organization: each business capability owns its routes, services, tests.`
 - `[PROTECTED_PATHS]` — 不经批准不得改动的路径，每条独立列表项；没有就整节删
 - `[BITE_YOU]` — 项目踩坑纪录；没有就整节删
-- `[NEVER_REPEAT]` — 从 NEVER 清单挑最易违反的 2-3 条在结尾重复：
-  长上下文里首尾位置的指令存活率最高，结尾重复保住最关键红线
+- `[NEVER_REPEAT]` — 从 NEVER 清单挑最易违反的 2-3 条在结尾重复：长上下文里首尾位置的指令存活率最高，结尾重复保住最关键红线
 
 ## 填空后示例
 

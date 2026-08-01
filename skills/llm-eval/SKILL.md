@@ -13,7 +13,7 @@ description: >-
 
 # llm-eval
 
-Eval 答「做得好不好」，Observability 答「出了什么事」，两者互补、分开设计。本 skill 管「正在设计 eval / 排查线上行为」时的判据：选哪类 eval、怎么组合、LLM-as-judge 的坑在哪、CI 怎么分档、工具各自站什么位。工具只给定位与选择条件，配置语法一律查各家官方文档。
+Eval 答「做得好不好」，Observability 答「出了什么事」，两者互补、分开设计。本 skill 管「正在设计 eval / 排查线上行为」时的判据：选哪类 eval、怎么组合、LLM-as-judge 的坑在哪、CI 怎么分档、工具各自站什么位。工具只给定位与选择条件，具体配置语法与安装方式易变，一律查各家官方文档。
 
 ## 四类 eval：按判定标准来源选
 
@@ -74,9 +74,9 @@ LLM 输出非确定性，传统单元测试的等值断言套不上。按判定�
 - 盲目追求 100% — 资源耗在长尾 case 上、eval set 被过拟合；LLM 天生概率性，目标是 SLA 而非完美
 - Observability 缺失 — 出事查不到 trace，只能猜
 
-## 工具定位
+## 工具定位与选择条件
 
-Eval 侧：
+Eval 侧（工具清单只给定位与选择条件，不给安装教程）：
 
 - Promptfoo — 声明式配置，跨 prompt / 跨模型并排比较，CI 集成可阻断 PR。选它：prompt 与模型的 A/B 选型决策
 - Ragas — RAG 专用指标（faithfulness、answer relevancy、context precision / recall），无 ground truth 也能跑大部分。选它：评 RAG 链路

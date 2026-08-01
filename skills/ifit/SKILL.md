@@ -22,44 +22,33 @@ description: >-
 2. `ifit list --skills` — skill 账，含自建（custom）与已审第三方（official）
 3. 都没有 → 才向外找（`find-skills` skill、上游仓库、网络检索）
 
+第 2 步的 official 条目是用户已经审过的第三方资产，优先级高于任何未经审核的搜索结果。
+
 ## 命令面
 
 ```bash
 ifit list                      # 列 rule
-ifit list --skills             # 列 skill：描述 / 安装命令 / 上游 URL
+ifit list --skills             # 列 skill：描述 / 安装命令 / 上游 URL 三行
 ifit list --all                # 两者都列
 ifit list --grep <词>          # 按名称/描述/正文过滤
 ifit show <name>               # 单条 rule 的元数据与正文
 ifit cat <name>                # rule 产物原文（可重定向落盘）
 ifit init --profile <p> <dir>  # 按项目画像拼装 .claude/
-ifit status                    # 已初始化项目的对账
-ifit update                    # 应用中心源变更
+ifit status / update           # 已初始化项目的对账与更新
 ```
 
 每条查询命令的输出末尾自带 footer，列出可继续的下一步命令，照着走即可。
+中心源缺省在 `~/code/infra-agent/ifit`，`--source` 或 `IFIT_ROOT` 可覆盖。
 
-## 安装 skill
+## 安装
 
-`ifit list --skills` 每条第二行就是可直接执行的安装命令，按来源分两种形态：
+### 装 skill
+`ifit list --skills` 每条第二行就是可直接执行的安装命令，按来源分两种形态——自建与 mirror 走 `pnpx skills add oNo500/ifit -s <name>`，已审第三方走 `pnpx skills add <上游repo> -s <name>`。缺省装到项目级（`.agents/skills/` 并为 Claude Code 建符号链接），`-g` 才是全局。装之前先按第三行的上游 URL 读清楚它做什么。
 
-- 自建与 mirror：`pnpx skills add oNo500/ifit -s <name>`
-- 已审第三方：`pnpx skills add <上游repo> -s <name>`
-
-缺省装到项目级（`.agents/skills/` 并为 Claude Code 建符号链接）；`-g` 才是全局。
-
-> [!IMPORTANT]
-> 装之前先按第三行的上游 URL 读清楚它做什么。
-
-## 装 rule 到项目
-
-`ifit init --profile <画像> <目录>` 按 `profiles.json` 的画像拼装，
-`--rules a,b,c` 直选。已初始化的项目用 `ifit status` 看漂移、
-`ifit update` 应用中心源变更。
+### 装 rule 到项目
+`ifit init --profile <画像> <目录>` 按画像拼装，`--rules a,b,c` 直选。已初始化的项目用 `ifit status` 看漂移、`ifit update` 应用中心源变更。
 
 ## 边界
 
-- 本 skill 只做**消费**：查询、推荐、安装
-- 收录新资产进中心源是 iforge 侧的独立流程，有自己的契约
-  （`meta/prompts/asset-intake.md`），当前由人手动执行。遇到值得收录的
-  外部资产，提示用户即可，MUST NOT 自行改账
-- 中心源缺省在 `~/code/infra-agent/ifit`，`--source` 或 `IFIT_ROOT` 可覆盖
+- 本 skill 只做**消费**：查询、推荐、安装。
+- 收录新资产进中心源是 iforge 侧的独立流程，有自己的契约（收录流程的契约位置举 `meta/prompts/asset-intake.md`），当前由人手动执行。遇到值得收录的外部资产，提示用户即可，MUST NOT 自行改账。

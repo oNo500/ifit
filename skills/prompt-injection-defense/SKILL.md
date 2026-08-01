@@ -5,94 +5,80 @@ description: Secure AI agents and LLM applications against prompt injection, jai
 
 # Prompt Injection Defense
 
-## Overview
+## 核心立论与边界认知
 
-Prompt injection occurs when untrusted user input or external data (web pages, emails, documents) modifies the intended behavior of a Large Language Model (LLM) by overriding system instructions. This skill provides a comprehensive methodology for architecting robust defense layers, validating untrusted data, separating control instructions from data, and establishing rigorous auditing frameworks.
-
----
-
-## Core Principles & Attack Surface
-
-1. **Privilege Separation (Control vs. Data)**: Never treat external input as executable instructions. Maintain strict structural boundaries between system prompts and user/external payloads.
-2. **Least Privilege & Tool Isolation**: Restrict the capabilities of tools accessible to the agent. Destructive actions (file deletion, financial transactions, database writes) must require out-of-band authorization or human-in-the-loop (HITL) confirmation.
-3. **Defense in Depth**: Assume no single defense layer is infallible (prompt injection is fundamentally unpatchable via natural language alone). Combine architectural boundaries, input sanitization, model-based guardrails, output filtering, and strict state management.
-4. **Zero Trust for External Content**: Treat any content retrieved from the web, user uploads, emails, or APIs as potentially malicious.
-
-*Note on Scope*: Following security best practices, this skill focuses on attack surface recognition and mitigation mechanics rather than providing raw exploit payloads or attack recipes.
+Prompt 注入不可根治（自然语言无法区分指令与数据），纯 prompt 防御不够，真防御靠架构 + 权限 + 沙箱 + 监控的组合。
+本 skill 聚焦于攻击面认知与防御设计，**MUST NOT** 收录攻击 payload 样例全文——认知攻击类型与生效机制即可，不做攻击教程；防御工具同样只给定位与选择条件，不给配置。
 
 ---
 
-## Taxonomy of Attacks & Effect Boundaries
+## 触发场景
 
-- **Direct Prompt Injection (Jailbreaking)**:
-  - *Mechanism*: The direct user attempts to bypass safety filters or system constraints via roleplay, hypothetical scenarios, or command override.
-  - *Defense Boundary*: Handled primarily by system prompts, safety classifiers, and pre-screening guard models. Cannot be 100% prevented by natural language prompts alone.
-- **Indirect Prompt Injection**:
-  - *Mechanism*: External data (e.g., a summarized webpage, an incoming email, a retrieved PDF) contains hidden instructions designed to hijack the agent when ingested.
-  - *Defense Boundary*: Requires strict data-control separation, parsing out executable tags, and treating ingested data as untrusted text rather than context instructions.
-- **Goal Hijacking & Payload Smuggling**:
-  - *Mechanism*: Subverting the agent's core objective while appearing to fulfill the user's initial request.
-  - *Defense Boundary*: Mitigated by strict tool parameter validation, secondary guardrail models, and output inspection.
-- **Dual-Use Tool Exploitation**:
-  - *Mechanism*: Tricking legitimate tools into executing unauthorized commands through injected parameters.
-  - *Defense Boundary*: Handled by parameter schema validation, least-privilege scoping, and Human-in-the-Loop (HITL) confirmation for sensitive actions.
+- 新建 LLM 应用做安全设计
+- agent 接入外部内容源（网页 / 文档 / MCP 工具返回）要评估注入面
+- 安全审查覆盖 LLM 相关项
 
 ---
 
-## Six Layers of Defense & Effect Boundaries
+## 攻击面认知与生效机制
 
-1. **Input Isolation & Delimitation**:
-   - *What it blocks*: Breakout attempts from untrusted data blocks.
-   - *What it misses*:
-2. **Output Handling & Inspection**:
-   - *What it blocks*: Data exfiltration via markdown image loading or embedded links in agent outputs.
-   - *What it misses*:
-3. **Permission Minimization (Least Privilege)**:
-   - *What it misses*:
-4. **Sandboxing**:
-   - *What it blocks*: Host OS compromise, unauthorized file access.
-   - *What it misses*:
-5. **Human-in-the-Loop (HITL)**:
-   - *What it blocks*:
-6. **Monitoring & Auditing**:
-   - *What it blocks*:
-
-*(Note on Layer Boundaries)*: Regarding sandbox layer selection and implementation details, refer to the `agent-sandbox` skill.
+- **直接注入 (Direct Prompt Injection / Jailbreaking)**
+  - *机制*: 用户试图绕过安全过滤器或系统约束。
+  - *防御边界*: 靠系统提示词和前置分类器，但自然语言无法彻底防范。
+- **间接注入 (Indirect Prompt Injection)**
+  - *机制*: 外部数据源（如网页、文档、邮件）包含隐藏指令，在 agent 读取时劫持流程。
+  - *防御边界*: 需严格的数据与控制层分离。
+- **多模态注入**
+  - *机制*: 通过图像或音频携带不可见或隐蔽的对抗指令。
+  - *防御边界*: 需多模态输入清洗与语义审查。
 
 ---
 
-## OWASP LLM Top 10 Summary & Countermeasures
+## 六层防御体系与效果边界
 
-- **LLM01: Prompt Injection**: Prevented via architectural input delimitation and dual-LLM guard wrappers.
-- **LLM02: Insecure Output Handling**: Prevented via strict output sanitization and escaping before rendering.
-- **LLM03: Training Data Poisoning**: Handled via dataset provenance verification and filtering.
-- **LLM04: Model Denial of Service**: Mitigated via token budgeting, rate limiting, and timeout controls.
-- **LLM05: Supply Chain Vulnerabilities**: Monitored via dependency pinning and secure model registries.
-- **LLM06: Sensitive Information Disclosure**: Handled via data masking and PII scrubbing before LLM ingestion.
-- **LLM07: Insecure Plugin Design**: Mitigated via strict parameter schema validation and scoped permissions.
-- **LLM08: Excessive Agency**: Controlled via fine-grained tool authorization and HITL approvals.
-- **LLM09: Model Theft**: Mitigated via API gateways and rate limiting.
-- **LLM10: Poisoned Model Behavior**: Checked via continuous monitoring and post-deployment alignment evaluation.
-
----
-
-## Implementation Blueprint: Checklist for New LLM Applications
-
-When designing a new LLM application, ask and verify these seven checklist items directly:
-
-1. **Are all user inputs and external data wrapped in unique, explicit XML or Markdown delimiters?**
-2. **Does the system prompt explicitly instruct the model to treat data within those delimiters as inert content rather than instructions?**
-3. **Is external content (web pages, documents, API payloads) pre-screened by a secondary guard model or classifier before reaching the core agent?**
-4. **Are all tool parameters strictly typed and validated against predefined schemas before execution?**
-5. **Are destructive, financial, or high-impact actions gated behind Human-in-the-Loop (HITL) confirmation?**
-6. **Is agent output inspected for data exfiltration attempts (such as unauthorized external URLs or encoded data in images)?**
-7. **Is the agent's environment isolated using appropriate sandboxing and least-privilege permissions?**
+1. **输入隔离 (Input Isolation)**
+   - *能挡住什么*: 简单的边界越狱与基础文本混淆。
+   - *挡不住什么*: 高级语义混淆、多模态隐蔽注入。
+2. **输出处理 (Output Handling)**
+   - *能挡住什么*: 恶意的外部链接渲染、外发敏感数据。
+   - *挡不住什么*: 文本内隐蔽的信息暗示。
+3. **权限最小化 (Least Privilege)**
+   - *能挡住什么*: 越权执行高危工具调用、非法数据写入。
+   - *挡不住什么*: 合法权限范围内的参数滥用。
+4. **沙箱层 (Sandboxing)**
+   - *能挡住什么*: 宿主机越权、文件系统破坏。
+   - *挡不住什么*: 应用层逻辑劫持。
+   - *注意*: 沙箱层的选型与实现归 `agent-sandbox` skill，本 skill 只留该层的一行定位与指针，两边互留。
+5. **人机协同 (Human-in-the-Loop, HITL)**
+   - *能挡住什么*: 关键财务或高危操作的未经授权执行。
+   - *挡不住什么*: 高频自动化任务中的疲劳放行。
+6. **监控与审计 (Monitoring)**
+   - *能挡住什么*: 异常行为模式的后期发现与取证。
+   - *挡不住什么*: 实时阻断正在发生的注入攻击。
 
 ---
 
-## Verification & Testing
+## OWASP LLM Top 10 逐项机制与对策
 
-To audit your agent implementation against prompt injection:
+- **LLM01: Prompt Injection**: 采用架构级边界隔离与双模型防护。
+- **LLM02: Insecure Output Handling**: 实施输出端严格过滤与转义渲染。
+- **LLM03: Training Data Poisoning**: 验证数据源出处与过滤机制。
+- **LLM04: Model Denial of Service**: 配置 Token 预算、限流与超时控制。
+- **LLM05: Supply Chain Vulnerabilities**: 依赖项锁定与安全模型注册表。
+- **LLM06: Sensitive Information Disclosure**: 数据脱敏与 PII 预处理过滤。
+- **LLM07: Insecure Plugin Design**: 严格参数 Schema 校验与权限域隔离。
+- **LLM08: Excessive Agency**: 细粒度工具授权与 HITL 审批。
+- **LLM09: Model Theft**: API 网关与速率限制。
+- **LLM10: Poisoned Model Behavior**: 持续监控与对齐后评估。
 
-- **Red Teaming Suites**: Use automated red-teaming frameworks (e.g., Garak, PyRIT) to probe for jailbreaks and indirect injections.
-- **Indirect Injection Simulation**: Mock external data sources containing hidden instructions to verify whether the agent attempts unauthorized tool calls.
+---
+
+## 新建 LLM 应用安全的七条 Checklist
+
+1. 是否对所有用户输入和外部数据使用了显式且唯一的定界符进行隔离？
+2. 系统提示词是否明确指示模型将定界符内的数据视为静态内容而非指令？
+3. 接入外部内容源（网页、文档、工具返回）前，是否经过前置的安全分类器或防护模型审查？
+4. 所有工具的参数是否具备严格的类型定义与 Schema 校验？
+5. 针对具有破坏性或资金交易的高危操作，是否强制引入了 Human-in-the-Loop (HITL) 审批？
+6. 输出端是否防范了数据外发、恶意链接及隐蔽载荷的渲染？
+7. 运行环境是否已配置沙箱隔离与权限最小化策略（参见 `agent-sandbox`）？

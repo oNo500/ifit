@@ -45,7 +45,7 @@ paths:
   - 反：`x = f(y)  # type: ignore`
 - 注解用现代语法（ruff 的 UP 系列可自动迁移；未配 ruff 的项目手动遵守）：
   - 联合类型（PEP 604）：正 `int | None`；反 `Optional[int]`、`Union[int, str]`
-  - 内置容器泛型（PEP 585）：正 `list[int]`、`dict[str, int]`；反 `typing.List[int]`
+  - 内置容器泛型（PEP 585）：正 `list[int]`；反 `typing.List[int]`
   - 泛型语法（PEP 695，3.12+）：正 `def first[T](xs: list[T]) -> T`；反 `T = TypeVar("T")`
 
 ## 测试

@@ -48,4 +48,4 @@ paths:
 
 - MUST NOT 为通过测试而修改断言（需求变更导致的断言更新除外）
 - MUST NOT 跳过失败测试代替修复（`it.skip`/`xit`、`@pytest.mark.skip`、`t.Skip`）
-- MUST NOT 在测试文件里留调试输出（`console.log`、`print`、`fmt.Println`）
+- MUST NOT 在测试文件里留调试输出（`console.log`、`print`、`fmt.Println`)
