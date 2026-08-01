@@ -3,16 +3,16 @@ name: note
 description: >-
   Creates notes in the user's Obsidian vault following its conventions --
   frontmatter schema, jd_id generation, PARA/JD routing, naming and
-  wikilink rules. Use when asked to create, file or normalize a note
+  wikilink rules. Use when creating, filing or archiving a note
   in ~/code/notes.
 ---
 
 # note
 
 在用户的 Obsidian 笔记库（`~/code/notes`）里创建符合库规范的笔记。
-分工：通用 markdown 写作约定归 markdown rule，Obsidian 私有语法归
-obsidian-markdown skill；本 skill 只覆盖建档规范——frontmatter schema、
-JD/PARA 路由、命名、wikilink 与文件操作。
+分工：markdown 写作约定归 markdown rule，本 skill 不重复；vault 文件的
+移动与审计命令面归 obsidian-cli skill，本 skill 只留一行指针。本 skill
+覆盖建档规范——frontmatter schema、JD/PARA 路由、命名与 wikilink。
 
 ## Frontmatter schema（缺一不可）
 

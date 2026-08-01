@@ -40,9 +40,14 @@ description: >-
   说明它其实是多个函数被强行合并
 
 > [!WARNING]
-> 相似不等于重复。三处「校验手机号」看起来一样，但注册要拦空号段、
-> 客服录入允许历史脏数据、短信网关只关心长度——变化原因不同，合并后
-> 每次改一处都要回归另外两处。不提升。
+> 相似不等于重复。三处看起来一样但变化原因不同——不提升，合并了下次只会被拆回去：
+
+```diff
+- <shared>/validate-phone   // 一份实现被迫服务三个变化方向
++ signup/validate-phone     // 注册：拦虚拟号段
++ support/validate-phone    // 客服录入：容忍历史脏数据
++ sms/validate-phone        // 短信网关：只校验长度
+```
 
 ## 模块间通信：越靠前越解耦
 
@@ -50,7 +55,7 @@ description: >-
 2. 共享层定义的接口
 3. 直接调用（含 HTTP）
 
-MUST NOT 跨模块直接 import 对方的内部实现——绕过通信渠道就等于没有边界。
+能用前面的就不用后面的。MUST NOT 跨模块直接 import 对方的内部实现——绕过通信渠道就等于没有边界。
 
 ```diff
 - import { calcDiscount } from '../../order/internal/pricing'

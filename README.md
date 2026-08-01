@@ -26,7 +26,7 @@ rule、模板。资产内容由开发仓（`~/code/infra-agent/iforge`）构建�
   CLI 只通过上面的 schema 契约耦合
 - [`docs/mcp/`](docs/mcp/) — MCP server 说明
 
-维护端（元指令、构建契约、iforge 源码）在开发仓 `~/code/infra-agent/iforge`，
+维护端（map/topic、构建契约、iforge 源码）在开发仓 `~/code/infra-agent/iforge`，
 不要在此修改经 publish 落位的内容。`tools/`、`docs/mcp/`、`.claude/` 与
 `.mcp.json`（自用配置）是本仓自有，不分发；设计文档统一在工作区根 `../docs/`。
 

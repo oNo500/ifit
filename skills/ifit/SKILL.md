@@ -16,10 +16,9 @@ description: >-
 
 ## 取用顺序（核心）
 
-按序查，命中即停：
+按序查，命中即停，MUST NOT 直接上网找：
 
-1. `ifit list` — 自建 rule（16 条，覆盖 TS / React / Next / Nest / Python
-   / 测试 / 文档等约定）
+1. `ifit list` — 中心源自建的 rule，覆盖各语言与框架的项目约定
 2. `ifit list --skills` — skill 账，含自建（custom）与已审第三方（official）
 3. 都没有 → 才向外找（`find-skills` skill、上游仓库、网络检索）
 

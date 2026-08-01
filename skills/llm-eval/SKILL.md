@@ -20,9 +20,9 @@ Eval 答「做得好不好」，Observability 答「出了什么事」，两者�
 LLM 输出非确定性，传统单元测试的等值断言套不上。按判定标准来源分四类：
 
 - Reference-based — 有 golden answer 时直接比对：exact match（分类 / 选择题）、F1 / BLEU / ROUGE（翻译 / 摘要类生成）、embedding 语义相似度（不要求字面一致）。适用「有正确答案」的任务；开放式生成用不了，golden answer 自己造也是难题
-- LLM-as-judge — 强模型按 rubric 打分。适用开放任务、对话、风格评估；注意点见下节
+- LLM-as-judge — 强模型按 rubric 打分。适用开放任务、对话、风格评估；有 golden answer 的任务不该用，直接比对更便宜更准；注意点见下节
 - Human eval — 标注员按 rubric 打分。最准但慢且贵，inter-annotator agreement 本身要管理；定位是 LLM-as-judge 的校准基准，不是日常手段
-- Metric-based — 对接真实业务行为：用户接受率、任务完成率、转化 / 留存、RAG 召回 / 准确率、延迟 / 成本。最有说服力但最难归因（业务指标受其它因素影响）
+- Metric-based — 对接真实业务行为：用户接受率、任务完成率、转化 / 留存、RAG 召回 / 准确率、延迟 / 成本。最有说服力但最难归因（业务指标受其它因素影响）；上线前的离线评估用不了，只有真实流量才产生这些指标
 
 实战组合：LLM-as-judge 大批量自动评 + human spot check 定期抽样校准。
 
@@ -68,10 +68,10 @@ LLM 输出非确定性，传统单元测试的等值断言套不上。按判定�
 ## 六条反模式
 
 - 没 eval 就上线 — 凭感觉调 prompt，改一处坏一处，无法回归
-- 只信 LLM-as-judge — 有系统性偏差，必须 human spot check 校准
+- 只信 LLM-as-judge — judge 的系统性偏差会让评估结论整体偏移而不自知，必须 human spot check 校准
 - Eval set 太小 — 10 个 case 代表不了分布，起码几百
 - Eval set 混入训练 / few-shot 数据 — 成绩虚高，保证 holdout
-- 盲目追求 100% — LLM 天生概率性，目标是 SLA 而非完美
+- 盲目追求 100% — 资源耗在长尾 case 上、eval set 被过拟合；LLM 天生概率性，目标是 SLA 而非完美
 - Observability 缺失 — 出事查不到 trace，只能猜
 
 ## 工具定位

@@ -50,7 +50,7 @@ description: >-
 - 快速上线、不想运维 → E2B（Code Interpreter 类应用首选）/ Modal（要 GPU 时）/ Vercel Sandbox（Vercel 生态）/ Daytona
 - 数据合规、不能出境 → 自托管 E2B / Daytona，或 Firecracker 自建
 - 已有 K8s 平台 → Kata Containers 对接 runtime 最顺
-- 各家 SaaS 的 API 用法不在本 skill 展开，查官方文档
+- 各家 SaaS 的 API 用法与定价易变，不在本 skill 展开，一律查官方文档与 pricing 页现值
 
 自建的四个关键决策：预热池 vs 冷启动（延迟换成本）、VM 是否跨调用复用（隔离换延迟）、出口策略选档、单 VM 与集群总量两层配额。
 

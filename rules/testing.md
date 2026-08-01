@@ -41,7 +41,7 @@ paths:
 
 ## Mock 边界
 
-- 只 mock 外部依赖（网络、数据库），不 mock 内部实现——测的是行为而非实现，mock 内部会让重构破坏本应通过的测试
+- 只 mock 外部依赖（网络、数据库），MUST NOT mock 内部实现——测的是行为而非实现，mock 内部会让重构破坏本应通过的测试
   - 正：mock HTTP client、repository 等外部调用；反：mock 同包内的工具函数或私有方法
 
 ## 纪律红线

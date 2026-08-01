@@ -12,8 +12,8 @@ paths:
 
 ## 权威校验
 
-- 编辑批次完成后跑 `go vet ./...` 与 `golangci-lint run`，据其输出判断改动是否成立
-  （对应 agent-behavior 「不响应实时 LSP 诊断」在 Go 侧的命令）
+- MUST NOT 响应编辑过程中的实时 LSP 诊断——编辑中途的代码状态不完整，诊断误报率高，跟着改会引入真实错误
+- 批次编辑完成后跑 `go vet ./...` 与 `golangci-lint run`，那才是权威校验
 
 ## 工具链：依赖管理内建
 

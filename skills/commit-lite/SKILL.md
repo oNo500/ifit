@@ -27,7 +27,7 @@ type 精简为 7 个常用项。
 
 - `feat` — 新功能（SemVer MINOR）
 - `fix` — bug 修复（SemVer PATCH）
-- `refactor` — 重构，不改行为（含性能优化）
+- `refactor` — 重构，不改行为（含性能优化与纯格式调整）
 - `chore` — 构建、依赖、配置、脚手架
 - `test` — 测试新增或修改
 - `docs` — 文档
@@ -42,7 +42,7 @@ type 精简为 7 个常用项。
 
 ## 约束
 
-- description 用祈使句，英文，首字母小写，不加句号
+- description 用祈使句，首字母小写，不加句号
 - description 最多 20 字符（不含 type/scope 前缀）
 - scope 可选，用括号（如 `feat(auth):`），仅当变更集中在单一模块/目录时加
 - 默认不写 body；仅 breaking change 时写 footer

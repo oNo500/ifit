@@ -47,7 +47,7 @@ goroutine 没有「函数颜色」——不像 `async` 会传染到调用链，�
 
 ## 验证
 
-并发或共享状态的改动 MUST 跑 `-race` 确认：
+并发或共享状态的改动 MUST 跑 `-race` 确认，不只在写测试时才想起它：
 
 ```bash
 go test -race ./...

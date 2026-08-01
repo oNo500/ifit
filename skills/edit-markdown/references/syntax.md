@@ -110,9 +110,11 @@ GitHub 额外行为：PR / Issue 正文中的任务列表可直接勾选，自�
 
 裸 URL 自动转为超链接：`https://example.com`（无需方括号语法）。
 
-### 脚注
+## GitHub 专属
 
-GitHub 支持，未入 GFM 正式规范：
+仅 GitHub.com 渲染器生效，未入 GFM 正式规范，其他渲染器按普通引用块 / 原文处理。
+
+### 脚注
 
 ```markdown
 正文[^1]，具名[^note]
@@ -120,10 +122,6 @@ GitHub 支持，未入 GFM 正式规范：
 [^1]: 脚注内容
 [^note]: 具名脚注
 ```
-
-## GitHub 专属
-
-仅 GitHub.com 渲染器生效，其他渲染器按普通引用块 / 原文处理。
 
 ### Alerts
 

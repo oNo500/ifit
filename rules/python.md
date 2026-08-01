@@ -10,8 +10,8 @@ paths:
 
 ## 权威校验
 
-- 编辑批次完成后跑 `uv run pyright` 与 `uv run ruff check`，据其输出判断改动是否成立
-  （对应 agent-behavior 「不响应实时 LSP 诊断」在 Python 侧的命令）
+- MUST NOT 响应编辑过程中的实时 LSP 诊断——编辑中途的代码状态不完整，诊断误报率高，跟着改会引入真实错误
+- 编辑批次完成后跑 `uv run pyright` 与 `uv run ruff check`，那才是权威校验，据其输出判断改动是否成立
 
 ## 工具链：uv 单一入口
 
@@ -47,6 +47,10 @@ paths:
   - 联合类型（PEP 604）：正 `int | None`；反 `Optional[int]`、`Union[int, str]`
   - 内置容器泛型（PEP 585）：正 `list[int]`、`dict[str, int]`；反 `typing.List[int]`
   - 泛型语法（PEP 695，3.12+）：正 `def first[T](xs: list[T]) -> T`；反 `T = TypeVar("T")`
+
+## 测试
+
+- 测试组织（pytest、`tests/` 惯例、conftest 作用域）见 testing rule
 
 ## 命名
 
