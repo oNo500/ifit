@@ -53,7 +53,7 @@ ifit status <project>                  # 下游对账：synced / modified / outd
 ifit diff [--rule <name>] <project>    # 本地副本 vs 中心源差异
 ifit update <project>                  # 拉中心源新版（本地被改的默认跳过，--force 覆盖）
 ifit update --add x --remove y <project>   # 显式增装（含回补排除）/ 移除（删副本并记入排除）
-# 子命令面 100% 命令式（AI/脚本稳定契约），全命令支持 --json
+# 子命令面 100% 命令式（AI/脚本稳定契约），全命令支持 --json（载荷形状按命令有差异）
 ```
 
 > [!IMPORTANT]
