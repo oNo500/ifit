@@ -153,12 +153,6 @@ export function BrowseView({
       })
       return
     }
-    if (input === 't') {
-      setCursor(0)
-      cursorRef.current = 0
-      return
-    }
-
     const row = visibleRows[cursorRef.current]
 
     if (!initialized) {
@@ -250,7 +244,7 @@ export function BrowseView({
                 <Box flexDirection="column" marginTop={1} height={previewBodyHeight}>
                   <ScrollView key={currentRow.name} ref={scrollRef} onScroll={setScrollOffset}>
                     {bodyLines.map((line, i) => (
-                      <Text key={i}>{line}</Text>
+                      <Text key={i}>{line === '' ? ' ' : line}</Text>
                     ))}
                   </ScrollView>
                 </Box>
@@ -267,8 +261,8 @@ export function BrowseView({
       <Box marginTop={1}>
         <Text dimColor>
           {initialized
-            ? '↑↓ 移动  t 切换 tag 过滤  a 添加  x 移除  p 选 profile  j/k 滚动预览  g/G 顶/底  esc/b 返回状态  q 退出'
-            : '↑↓ 移动  t 切换 tag 过滤  space 勾选  Enter 进入安装计划  p 选 profile  j/k 滚动预览  g/G 顶/底  esc/b 退出  q 退出'}
+            ? '↑↓ 移动  a 添加  x 移除  p 选 profile  j/k 滚动预览  g/G 顶/底  esc/b 返回状态  q 退出'
+            : '↑↓ 移动  space 勾选  Enter 进入安装计划  p 选 profile  j/k 滚动预览  g/G 顶/底  esc/b 退出  q 退出'}
         </Text>
       </Box>
     </Box>
