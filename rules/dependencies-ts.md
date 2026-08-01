@@ -11,6 +11,7 @@ paths:
 - 工具链优先 UnJS 系：unbuild、nitro、h3、consola、ofetch、ohash、defu
 - 只选 Pure ESM 包，规避 dual package hazard；唯一豁免是必须对接的 CJS-only legacy 包
 - untrusted 边界（env、HTTP 请求、表单、第三方 API 响应）MUST parse 后再用，默认 zod
+- ORM 默认 Drizzle——SQL 透明可见，edge 运行时必选；使用与迁移纪律见 orm-ts rule
 - lint/format 用 oxlint + oxfmt，不用 ESLint + Prettier 组合
 - type check 用 `tsc --noEmit`；架构边界（feature 隔离、依赖单向、循环依赖检测）用 dependency-cruiser
 - 包管理用 pnpm（硬链接、无幻影依赖、workspace 原生），corepack 锁定 `packageManager` 字段

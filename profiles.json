@@ -1,90 +1,192 @@
 {
   "layers": {
     "base": {
-      "description": "任何项目的行为底座：原则、偏好、协作姿态、文档写作",
-      "rules": ["constitution", "preferences", "agent-behavior", "tooling", "context-management", "markdown"]
+      "description": "任何项目：原则、偏好、协作姿态、文档写作",
+      "rules": [
+        "constitution",
+        "preferences",
+        "agent-behavior",
+        "tooling",
+        "context-management",
+        "markdown"
+      ]
+    },
+    "code": {
+      "description": "任何代码项目（语言无关）：API 查证时机、测试组织",
+      "rules": [
+        "api-verification",
+        "testing"
+      ]
     },
     "ts": {
-      "description": "TS/JS 生态：类型纪律、依赖选型、API 查证、测试组织",
-      "rules": ["typescript", "dependencies-ts", "api-verification", "testing"]
-    },
-    "python": {
-      "description": "Python 生态：uv 工具链、API 查证、测试组织",
-      "rules": ["python", "api-verification", "testing"]
-    },
-    "go": {
-      "description": "Go 生态：内建工具链、API 查证、测试组织",
-      "rules": ["go", "api-verification", "testing"]
+      "description": "TS/JS 生态：类型纪律、依赖选型",
+      "rules": [
+        "typescript",
+        "dependencies-ts"
+      ]
     },
     "react-ui": {
-      "description": "React 界面层：组件约定与样式纪律",
-      "rules": ["react", "css"]
+      "description": "React 界面：组件约定、样式纪律",
+      "rules": [
+        "react",
+        "css"
+      ]
+    },
+    "data-ts": {
+      "description": "TS 数据层：跨语言数据库事实、Drizzle 纪律",
+      "rules": [
+        "database",
+        "orm-ts"
+      ]
     }
   },
   "profiles": {
     "minimal": {
       "description": "通用最小预设（语言无关的行为底座）",
-      "layers": ["base"]
+      "layers": [
+        "base"
+      ]
     },
     "ts-lib": {
       "description": "无框架 TS 项目（库 / Node CLI）",
-      "layers": ["base", "ts"]
+      "layers": [
+        "base",
+        "code",
+        "ts"
+      ]
     },
     "react-spa": {
       "description": "React SPA（Vite 等）",
-      "layers": ["base", "ts", "react-ui"]
+      "layers": [
+        "base",
+        "code",
+        "ts",
+        "react-ui"
+      ]
     },
     "nextjs-app": {
       "description": "Next.js App Router 应用（纯前端）",
-      "layers": ["base", "ts", "react-ui"],
-      "rules": ["nextjs"]
+      "layers": [
+        "base",
+        "code",
+        "ts",
+        "react-ui"
+      ],
+      "rules": [
+        "nextjs"
+      ]
     },
     "nextjs-fullstack": {
       "description": "单栈 Next.js 全栈（含数据层）",
-      "layers": ["base", "ts", "react-ui"],
-      "rules": ["nextjs", "database", "orm-ts"]
+      "layers": [
+        "base",
+        "code",
+        "ts",
+        "react-ui",
+        "data-ts"
+      ],
+      "rules": [
+        "nextjs"
+      ]
     },
     "fullstack-ts": {
       "description": "NestJS + Next.js 全栈 monorepo（对标 nestjs-boilerplate）",
-      "layers": ["base", "ts", "react-ui"],
-      "rules": ["nextjs", "nestjs", "database", "orm-ts", "monorepo"]
+      "layers": [
+        "base",
+        "code",
+        "ts",
+        "react-ui",
+        "data-ts"
+      ],
+      "rules": [
+        "nextjs",
+        "nestjs",
+        "monorepo"
+      ]
     },
     "nestjs-api": {
       "description": "NestJS 后端服务",
-      "layers": ["base", "ts"],
-      "rules": ["nestjs", "database", "orm-ts"]
+      "layers": [
+        "base",
+        "code",
+        "ts",
+        "data-ts"
+      ],
+      "rules": [
+        "nestjs"
+      ]
     },
     "python": {
       "description": "Python 项目",
-      "layers": ["base", "python"]
+      "layers": [
+        "base",
+        "code"
+      ],
+      "rules": [
+        "python"
+      ]
     },
     "python-web": {
       "description": "Python web 服务（FastAPI）",
-      "layers": ["base", "python"],
-      "rules": ["fastapi"]
+      "layers": [
+        "base",
+        "code"
+      ],
+      "rules": [
+        "python",
+        "fastapi"
+      ]
     },
     "python-agent": {
       "description": "Python agent 包（agent 资产群由 triage 落账后加入）",
-      "layers": ["base", "python"]
+      "layers": [
+        "base",
+        "code"
+      ],
+      "rules": [
+        "python"
+      ]
     },
     "go": {
       "description": "Go 项目",
-      "layers": ["base", "go"]
+      "layers": [
+        "base",
+        "code"
+      ],
+      "rules": [
+        "go"
+      ]
     },
     "go-web": {
       "description": "Go web 服务",
-      "layers": ["base", "go"],
-      "rules": ["go-web"]
+      "layers": [
+        "base",
+        "code"
+      ],
+      "rules": [
+        "go",
+        "go-web"
+      ]
     },
     "go-cli": {
       "description": "Go 终端程序（CLI/TUI）",
-      "layers": ["base", "go"],
-      "rules": ["go-cli"]
+      "layers": [
+        "base",
+        "code"
+      ],
+      "rules": [
+        "go",
+        "go-cli"
+      ]
     },
     "docs": {
       "description": "文档 / 知识库仓",
-      "layers": ["base"],
-      "rules": ["docs-retrieval"]
+      "layers": [
+        "base"
+      ],
+      "rules": [
+        "docs-retrieval"
+      ]
     }
   }
 }

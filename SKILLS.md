@@ -22,7 +22,7 @@ publish 时 `meta/assets.json` 的 skill 账落位为发布仓根 `skills.json`
 
 - `custom`：在开发仓 `meta/skills/<name>.md` 写元指令正文，在 `meta/assets.json`
   的 `skills` 分组加一条 `{ "source": "custom", "status": "stub" }`，让
-  Claude 构建。元指令格式见开发仓 `meta/README.md`，AI 构建契约见
+  Claude 构建。元指令格式见开发仓 工作区根 `../docs/meta-format.md`，AI 构建契约见
   开发仓 `meta/prompts/skill-build.md`
 - `mirror`：往 `meta/assets.json` 加条目（`source`/`repo`/`path`），在 `iforge`
   的 `s` 视图按 `u` 拉取，或 `iforge sync --pull`

@@ -10,5 +10,6 @@
   - 写或自查一段散文，决定文档篇章结构
   - 决定要不要分派子代理，要不要写进跨会话 memory
   - 写 commit message
+- 第三方库的检索链与采信标准见 lib-research skill，本文不展开
 - CLI-first：能用 CLI 解决就不上 MCP——零协议成本、零常驻上下文占用；选 CLI 看三点：`--help` 完善、支持 `--json`、幂等
 - `gh` 替代 `curl`；AST 级查改用 `sg`（ast-grep）；shell 假定 zsh

@@ -27,8 +27,7 @@ paths:
 - 全局 CLI 工具用 `uv tool install`（一次性运行用 `uvx`）；`uv tool install` ≠ `uv add`，
   混用会把工具装进项目环境
   - 正：`uv tool install httpie`（全局工具）；反：`uv add httpie`（装进了项目依赖）
-- 单文件脚本用 PEP 723 内联依赖声明 + `uv run <file>.py`，不为脚本建项目目录、
-  不污染全局环境
+- 单文件脚本用 PEP 723 而非建项目目录，见 code-placement skill
 - 项目元数据写 pyproject.toml（PEP 621）；dev 依赖用 dependency groups（PEP 735）
   - 正：`uv add --dev pytest`；反：把 pytest 写进 `dependencies`
 
@@ -48,3 +47,8 @@ paths:
   - 联合类型（PEP 604）：正 `int | None`；反 `Optional[int]`、`Union[int, str]`
   - 内置容器泛型（PEP 585）：正 `list[int]`、`dict[str, int]`；反 `typing.List[int]`
   - 泛型语法（PEP 695，3.12+）：正 `def first[T](xs: list[T]) -> T`；反 `T = TypeVar("T")`
+
+## 命名
+
+- 模块与包名 MUST 用 snake_case——语法强制（`import my-mod` 是语法错误），constitution 的 kebab-case 文件命名在此让位
+- 其余代码内标识符命名见 naming-conventions skill

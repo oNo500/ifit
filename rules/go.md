@@ -5,7 +5,7 @@ paths:
 
 # Go
 
-工具链选型与从 JS/TS 换栈时最易写错的惯用法。语法与并发模式属可查阅内容，
+工具链选型与最易按其他生态直觉写错的惯用法。语法与并发模式属可查阅内容，
 本 rule 只写选型纪律与判断；格式细节由 gofmt 强制，不在此重述。
 接口设计与组合见 codebase-design skill，并发见 go-concurrency skill，
 标识符命名见 naming-conventions skill，测试组织见 testing rule。
@@ -42,7 +42,7 @@ paths:
 
 ## 零值可用
 
-- 变量声明即被初始化为零值，不存在 undefined
+- 变量声明即被初始化为零值，没有未定义状态
 - 零值可用的类型（`sync.Mutex`、`bytes.Buffer`）声明即用，不必初始化
 
 ## lint 抑制

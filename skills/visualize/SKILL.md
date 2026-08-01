@@ -2,83 +2,62 @@
 name: visualize
 description: >-
   Restructures complex content into the most readable visual format --
-  ASCII trees, Mermaid diagrams, timelines, structured lists. Use when
-  asked to "梳理一下" / "画个图" / "整理成图" / diagram, map out,
-  visualize, or break down any concept, flow, codebase or system.
+  drawio diagrams exported to SVG, ASCII trees, timelines, structured
+  lists. Use when asked to "梳理一下" / "画个图" / "整理成图" / diagram,
+  map out, visualize, or break down any concept, flow, codebase or system.
 ---
 
 # visualize
 
-把复杂输入重组为对其信息形态最可读的呈现格式。
+把复杂信息梳理成最可读的形态。本 skill 只判「该用哪种形态」——drawio 的
+具体画法与导出步骤归 drawio skill，MUST NOT 在这里复写。
 
 ## 输出结构
 
-按序输出，每节保持紧凑，不写前言：
+按序四段：
 
-1. **Analogy** — 一句日常类比
-2. **Visual** — 按下方选型出图
-3. **Key points** — 3–5 条要点（图已自明时可省）
-4. **Gotcha** — 一个常见误解或非显然细节
+1. **Analogy** —— 一句日常类比
+2. **Visual** —— 按下方选型出图
+3. **Key points** —— 3-5 条要点（图已自明时可省）
+4. **Gotcha** —— 一个常见误解或非显然细节
+
+## 承载形式
+
+真正的图用 drawio 画并导出 SVG。不能落外部文件的场合——对话内回答、
+单文件交付、日志——用结构化 ASCII。
+
+MUST NOT 用 Mermaid。
 
 ## 格式选型
 
-按信息形态选择：
+按信息形态定：
 
-- **层级 / 包含关系**（嵌套结构、"由…组成"、目录树）→ ASCII 树
-- **过程 / 流程**（步骤、分支决策、"然后"）→ Mermaid flowchart
-- **时序 / 交互**（参与者、请求响应、时间线）→ Mermaid sequenceDiagram
-- **对比 / 选项**（利弊、特性差异、"vs"）→ 结构化列表（禁用表格，
-  即使素材本身是表格也改列表）
-- **概念网络**（关系、依赖、"关联到"）→ Mermaid graph
-- **大型混合系统**（多面向主题、架构总览）→ 分节 + 混合格式
+- **层级/包含关系**（嵌套结构、目录树）→ ASCII 树
+- **过程/流程**（步骤、分支决策）→ drawio flowchart
+- **时序/交互**（参与者、请求响应、时间线）→ drawio sequence
+- **对比/选项**（利弊、特性差异）→ 结构化列表
+- **概念网络**（关系、依赖）→ drawio graph
+- **大型混合系统** → 分节 + 混合格式
 
-拿不准时选更简单的：层级浅用 ASCII 树不用 Mermaid；关系少用列表不用
-graph。复杂问题用问题树拆解，规划阶段用 MECE 树保证不重不漏。
+对比类即使素材本身是表格也改写成列表——本仓禁表格。
 
-## 格式参考
+拿不准时选更简单的那个：层级浅就用 ASCII 树，不落 drawio 文件；关系少
+就用列表，不上 graph。
 
-**ASCII 树** — 层级：
+复杂问题用问题树拆，规划阶段用 MECE 树。
+
+## ASCII 树
 
 ```
-Root
-├── Child A
-│   ├── Grandchild 1
-│   └── Grandchild 2
-└── Child B
+project/
+├── core/
+│   ├── parser
+│   └── emitter
+└── cli/
+    └── main
 ```
 
-**Mermaid flowchart** — 含决策的流程：
+## drawio 落地
 
-```mermaid
-flowchart TD
-    A[Start] --> B{Decision}
-    B -->|Yes| C[Action]
-    B -->|No| D[Other]
-```
-
-**Mermaid sequenceDiagram** — 参与者交互：
-
-```mermaid
-sequenceDiagram
-    Client->>Server: Request
-    Server-->>Client: Response
-```
-
-**结构化列表** — 对比选项：
-
-```markdown
-- **Option A**
-  - 优势：…
-  - 代价：…
-- **Option B**
-  - 优势：…
-  - 代价：…
-```
-
-**Mermaid graph** — 概念网络：
-
-```mermaid
-graph LR
-    A[Concept] --> B[Related]
-    A --> C[Related]
-```
+选中 flowchart / sequence / graph 后，交给 drawio skill 出图，并要求
+导出 SVG。

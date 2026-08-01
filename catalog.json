@@ -1,163 +1,132 @@
 {
-  "generatedAt": "2026-07-26T11:22:37.655Z",
-  "tags": {
-    "lang": {
-      "exclusive": true,
-      "values": {
-        "ts": "TypeScript/JavaScript 生态",
-        "python": "Python 生态",
-        "go": "Go 生态"
-      }
-    },
-    "layer": {
-      "exclusive": true,
-      "values": {
-        "frontend": "前端",
-        "backend": "后端"
-      }
-    },
-    "framework": {
-      "exclusive": true,
-      "values": {
-        "react": "React",
-        "nextjs": "Next.js",
-        "nestjs": "NestJS"
-      }
-    },
-    "concern": {
-      "exclusive": false,
-      "values": {
-        "core": "跨语言核心原则",
-        "workflow": "AI 协作与会话工作流",
-        "testing": "测试",
-        "docs": "文档写作",
-        "ai": "AI 应用与 AI 消费"
-      }
-    }
-  },
+  "generatedAt": "2026-08-01T01:20:46.378Z",
   "rules": {
     "agent-behavior": {
       "description": "AI 协作行为红线：不确定即问、忽略实时 LSP 诊断、研究子代理纪律",
-      "tags": [
-        "core",
-        "workflow"
-      ],
+      "preference": false,
       "requires": [],
       "path": "rules/agent-behavior.md",
       "profiles": [
         "docs",
+        "fullstack-ts",
+        "go",
+        "go-cli",
+        "go-web",
         "minimal",
         "nestjs-api",
         "nextjs-app",
+        "nextjs-fullstack",
         "python",
+        "python-agent",
+        "python-web",
         "react-spa",
         "ts-lib"
       ]
     },
-    "ai-sdk": {
-      "description": "AI 应用选型：生产落地默认 Vercel AI SDK，Python 侧只做前沿实验",
-      "tags": [
-        "ai",
-        "ts"
-      ],
-      "requires": [],
-      "path": "rules/ai-sdk.md",
-      "profiles": []
-    },
     "api-verification": {
       "description": "API 用法查证时机：项目内无先例才查，凭训练数据写是默认失效",
-      "tags": [
-        "workflow"
-      ],
+      "preference": false,
       "requires": [],
       "path": "rules/api-verification.md",
       "profiles": [
+        "fullstack-ts",
+        "go",
+        "go-cli",
+        "go-web",
         "nestjs-api",
         "nextjs-app",
+        "nextjs-fullstack",
         "python",
+        "python-agent",
+        "python-web",
         "react-spa",
         "ts-lib"
       ]
     },
     "constitution": {
       "description": "跨项目核心工程原则与不可违反规则（Library/MVP/FP-First）",
-      "tags": [
-        "core"
-      ],
+      "preference": false,
       "requires": [],
       "path": "rules/constitution.md",
       "profiles": [
         "docs",
+        "fullstack-ts",
+        "go",
+        "go-cli",
+        "go-web",
         "minimal",
         "nestjs-api",
         "nextjs-app",
+        "nextjs-fullstack",
         "python",
+        "python-agent",
+        "python-web",
         "react-spa",
         "ts-lib"
       ]
     },
     "context-management": {
       "description": "会话上下文管理：子代理分派判断与跨会话 memory 准入",
-      "tags": [
-        "core",
-        "workflow"
-      ],
+      "preference": false,
       "requires": [],
       "path": "rules/context-management.md",
       "profiles": [
         "docs",
+        "fullstack-ts",
+        "go",
+        "go-cli",
+        "go-web",
         "minimal",
         "nestjs-api",
         "nextjs-app",
+        "nextjs-fullstack",
         "python",
+        "python-agent",
+        "python-web",
         "react-spa",
         "ts-lib"
       ]
     },
     "css": {
       "description": "CSS 设计 token 三处同改纪律与 shadcn 定制约束",
-      "tags": [
-        "frontend"
-      ],
+      "preference": false,
       "requires": [],
       "path": "rules/css.md",
       "profiles": [
+        "fullstack-ts",
         "nextjs-app",
+        "nextjs-fullstack",
         "react-spa"
       ]
     },
     "database": {
-      "description": "数据库 ORM 选型（Drizzle 优先）与迁移纪律",
-      "tags": [
-        "ts",
-        "backend"
-      ],
+      "description": "跨语言数据库层事实：游标分页优于偏移、SQLite 生产纪律",
+      "preference": false,
       "requires": [],
       "path": "rules/database.md",
       "profiles": [
-        "nestjs-api"
+        "fullstack-ts",
+        "nestjs-api",
+        "nextjs-fullstack"
       ]
     },
     "dependencies-ts": {
       "description": "TS 依赖与工具链选型：pnpm、oxlint/oxfmt、zod、SemVer 策略",
-      "tags": [
-        "ts"
-      ],
+      "preference": false,
       "requires": [],
       "path": "rules/dependencies-ts.md",
       "profiles": [
+        "fullstack-ts",
         "nestjs-api",
         "nextjs-app",
+        "nextjs-fullstack",
         "react-spa",
         "ts-lib"
       ]
     },
     "docs-retrieval": {
       "description": "面向 AI/RAG 检索消费的文档写作约定（章节自包含、图文分离）",
-      "tags": [
-        "docs",
-        "ai"
-      ],
+      "preference": false,
       "requires": [
         "markdown"
       ],
@@ -168,141 +137,172 @@
     },
     "go": {
       "description": "Go 工具链与惯用法：go mod/gofmt 内建链、golangci-lint、错误即值与并发纪律",
-      "tags": [
-        "go"
-      ],
+      "preference": false,
       "requires": [],
       "path": "rules/go.md",
-      "profiles": []
+      "profiles": [
+        "go",
+        "go-cli",
+        "go-web"
+      ]
     },
     "markdown": {
       "description": "Markdown 文档写作规范：结构、格式、术语与来源纪律",
-      "tags": [
-        "docs"
-      ],
+      "preference": true,
       "requires": [],
       "path": "rules/markdown.md",
       "profiles": [
         "docs",
+        "fullstack-ts",
+        "go",
+        "go-cli",
+        "go-web",
+        "minimal",
         "nestjs-api",
         "nextjs-app",
+        "nextjs-fullstack",
         "python",
+        "python-agent",
+        "python-web",
         "react-spa",
         "ts-lib"
       ]
     },
     "nestjs": {
       "description": "NestJS 分层架构与 DIP 纪律（Repository 接口、模型选择、模块间通信）",
-      "tags": [
-        "ts",
-        "backend",
-        "nestjs"
-      ],
+      "preference": false,
       "requires": [
         "typescript"
       ],
       "path": "rules/nestjs.md",
       "profiles": [
+        "fullstack-ts",
         "nestjs-api"
       ]
     },
     "nextjs": {
       "description": "Next.js App Router 约束：app/ 只做路由编排，页面文件保持薄",
-      "tags": [
-        "ts",
-        "frontend",
-        "nextjs"
-      ],
+      "preference": false,
       "requires": [
         "react"
       ],
       "path": "rules/nextjs.md",
       "profiles": [
-        "nextjs-app"
+        "fullstack-ts",
+        "nextjs-app",
+        "nextjs-fullstack"
       ]
     },
     "orm-ts": {
-      "description": "TS 端 ORM 选型（Drizzle 主线）与 drizzle-kit 迁移红线",
-      "tags": [
-        "ts",
-        "backend"
-      ],
+      "description": "Drizzle 使用纪律：drizzle-kit 迁移红线（选型归 dependencies-ts）",
+      "preference": false,
       "requires": [],
       "path": "rules/orm-ts.md",
       "profiles": [
-        "nestjs-api"
+        "fullstack-ts",
+        "nestjs-api",
+        "nextjs-fullstack"
+      ]
+    },
+    "preferences": {
+      "description": "跨项目个人偏好：文件命名 kebab-case、禁 emoji、注释与 commit 英文",
+      "preference": true,
+      "requires": [],
+      "path": "rules/preferences.md",
+      "profiles": [
+        "docs",
+        "fullstack-ts",
+        "go",
+        "go-cli",
+        "go-web",
+        "minimal",
+        "nestjs-api",
+        "nextjs-app",
+        "nextjs-fullstack",
+        "python",
+        "python-agent",
+        "python-web",
+        "react-spa",
+        "ts-lib"
       ]
     },
     "python": {
       "description": "Python 工具链选型：uv 单一入口、ruff、pyright、现代类型语法",
-      "tags": [
-        "python"
-      ],
+      "preference": false,
       "requires": [],
       "path": "rules/python.md",
       "profiles": [
-        "python"
+        "python",
+        "python-agent",
+        "python-web"
       ]
     },
     "react": {
       "description": "React 组件与状态管理约束：feature-based 架构、组件类型习惯、状态阶梯",
-      "tags": [
-        "ts",
-        "frontend",
-        "react"
-      ],
+      "preference": false,
       "requires": [
         "typescript"
       ],
       "path": "rules/react.md",
       "profiles": [
+        "fullstack-ts",
         "nextjs-app",
+        "nextjs-fullstack",
         "react-spa"
       ]
     },
     "testing": {
       "description": "测试组织与命名约定，mock 边界与不得为过测试改断言的纪律红线",
-      "tags": [
-        "ts",
-        "testing"
-      ],
+      "preference": false,
       "requires": [],
       "path": "rules/testing.md",
       "profiles": [
+        "fullstack-ts",
+        "go",
+        "go-cli",
+        "go-web",
         "nestjs-api",
         "nextjs-app",
+        "nextjs-fullstack",
+        "python",
+        "python-agent",
+        "python-web",
         "react-spa",
         "ts-lib"
       ]
     },
     "tooling": {
       "description": "开发工具选用：LSP 优先、rg/fd 限文本、信息检索链、gh/sg、CLI-first",
-      "tags": [
-        "core",
-        "workflow"
-      ],
+      "preference": false,
       "requires": [],
       "path": "rules/tooling.md",
       "profiles": [
         "docs",
+        "fullstack-ts",
+        "go",
+        "go-cli",
+        "go-web",
         "minimal",
         "nestjs-api",
         "nextjs-app",
+        "nextjs-fullstack",
         "python",
+        "python-agent",
+        "python-web",
         "react-spa",
         "ts-lib"
       ]
     },
     "typescript": {
       "description": "TypeScript 类型纪律：禁双重断言/@ts-ignore/非空断言，import type 风格",
-      "tags": [
-        "ts"
-      ],
+      "preference": false,
       "requires": [],
       "path": "rules/typescript.md",
       "profiles": [
+        "fullstack-ts",
         "nestjs-api",
         "nextjs-app",
+        "nextjs-fullstack",
         "react-spa",
         "ts-lib"
       ]

@@ -1,12 +1,5 @@
 [
   {
-    "name": "ai-sdk",
-    "source": "official",
-    "description": "Vercel AI SDK 用法答疑与 AI 功能开发：generateText/streamText、agent、工具调用、结构化输出",
-    "repo": "vercel/ai",
-    "refUrl": "https://ai-sdk.dev/docs/getting-started/coding-agents"
-  },
-  {
     "name": "code-placement",
     "source": "custom"
   },
@@ -57,20 +50,6 @@
     "source": "custom"
   },
   {
-    "name": "grilling",
-    "source": "official",
-    "description": "对计划或决策的相对逼问，压测思路直到站得住",
-    "repo": "mattpocock/skills",
-    "refUrl": "https://github.com/mattpocock/skills"
-  },
-  {
-    "name": "handoff",
-    "source": "official",
-    "description": "把当前会话压缩成交接文档，供另一个 agent 接手",
-    "repo": "mattpocock/skills",
-    "refUrl": "https://github.com/mattpocock/skills"
-  },
-  {
     "name": "ifit",
     "source": "custom"
   },
@@ -87,30 +66,9 @@
     "source": "custom"
   },
   {
-    "name": "next-cache-components-adoption",
-    "source": "official",
-    "description": "开启 Next.js Cache Components 并处理它暴露的阻塞路由；一次性迁移用",
-    "repo": "vercel/next.js",
-    "refUrl": "https://github.com/vercel/next.js/tree/canary/skills"
-  },
-  {
-    "name": "next-cache-components-optimizer",
-    "source": "official",
-    "description": "用 agentic loop 把 Next.js 路由优化到即时导航（Cache Components / PPR，硬导航与软导航）",
-    "repo": "vercel/next.js",
-    "refUrl": "https://github.com/vercel/next.js/tree/canary/skills"
-  },
-  {
     "name": "next-dev-loop",
     "source": "official",
-    "description": "改完代码验证 Next.js 运行时行为（不只是编译通过）；需 next dev 运行中 + /_next/mcp + agent-browser",
-    "repo": "vercel/next.js",
-    "refUrl": "https://github.com/vercel/next.js/tree/canary/skills"
-  },
-  {
-    "name": "next-partial-prefetching-adoption",
-    "source": "official",
-    "description": "开启 Next.js Partial Prefetching 并处理暴露的问题；一次性迁移用",
+    "description": "改完代码验证 Next.js 运行时行为（不只是编译通过）；需 next dev 运行中 + /_next/mcp + agent-browser（保留理由：常驻验证环，非一次性迁移；Next.js 项目改完代码验证运行时行为）",
     "repo": "vercel/next.js",
     "refUrl": "https://github.com/vercel/next.js/tree/canary/skills"
   },
@@ -121,13 +79,6 @@
   {
     "name": "obsidian-cli",
     "source": "custom"
-  },
-  {
-    "name": "prototype",
-    "source": "official",
-    "description": "抛弃式原型：验证状态模型或交互是否成立",
-    "repo": "mattpocock/skills",
-    "refUrl": "https://github.com/mattpocock/skills"
   },
   {
     "name": "react-state",
@@ -163,12 +114,5 @@
     "description": "按 Web Interface Guidelines 审查 UI 代码：可访问性、UX、设计规范",
     "repo": "vercel-labs/agent-skills",
     "refUrl": "https://github.com/vercel-labs/agent-skills/tree/main/skills"
-  },
-  {
-    "name": "writing-great-skills",
-    "source": "official",
-    "description": "写 skill 的方法论参考：调用方式取舍、信息阶梯、剪枝与失效模式",
-    "repo": "mattpocock/skills",
-    "refUrl": "https://github.com/mattpocock/skills"
   }
 ]
