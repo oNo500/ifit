@@ -10,7 +10,7 @@
   （catalog/profiles/skills）的改动一律回开发仓，publish 会
   覆盖此处的直接修改
 - 本仓自有内容：tools/（使用端 CLI，pnpm workspace）、docs/mcp/
-  （MCP 说明）、docs/superpowers/（设计文档存档）、.claude/ 与
+  （MCP 说明）、docs/superpowers/（ifit CLI 自身的设计文档；资产体系线的在 iforge 仓 docs/）、.claude/ 与
   .mcp.json（自用配置）、README/SKILLS 使用文档
 
 ## 结构

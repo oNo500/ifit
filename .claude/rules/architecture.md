@@ -2,7 +2,7 @@
 
 ## Project Structure
 
-```
+```text
 ifit/
 ├── .claude/
 │   ├── CLAUDE.md              # project entry point
@@ -21,7 +21,7 @@ ifit/
 │   └── template-instantiate.md   # AI 实例化契约（随 publish 落位）
 ├── docs/
 │   ├── mcp/                   # MCP server 知识文档
-│   └── superpowers/           # 设计文档存档（specs + plans）
+│   └── superpowers/           # ifit CLI 自身的设计文档（specs + plans；资产体系线的在 iforge 仓 docs/）
 └── .mcp.json                  # MCP 配置（自用，key 用占位符）
 ```
 
