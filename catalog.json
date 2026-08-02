@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-01T19:41:41.576Z",
+  "generatedAt": "2026-08-02T03:24:14.738Z",
   "rules": {
     "agent-behavior": {
       "description": "AI 协作行为红线：不确定即问、忽略实时 LSP 诊断、研究子代理纪律",
